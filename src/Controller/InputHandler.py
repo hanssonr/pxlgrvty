@@ -19,29 +19,30 @@ class InputHandler(object):
             return False
         elif event.type == KEYDOWN:
             if event.key == K_LEFT:
-                self.camera.displacement = b2Vec2(self.camera.displacement.x + 1, self.camera.displacement.y)
+                self.camera.displacement.Set(self.camera.displacement.x + 1, self.camera.displacement.y)
             if event.key == K_RIGHT:
-                self.camera.displacement = b2Vec2(self.camera.displacement.x - 1, self.camera.displacement.y)
+                self.camera.displacement.Set(self.camera.displacement.x - 1, self.camera.displacement.y)
             if event.key == K_UP:
-                self.camera.displacement = b2Vec2(self.camera.displacement.x, self.camera.displacement.y + 1)
+                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y + 1)
             if event.key == K_DOWN:
-                self.camera.displacement = b2Vec2(self.camera.displacement.x, self.camera.displacement.y - 1)
+                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y - 1)
             if event.key == K_SPACE:
-                self.world.gravity = b2Vec2(0, self.world.gravity.y * -1)
+                self.player.mGravity *= -1
+
         elif event.type == KEYUP:
             if event.key == K_a or event.key == K_d or event.key == K_w or event.key == K_s:
-                self.player.velocity = b2Vec2(0,0)
+                self.player.velocity.Set(0,0)
         
         pressed = pygame.key.get_pressed()
          
         if pressed[pygame.K_a]:
-            self.player.velocity = b2Vec2(-3,0)
+            self.player.velocity.Set(-3, self.player.velocity.y)
         if pressed[pygame.K_d]:
-            self.player.velocity = b2Vec2(3,0)
+            self.player.velocity.Set(3, self.player.velocity.y)
         if pressed[pygame.K_s]:
-            self.player.velocity = b2Vec2(0,-3)
+            self.player.velocity.Set(self.player.velocity.x, -3)
         if pressed[pygame.K_w]:
-            self.player.velocity = b2Vec2(0,3)
+            self.player.velocity.Set(self.player.velocity.x, 3)
         
            
         if pressed[pygame.K_KP_PLUS]:

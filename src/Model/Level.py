@@ -27,7 +27,7 @@ class Level(object):
     
     def __readLevel(self):
         parser = ConfigParser.ConfigParser()
-        parser.read("level%d.lvl" % self.mCurrentLevel)
+        parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
         """
         for section in parser.sections():

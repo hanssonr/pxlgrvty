@@ -4,11 +4,11 @@
 import pygame, Box2D
 from Box2D import *
 from pygame.locals import *
-from DebugDraw import DebugDraw
-from Camera import Camera
-from Player import Player
-from InputHandler import InputHandler
-from Level import Level
+from View.DebugDraw import DebugDraw
+from Model.Camera import Camera
+from Model.Player import Player
+from Controller.InputHandler import InputHandler
+from Model.Level import Level
 
 class Game(object):
     
@@ -30,7 +30,7 @@ class Game(object):
     
     def main(self):
         pygame.init()
-        self.world = Box2D.b2World(gravity=(0,0),doSleep=False)
+        self.world = Box2D.b2World(gravity=(0,0),doSleep=True)
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         Level(self.world)
@@ -39,13 +39,12 @@ class Game(object):
         self.world.renderer = self.debugRender
         self.debugRender.AppendFlags(self.debugRender.e_shapeBit)
         self.body = self.world.CreateDynamicBody(position=(8,3))
-        self.player = Player((1,1), self.world)
-        #self.createDemoWorld()
+        self.player = Player((2,2), self.world)
         
         inputhandler = InputHandler(self.world, self.player, self.camera)
            
         while True:
-            delta = self.clock.tick(self.fps)
+            delta = self.clock.tick(self.fps) / 1000.0
             
             #close game if input returns false
             if not inputhandler.update():
@@ -65,17 +64,6 @@ class Game(object):
     def render(self, delta):
         self.screen.fill((0,0,0))
         self.world.DrawDebugData()
-        #self.draw_world()
         pygame.display.flip()
-    
-    def createDemoWorld(self):
-        boxesX = 0
-        while boxesX < self.camera.CAMERA_WIDTH:
-            self.world.CreateStaticBody(position=(boxesX,0), shapes=b2PolygonShape(box=(0.5,0.5)))
-            self.world.CreateStaticBody(position=(boxesX,self.camera.CAMERA_HEIGHT -1), shapes=b2PolygonShape(box=(0.5,0.5)))
-            boxesX += 1
-        
-        self.world.CreateStaticBody(position=(5,4), shapes=b2PolygonShape(box=(0.5,0.5)))
-        self.world.CreateStaticBody(position=(6,4), shapes=b2PolygonShape(box=(0.5,0.5)))
     
 game = Game()

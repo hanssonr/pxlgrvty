@@ -4,7 +4,7 @@
 import pygame, Box2D
 from Box2D import *
 from pygame.locals import *
-from Camera import *
+from Model.Camera import *
 
 
 class DebugDraw(b2Draw):
@@ -92,16 +92,17 @@ class DebugDraw(b2Draw):
         Draw a solid circle given the b2Vec2 center_v, radius, axis of orientation and color.
         """
         color = self.convertColor(color)
-        radius *= self.viewZoom
+        radius *= self.camera.scale.x
         if radius < 1: radius = 1
         else: radius = int(radius)
 
         center = self.toScreen(center_v)
         pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
-
         pygame.draw.circle(self.surface, color, center, radius, 1)
-
+        
+        
         p = radius * axis
+        #p = (p[0]*self.camera.scale.x, p[1]*self.camera.scale.x)
         pygame.draw.aaline(self.surface, (255,0,0), center, (center[0] - p[0], center[1] + p[1])) 
 
     def DrawPolygon(self, in_vertices, color):
@@ -128,5 +129,5 @@ class DebugDraw(b2Draw):
         """   
         pt = b2Vec2(pt[0], pt[1] * -1)
         pt = self.camera.getViewCoordinats(pt)
-        return (pt.x, pt.y)
+        return (int(pt.x), int(pt.y))
                  
