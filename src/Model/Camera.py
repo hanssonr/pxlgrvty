@@ -3,6 +3,7 @@
 
 import Box2D
 from Box2D import *
+from Libs.Pgl import *
 
 class Camera(object):
     
@@ -14,7 +15,7 @@ class Camera(object):
     mDisplacement = None
     
     def __init__(self, width, height):
-        
+        print Pgl.width
         self.PPM = width / self.CAMERA_WIDTH
         self.mScale = b2Vec2(width / self.CAMERA_WIDTH, height / self.CAMERA_HEIGHT)
         self.mDisplacement = b2Vec2(0.5,self.CAMERA_HEIGHT-0.5)

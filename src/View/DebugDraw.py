@@ -5,6 +5,7 @@ import pygame, Box2D
 from Box2D import *
 from pygame.locals import *
 from Model.Camera import *
+from Libs.Pgl import *
 
 
 class DebugDraw(b2Draw):
@@ -20,10 +21,10 @@ class DebugDraw(b2Draw):
     camera = None
     height = 600
     
-    def __init__(self, camera, screen): 
+    def __init__(self, camera): 
         super(DebugDraw, self).__init__()
         self.camera = camera
-        self.surface = screen
+        self.surface = Pgl.app.surface
 
     def convertColor(self, color):
         """

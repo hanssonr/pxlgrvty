@@ -11,8 +11,9 @@ class Player(object):
     mBody = None;
     SPEED = 5.5
     mVelocity = b2Vec2_zero
-    mGravityDirection = Direction.DOWN
+    mGravityDirection = GravityDirection.DOWN
     mGravity = b2Vec2(0, -9.2)
+    mDirection = b2Vec2(0,0)
     
     def __init__(self, position, world):
         self.mPosition = position
@@ -26,9 +27,11 @@ class Player(object):
         self.mBody.userData = self
     
     def update(self, delta):
-        print self.mVelocity.y
-        self.mVelocity += (self.mGravity * delta)
-        self.mBody.linearVelocity = self.mVelocity
+        pass
+        #print self.mGravity
+        #self.mVelocity = self.mDirection * self.SPEED
+        #self.mBody.linearVelocity = self.mVelocity
+        
     
     def __setVelocity(self, value):
         self.mVelocity = value
@@ -38,6 +41,18 @@ class Player(object):
     
     def __getPosition(self):
         return self.mBody.position
+    
+    def goLeft(self):
+        if self.mGravityDirection == GravityDirection.DOWN:
+            self.mDirection.Set(FaceDirection.LEFT, self.mGravity.y)
+        elif self.mGravityDirection == GravityDirection.UP:
+            pass
+    
+    def goRight(self):
+        if self.mGravityDirection == GravityDirection.DOWN:
+            self.mDirection.Set(FaceDirection.RIGHT, self.mGravity.y)
+        elif self.mGravityDirection == GravityDirection.UP:
+            pass
     
     velocity = property(__getVelocity, __setVelocity)
     position = property(__getPosition, None)
