@@ -7,6 +7,7 @@ http://qq.readthedocs.org/en/latest/tiles.html#map-definition
 from Tile import Tile
 import ConfigParser, Box2D.b2
 from Box2D.Box2D import b2Vec2
+from Camera import *
 
 class Level(object):
     
@@ -16,6 +17,7 @@ class Level(object):
     mMap = None
     mWidth = None
     mHeight = None
+    mStartPos = None
     
     def __init__(self, world):
         self.mWorld = world
@@ -45,7 +47,10 @@ class Level(object):
         for y, row in enumerate(self.mMap):
             for x, column in enumerate(row):
                 if self.mMap[y][x] == "#":
-                    Tile(self.mWorld, b2Vec2(x,19-y), "#")
+                    #TODO: fix the upward-down reading of lvlfiles
+                    Tile(self.mWorld, b2Vec2(x, Camera.CAMERA_HEIGHT-y), "#")
+                elif self.mMap[y][x] == "S":
+                    self.mStartPos = (x, Camera.CAMERA_HEIGHT-y)
     
     def nextLevel(self):
         if self.mCurrentLevel < self.__mMaxLevels:

@@ -15,10 +15,9 @@ class Camera(object):
     mDisplacement = None
     
     def __init__(self, width, height):
-        print Pgl.width
         self.PPM = width / self.CAMERA_WIDTH
         self.mScale = b2Vec2(width / self.CAMERA_WIDTH, height / self.CAMERA_HEIGHT)
-        self.mDisplacement = b2Vec2(0.5,self.CAMERA_HEIGHT-0.5)
+        self.mDisplacement = b2Vec2(0.5, self.CAMERA_HEIGHT+0.5)
           
     def __getScale(self):
         return self.mScale
@@ -42,10 +41,10 @@ class Camera(object):
     def getModelCoordinats(self, viewCoords):
         modelCoords = viewCoords / self.scale.x
         modelCoords.x += self.displacement.x
-        modelCoords.y = self.__getReversedYAxis(modelCoords.y) + self.displacement.y
+        modelCoords.y = self.getReversedYAxis(modelCoords.y) + self.displacement.y
         return modelCoords
     
-    def __getReversedYAxis(self, oldY):
+    def getReversedYAxis(self, oldY):
         return (self.CAMERA_HEIGHT - oldY)
     
     

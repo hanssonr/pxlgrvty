@@ -1,8 +1,8 @@
 class GravityDirection(object):
-    UP = 1
-    RIGHT = 2
-    DOWN = 3
-    LEFT = 4
+    UP = 8
+    RIGHT = 8
+    DOWN = -8
+    LEFT = -8
     
 class FaceDirection(object):
     UP = 1

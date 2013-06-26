@@ -22,15 +22,27 @@ class Input(BaseInputHandler):
         
         if event.type == KEYDOWN:
             if event.key == K_LEFT:
-                self.camera.displacement.Set(self.camera.displacement.x + 1, self.camera.displacement.y)
+                self.player.mGravityDirection = GravityDirection.LEFT
+                self.player.flipGravityX()
             if event.key == K_RIGHT:
-                self.camera.displacement.Set(self.camera.displacement.x - 1, self.camera.displacement.y)
+                self.player.mGravityDirection = GravityDirection.RIGHT
+                self.player.flipGravityX()
             if event.key == K_UP:
-                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y + 1)
+                self.player.mGravityDirection = GravityDirection.UP
+                self.player.flipGravityY()
             if event.key == K_DOWN:
-                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y - 1)
+                self.player.mGravityDirection = GravityDirection.DOWN
+                self.player.flipGravityY()
             if event.key == K_SPACE:
-                self.player.mGravity *= -1
+                pass
+            if event.key == K_KP4:
+                self.camera.displacement.Set(self.camera.displacement.x + 1, self.camera.displacement.y)
+            if event.key == K_KP6:
+                self.camera.displacement.Set(self.camera.displacement.x - 1, self.camera.displacement.y)
+            if event.key == K_KP8:
+                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y + 1)
+            if event.key == K_KP5:
+                self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y - 1)
 
         elif event.type == KEYUP:
             if event.key == K_a or event.key == K_d:
@@ -40,7 +52,7 @@ class Input(BaseInputHandler):
         
         pressed = pygame.key.get_pressed()
         
-        if self.player.mGravityDirection == GravityDirection.DOWN or self.player.mGravityDirection == GravityDirection.DOWN:
+        if self.player.mGravityDirection == GravityDirection.DOWN or self.player.mGravityDirection == GravityDirection.UP:
             if pressed[pygame.K_a]:
                 self.player.goLeft()
             if pressed[pygame.K_d]:

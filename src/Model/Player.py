@@ -9,10 +9,10 @@ class Player(object):
     
     mWorld = None;
     mBody = None;
-    SPEED = 5.5
+    SPEED = 4
     mVelocity = b2Vec2_zero
     mGravityDirection = GravityDirection.DOWN
-    mGravity = b2Vec2(0, -9.2)
+    mGravity = b2Vec2(0, -10)
     mDirection = b2Vec2(0,0)
     
     def __init__(self, position, world):
@@ -21,16 +21,15 @@ class Player(object):
         
         #create player physicsbody
         self.mBody = world.CreateDynamicBody(position = self.mPosition)
-        self.mBody.CreatePolygonFixture(box=(0.4,0.4), density=50, friction=0)
-        #self.mBody.CreateCircleFixture(radius=0.3, density=30, friction=0, pos=(0,-0.2)) 
+        self.mBody.CreatePolygonFixture(box=(0.4,0.4), density=1, friction=0)
+        #self.mBody.CreateCircleFixture(radius=0.5, density=30, friction=0) 
         self.mBody.fixedRotation = True
         self.mBody.userData = self
     
     def update(self, delta):
-        pass
-        #print self.mGravity
-        #self.mVelocity = self.mDirection * self.SPEED
-        #self.mBody.linearVelocity = self.mVelocity
+        self.mVelocity.Set(self.mDirection.x * self.SPEED, 0)
+        
+        self.mBody.linearVelocity = self.mGravity + self.mVelocity
         
     
     def __setVelocity(self, value):
@@ -44,15 +43,21 @@ class Player(object):
     
     def goLeft(self):
         if self.mGravityDirection == GravityDirection.DOWN:
-            self.mDirection.Set(FaceDirection.LEFT, self.mGravity.y)
+            self.mDirection.Set(FaceDirection.LEFT, 0)
         elif self.mGravityDirection == GravityDirection.UP:
-            pass
+            self.mDirection.Set(FaceDirection.LEFT, 0)
     
     def goRight(self):
         if self.mGravityDirection == GravityDirection.DOWN:
-            self.mDirection.Set(FaceDirection.RIGHT, self.mGravity.y)
+            self.mDirection.Set(FaceDirection.RIGHT, 0)
         elif self.mGravityDirection == GravityDirection.UP:
-            pass
+            self.mDirection.Set(FaceDirection.RIGHT, 0)
+    
+    def flipGravityX(self):
+        self.mGravity.Set(self.mGravityDirection, 0)
+    
+    def flipGravityY(self):
+        self.mGravity.Set(0, self.mGravityDirection)
     
     velocity = property(__getVelocity, __setVelocity)
     position = property(__getPosition, None)

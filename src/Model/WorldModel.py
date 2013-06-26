@@ -19,10 +19,8 @@ class WorldModel(object):
     
     def main(self):
         self.physWorld = Box2D.b2World(gravity=(0,0),doSleep=True)
-        Level(self.physWorld)
-        
-        self.body = self.physWorld.CreateDynamicBody(position=(8,3))
-        self.player = Player((2,2), self.physWorld)
+        level = Level(self.physWorld)
+        self.player = Player(level.mStartPos, self.physWorld)
      
     def update(self, delta):
         self.physWorld.Step(self.timeStep, self.vel_iters, self.pos_iters)
