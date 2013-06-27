@@ -17,7 +17,7 @@ class Camera(object):
     def __init__(self, width, height):
         self.PPM = width / self.CAMERA_WIDTH
         self.mScale = b2Vec2(width / self.CAMERA_WIDTH, height / self.CAMERA_HEIGHT)
-        self.mDisplacement = b2Vec2(0.5, self.CAMERA_HEIGHT+0.5)
+        self.mDisplacement = b2Vec2(0, -self.CAMERA_HEIGHT)
           
     def __getScale(self):
         return self.mScale
@@ -33,16 +33,17 @@ class Camera(object):
         self.mDisplacement = value
         
     def getViewCoordinats(self, modelCoords):
-        modelCoords.x += self.displacement.x
-        modelCoords.y += self.displacement.y
+        modelCoords.x -= self.displacement.x
+        modelCoords.y -= self.displacement.y
         modelCoords = b2Vec2(modelCoords.x * self.scale.x, modelCoords.y * self.scale.y)
         return modelCoords
     
     def getModelCoordinats(self, viewCoords):
         modelCoords = viewCoords / self.scale.x
         modelCoords.x += self.displacement.x
-        modelCoords.y = self.getReversedYAxis(modelCoords.y) + self.displacement.y
+        modelCoords.y = self.getReversedYAxis(modelCoords.y)
         return modelCoords
+    
     
     def getReversedYAxis(self, oldY):
         return (self.CAMERA_HEIGHT - oldY)

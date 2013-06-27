@@ -22,13 +22,17 @@ class Player(object):
         #create player physicsbody
         self.mBody = world.CreateDynamicBody(position = self.mPosition)
         self.mBody.CreatePolygonFixture(box=(0.4,0.4), density=1, friction=0)
-        #self.mBody.CreateCircleFixture(radius=0.5, density=30, friction=0) 
+        
+        #Fix for dynamic body getting stuck in static bodies sometimes
+        self.mBody.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(0.4,0.4))
+        self.mBody.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(-0.4,-0.4)) 
+        self.mBody.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(-0.4,0.4)) 
+        self.mBody.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(0.4,-0.4)) 
         self.mBody.fixedRotation = True
         self.mBody.userData = self
     
     def update(self, delta):
         self.mVelocity.Set(self.mDirection.x * self.SPEED, 0)
-        
         self.mBody.linearVelocity = self.mGravity + self.mVelocity
         
     

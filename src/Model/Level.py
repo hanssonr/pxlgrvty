@@ -4,7 +4,7 @@ http://qq.readthedocs.org/en/latest/tiles.html#map-definition
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from Tile import Tile
+from Tile import *
 import ConfigParser, Box2D.b2
 from Box2D.Box2D import b2Vec2
 from Camera import *
@@ -18,6 +18,7 @@ class Level(object):
     mWidth = None
     mHeight = None
     mStartPos = None
+    mPickups = None
     
     def __init__(self, world):
         self.mWorld = world
@@ -31,6 +32,8 @@ class Level(object):
         parser = ConfigParser.ConfigParser()
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
+        self.mPickups = parser.get("objects", "pickups") #TODO: use json or similar to extract info about enemies/pickup objects to the level
+        self.mMap.reverse() #box2d have inverted y-axis
         """
         for section in parser.sections():
             if len(section) == 1:
@@ -44,13 +47,12 @@ class Level(object):
         
     
     def __createWorldCollision(self):
-        for y, row in enumerate(self.mMap):
-            for x, column in enumerate(row):
+        for y in range(self.height):
+            for x in range(self.width):
                 if self.mMap[y][x] == "#":
-                    #TODO: fix the upward-down reading of lvlfiles
-                    Tile(self.mWorld, b2Vec2(x, Camera.CAMERA_HEIGHT-y), "#")
+                    Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                 elif self.mMap[y][x] == "S":
-                    self.mStartPos = (x, Camera.CAMERA_HEIGHT-y)
+                    self.mStartPos = (x, y)
     
     def nextLevel(self):
         if self.mCurrentLevel < self.__mMaxLevels:

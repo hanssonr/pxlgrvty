@@ -8,7 +8,6 @@ from Screens.GameScreen import *
 class Pxlgrvty(Game):  
     
     def __init__(self):
-        print "Pxlgrvty init"
         super(Pxlgrvty, self).__init__(self)
         self.input = BaseInputHandler()
         
