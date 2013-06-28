@@ -1,5 +1,4 @@
 from Box2D.Box2D import b2EdgeShape, b2Body, b2Vec2
-from Model.Camera import *
 
 class Tile(object):
     
@@ -12,9 +11,7 @@ class Tile(object):
         
         if tiletype != TileType.EMPTY:
             self.__createTile()
-            
-        
-    
+             
     def __createTile(self):
         self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
         self.mBody.CreatePolygonFixture(box=(self.TILE_SIZE/2, self.TILE_SIZE/2))

@@ -33,7 +33,7 @@ class Level(object):
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
         self.mPickups = parser.get("objects", "pickups") #TODO: use json or similar to extract info about enemies/pickup objects to the level
-        self.mMap.reverse() #box2d have inverted y-axis
+        #self.mMap.reverse() #box2d have inverted y-axis
         """
         for section in parser.sections():
             if len(section) == 1:

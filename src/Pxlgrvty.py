@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from Libs.Game import *
-from Libs.BaseInputHandler import * 
-from Screens.GameScreen import *
+from libs.Game import *
+from libs.BaseInputHandler import * 
+from screen.LoadingScreen import LoadingScreen
 
 class Pxlgrvty(Game):  
     
@@ -13,7 +13,8 @@ class Pxlgrvty(Game):
         
   
     def create(self):
-        self.setScreen(GameScreen(self))
+        #self.setScreen(GameScreen(self))
+        self.setScreen(LoadingScreen(self))
     
     def update(self, delta):
         Game.update(self, delta)

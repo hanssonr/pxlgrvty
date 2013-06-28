@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from Libs.Pgl import *
+from libs.Pgl import *
 
 class BaseInputHandler(object):
     

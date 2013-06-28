@@ -11,7 +11,6 @@ class PygameApplication(object):
     game = None
     
     def __init__(self, game, width, height, fps):
-        print "PygameApplication init"
         Pgl.app = self
         Pgl.width = width
         Pgl.height = height
@@ -28,17 +27,18 @@ class PygameApplication(object):
     def __mainloop(self):
         pygame.init()
         self.surface = pygame.display.set_mode((self.width, self.height))
-        self.clock = pygame.time.Clock()
+        Pgl.clock = pygame.time.Clock()
         
         self.game.create()
         while self.running:
-            delta = self.clock.tick(self.fps) / 1000.0
-            
+            delta = Pgl.clock.tick(self.fps) / 1000.0
+
             if self.game.input != None:
                 self.game.input.update()
                             
             self.game.update(delta)
             self.game.render(delta)
+            pygame.display.flip()
                 
         pygame.quit()
     

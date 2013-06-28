@@ -5,3 +5,4 @@ class Pgl(object):
     app = None
     width = None
     height = None
+    clock = None

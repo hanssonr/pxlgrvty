@@ -1,9 +1,9 @@
 import pygame
-from Libs.Pgl import *
-from Controller.Input import *
-from Model.WorldModel import * 
-from View.WorldRender import *
-from Model.Camera import *
+from controller.Input import Input
+from model.WorldModel import WorldModel
+from model.Camera import Camera
+from view.WorldRender import WorldRender
+from libs.Pgl import Pgl
 
 class GameScreen(object):
     

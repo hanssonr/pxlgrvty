@@ -1,9 +1,11 @@
 from Camera import *
-from Controller.Input import *
+from controller.Input import *
 from Level import *
-from Player import *
-from View.DebugDraw import *
-from Libs.Pgl import *
+from entities.Player import *
+from view.DebugDraw import *
+from libs.Pgl import *
+from model.Gravity import *
+from observer.ContactListener import *
 
 class WorldModel(object):
     
@@ -18,9 +20,11 @@ class WorldModel(object):
         self.main()
     
     def main(self):
-        self.physWorld = Box2D.b2World(gravity=(0,0),doSleep=True)
-        level = Level(self.physWorld)
-        self.player = Player(level.mStartPos, self.physWorld)
+        self.contactListener = ContactListener()
+        self.gravity = Gravity()
+        self.physWorld = Box2D.b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
+        self.level = Level(self.physWorld)
+        self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
      
     def update(self, delta):
         self.physWorld.Step(self.timeStep, self.vel_iters, self.pos_iters)

@@ -3,7 +3,7 @@
 
 import Box2D
 from Box2D import *
-from Libs.Pgl import *
+from libs.Pgl import *
 
 class Camera(object):
     
@@ -17,7 +17,7 @@ class Camera(object):
     def __init__(self, width, height):
         self.PPM = width / self.CAMERA_WIDTH
         self.mScale = b2Vec2(width / self.CAMERA_WIDTH, height / self.CAMERA_HEIGHT)
-        self.mDisplacement = b2Vec2(0, -self.CAMERA_HEIGHT)
+        self.mDisplacement = b2Vec2(0, 0)
           
     def __getScale(self):
         return self.mScale
@@ -44,6 +44,8 @@ class Camera(object):
         modelCoords.y = self.getReversedYAxis(modelCoords.y)
         return modelCoords
     
+    def spriteScale(self, size):
+        return (size[0] * int(self.scale.x), size[1] * int(self.scale.y))
     
     def getReversedYAxis(self, oldY):
         return (self.CAMERA_HEIGHT - oldY)

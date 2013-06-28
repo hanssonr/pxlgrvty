@@ -4,8 +4,8 @@
 import pygame, Box2D
 from Box2D import *
 from pygame.locals import *
-from Model.Camera import *
-from Libs.Pgl import *
+from model.Camera import *
+from libs.Pgl import *
 
 
 class DebugDraw(b2Draw):
@@ -128,7 +128,7 @@ class DebugDraw(b2Draw):
         Input:  (x, y) - a tuple in world coordinates
         Output: (x, y) - a tuple in screen coordinates
         """   
-        pt = b2Vec2(pt[0], pt[1] * -1)
+        pt = b2Vec2(pt[0], pt[1])
         pt = self.camera.getViewCoordinats(pt)
         return (int(pt.x), int(pt.y))
                  
