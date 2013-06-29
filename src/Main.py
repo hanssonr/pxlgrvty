@@ -11,7 +11,7 @@ class Main(object):
     #initialize windowsize and fps
     width = 1280
     height = 800
-    fps = 59
+    fps = 60
     
     def __init__(self):
         PygameApplication(Pxlgrvty(), self.width, self.height, self.fps)

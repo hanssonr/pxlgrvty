@@ -1,4 +1,4 @@
-from Box2D.Box2D import b2EdgeShape, b2Body, b2Vec2
+from Box2D.Box2D import *
 
 class Tile(object):
     

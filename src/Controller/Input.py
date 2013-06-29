@@ -22,14 +22,19 @@ class Input(BaseInputHandler):
         BaseInputHandler.checkEvent(self, event)
         
         if event.type == KEYDOWN:
-            if event.key == K_LEFT:
-                self.gravity.set(GravityDirection.LEFT)
-            if event.key == K_RIGHT:
-                self.gravity.set(GravityDirection.RIGHT)
-            if event.key == K_UP:
-                self.gravity.set(GravityDirection.UP)
-            if event.key == K_DOWN:
-                self.gravity.set(GravityDirection.DOWN)
+            if self.player.mOnGround != False:
+                if event.key == K_LEFT:
+                    self.gravity.set(GravityDirection.LEFT)
+                    self.player.flip(MoveDirection.LEFT)
+                if event.key == K_RIGHT:
+                    self.gravity.set(GravityDirection.RIGHT)
+                    self.player.flip(MoveDirection.RIGHT)
+                if event.key == K_UP:
+                    self.gravity.set(GravityDirection.UP)
+                    self.player.flip(MoveDirection.UP)
+                if event.key == K_DOWN:
+                    self.gravity.set(GravityDirection.DOWN)
+                    self.player.flip(MoveDirection.DOWN)
                 
             #cameradisplacement
             if event.key == K_KP4:

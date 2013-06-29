@@ -13,9 +13,9 @@ class LoadingScreen(object):
     
     def update(self, delta):            
         self.loadingTime = self.loadingTime - delta
-        print self.loadingTime
+        #print self.loadingTime
         if self.loadingTime < 0:
             self.mGame.setScreen(GameScreen(self.mGame))
     
-    def render(self, delta):    
+    def render(self, delta):
         Pgl.app.surface.blit(self.label, (Pgl.width/2,Pgl.height/2))

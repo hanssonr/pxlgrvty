@@ -3,7 +3,7 @@ Singleton
 http://blog.amir.rachum.com/post/21850841339/implementing-the-singleton-pattern-in-python
 """
 
-import pygame
+import pygame, libs.pygl2d as gl
 
 class Resources(object):
 
@@ -19,6 +19,7 @@ class Resources(object):
     def loadGameResources(self):
         self.mMud = pygame.image.load("assets/gfx/mud.png").convert()
         self.mFont = pygame.font.SysFont('mono', 36)
+        self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
     
     @classmethod
     def getInstance(cls):

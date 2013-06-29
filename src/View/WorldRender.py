@@ -1,7 +1,9 @@
 import pygame
+import libs.pygl2d as gl
 from libs.Pgl import *
 from DebugDraw import *
 from view.TileRender import TileRender
+from Resources import *
 
 
 class WorldRender(object):
@@ -16,15 +18,12 @@ class WorldRender(object):
         self.debug.AppendFlags(self.debug.e_shapeBit)
         
         self.tileRender = TileRender(self.mCamera, self.mWorld.level.mMap)
-        
-        #fps
-        self.font = pygame.font.SysFont('mono', 36)
     
     def render(self, delta):
         Pgl.app.surface.fill((0,0,0))
         self.mWorld.physWorld.DrawDebugData()
     
-        self.tileRender.render(delta)
+        #self.tileRender.render(delta)
         
-        self.label = self.font.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
+        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))

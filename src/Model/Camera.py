@@ -45,7 +45,7 @@ class Camera(object):
         return modelCoords
     
     def spriteScale(self, size):
-        return (size[0] * int(self.scale.x), size[1] * int(self.scale.y))
+        return b2Vec2(size[0] * self.scale.x, size[1] * self.scale.y)
     
     def getReversedYAxis(self, oldY):
         return (self.CAMERA_HEIGHT - oldY)

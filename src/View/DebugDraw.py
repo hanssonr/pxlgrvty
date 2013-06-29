@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pygame, Box2D
+import pygame, Box2D, libs.pygl2d as gl
 from Box2D import *
 from pygame.locals import *
 from model.Camera import *
@@ -86,6 +86,7 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center)
+        #gl.draw.circle(center, radius, color)
         pygame.draw.circle(self.surface, color, center, radius, drawwidth)
 
     def DrawSolidCircle(self, center_v, radius, axis, color):
@@ -100,6 +101,7 @@ class DebugDraw(b2Draw):
         center = self.toScreen(center_v)
         pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
         pygame.draw.circle(self.surface, color, center, radius, 1)
+        #gl.draw.circle(center, radius, color, 0)
         
         
         p = radius * axis
@@ -120,8 +122,10 @@ class DebugDraw(b2Draw):
         """
         color = self.convertColor(color)
         vertices = [self.toScreen(v) for v in in_vertices]
-        pygame.draw.polygon(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), vertices, 0)
+        #pygame.draw.polygon(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), vertices, 0)
         pygame.draw.polygon(self.surface, color, vertices, 1)
+        #gl.draw.polygon(vertices, (color[0]/2, color[1]/2, color[1]/2, 127), 0)
+        #gl.draw.polygon(vertices, color, 1)
 
     def toScreen(self, pt):
         """
