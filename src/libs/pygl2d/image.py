@@ -139,7 +139,7 @@ class Image:
         
         self.scalar = scale
         self.ox, self.oy = (scale * self.image.get_width())/2, (scale * self.image.get_height())/2
-    
+   
     def rotate(self, rotation):
         """Rotate the image on a ratio of 0.0 to 360 <- return None
         """
@@ -169,7 +169,29 @@ class Image:
         """
         
         return rect.Rect(0, 0, self.get_width(), self.get_height())
+    
+    def draw_part(self, x, y, left, top, right, bottom):
+        glPushMatrix()
+        glTranslatef(x+self.ox, y - self.oy, 0)
+        glColor4f(*self.color)
+        glRotatef(self.rotation, 0, 0, 1)
+        glScalef(self.scalar, self.scalar, self.scalar)
         
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glBegin(GL_QUADS)
+        l = left/float(self.w)
+        r = right/float(self.w)
+        b = 1. - top/float(self.h)
+        t = 1. - bottom/float(self.h)
+        w = (right-left)/2.0
+        h = (bottom-top)/2.0
+        glTexCoord2f(l, b); glVertex3f(-w,-h,0)
+        glTexCoord2f(r, b); glVertex3f( w,-h,0)
+        glTexCoord2f(r, t); glVertex3f( w, h,0)
+        glTexCoord2f(l, t); glVertex3f(-w, h,0)
+        glEnd()
+        glPopMatrix()
+       
     def draw(self, pos):
         """Draw the image to a certain position <- return None
         """
@@ -179,6 +201,5 @@ class Image:
         glColor4f(*self.color)
         glRotatef(self.rotation, 0, 0, 1)
         glScalef(self.scalar, self.scalar, self.scalar)
-        print self.size
         glCallList(self.dl)
         glPopMatrix()

@@ -86,8 +86,8 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center)
-        #gl.draw.circle(center, radius, color)
-        pygame.draw.circle(self.surface, color, center, radius, drawwidth)
+        gl.draw.circle(center, radius, color)
+        #pygame.draw.circle(self.surface, color, center, radius, drawwidth)
 
     def DrawSolidCircle(self, center_v, radius, axis, color):
         """
@@ -99,14 +99,14 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center_v)
-        pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
+        #pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
         pygame.draw.circle(self.surface, color, center, radius, 1)
         #gl.draw.circle(center, radius, color, 0)
         
         
         p = radius * axis
         #p = (p[0]*self.camera.scale.x, p[1]*self.camera.scale.x)
-        pygame.draw.aaline(self.surface, (255,0,0), center, (center[0] - p[0], center[1] + p[1])) 
+        #pygame.draw.aaline(self.surface, (255,0,0), center, (center[0] - p[0], center[1] + p[1])) 
 
     def DrawPolygon(self, in_vertices, color):
         """

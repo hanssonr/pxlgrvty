@@ -31,4 +31,12 @@ class WorldModel(object):
         self.physWorld.ClearForces()
         
         self.player.update(delta)
+    
+    
+    def changeGravity(self, gravitydirection):
+        if self.player.mOnGround != False:
+            self.gravity.set(gravitydirection)
+            
+            if not self.player.isInGravityZone():
+                self.player.flip(gravitydirection)
 

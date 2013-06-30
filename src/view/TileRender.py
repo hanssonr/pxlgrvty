@@ -14,11 +14,12 @@ class TileRender(object):
         self.tile = Sprite(Resources.getInstance().mMud)
         self.tile.setSize(int(1 * self.mCamera.scale.x), int(1 * self.mCamera.scale.y)) 
     
-    def render(self, delta):
+    def render(self, delta):        
         for y in range(len(self.mTiles)):
             for x in range(len(self.mTiles[y])):
                 if self.mTiles[y][x] == "#":
                     viewpos = self.mCamera.getViewCoordinats(b2Vec2(x, y))
-                    
+                     
                     self.tile.setPosition(viewpos.x, viewpos.y)
                     self.tile.draw()
+        

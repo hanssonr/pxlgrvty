@@ -21,20 +21,16 @@ class Input(BaseInputHandler):
         
         BaseInputHandler.checkEvent(self, event)
         
+        #handle gravity
         if event.type == KEYDOWN:
-            if self.player.mOnGround != False:
-                if event.key == K_LEFT:
-                    self.gravity.set(GravityDirection.LEFT)
-                    self.player.flip(MoveDirection.LEFT)
-                if event.key == K_RIGHT:
-                    self.gravity.set(GravityDirection.RIGHT)
-                    self.player.flip(MoveDirection.RIGHT)
-                if event.key == K_UP:
-                    self.gravity.set(GravityDirection.UP)
-                    self.player.flip(MoveDirection.UP)
-                if event.key == K_DOWN:
-                    self.gravity.set(GravityDirection.DOWN)
-                    self.player.flip(MoveDirection.DOWN)
+            if event.key == K_LEFT:
+                self.world.changeGravity(GravityDirection.LEFT)
+            if event.key == K_RIGHT:
+                self.world.changeGravity(GravityDirection.RIGHT)
+            if event.key == K_UP:
+                self.world.changeGravity(GravityDirection.UP)
+            if event.key == K_DOWN:
+                self.world.changeGravity(GravityDirection.DOWN)
                 
             #cameradisplacement
             if event.key == K_KP4:
@@ -60,12 +56,12 @@ class Input(BaseInputHandler):
         #check for player movement
         pressed = pygame.key.get_pressed()
         
-        if self.gravity.get().x == 0:
+        if self.player.mGravityToUse.x == 0:
             if pressed[pygame.K_a]:
                 self.player.move(MoveDirection.LEFT)
             if pressed[pygame.K_d]:
                 self.player.move(MoveDirection.RIGHT)
-        elif self.gravity.get().y == 0:
+        elif self.player.mGravityToUse.y == 0:
             if pressed[pygame.K_s]:
                 self.player.move(MoveDirection.DOWN)
             if pressed[pygame.K_w]:

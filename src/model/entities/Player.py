@@ -9,10 +9,20 @@ from model.Gravity import *
 
 class Player(MovableEntity):
     
+    PLAYER_WIDTH = 0.9
+    PLAYER_HEIGHT = 1.0
+    
     mWorld = None;
     mGravity = None
     mSensor = None
     mOnGround = 0
+    mInGravityZone = 0
+    mOldGravity = None
+    mGravityToUse = b2Vec2_zero
+    mDelayedFlip = None
+    
+    mFacing = Facing.RIGHT
+    mUpsideDown = False
     
     def __init__(self, position, world, gravity):  
         self.mWorld = world
@@ -20,15 +30,19 @@ class Player(MovableEntity):
         
         #create player physicsbody
         body = world.CreateDynamicBody(position = position)
-        
-        #sensor
         shape = b2PolygonShape()
-        shape.SetAsBox(0.35, 0.1, (0, 0.4), 0)
         fd = b2FixtureDef()
         fd.shape = shape
         fd.isSensor = True
-        fd.bullet = True
-        fd.userData = Sensor()
+        
+        #footsensor
+        shape.SetAsBox(0.35, 0.1, (0, 0.4), 0)
+        fd.userData = Sensor.FOOTSENSOR
+        body.CreateFixture(fd)
+        
+        #gravitysensor
+        shape.SetAsBox(0.1,0.1)
+        fd.userData = Sensor.GRAVITYZONESENSOR
         body.CreateFixture(fd)
         
         #collisionbody
@@ -45,21 +59,65 @@ class Player(MovableEntity):
         super(Player, self).__init__(position, body, b2Vec2(0,0), 4, b2Vec2(0,0))
      
     def update(self, delta):
-        self.mVelocity.Set(self.mDirection.x * self.mSpeed, self.mDirection.y * self.mSpeed)
-        self.mBody.linearVelocity = self.mGravity.get() + self.mVelocity
-        #print self.mOnGround
+        #do we have a delayed flip, do it
+        if self.mDelayedFlip != None:
+            self.flip(self.mDelayedFlip)
+            self.mDelayedFlip = None
+        
+        if self.mOldGravity != None:
+            self.mGravityToUse.Set(self.mOldGravity.x, self.mOldGravity.y)
+        else:
+            self.mGravityToUse.Set(self.mGravity.get().x, self.mGravity.get().y)
+            
+        self.mVelocity.Set(self.mDirection.x * self.mSpeed, self.mDirection.y * self.mSpeed)    
+        self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
+        
+        if self.mVelocity.x > 0:
+            self.mFacing = Facing.RIGHT
+        elif self.mVelocity.x < 0:
+            self.mFacing = Facing.LEFT
+        elif self.mVelocity.y > 0:
+            self.mFacing = Facing.UP
+        elif self.mVelocity.y < 0:
+            self.mFacing = Facing.DOWN
     
     def flip(self, direction):
-        if direction == MoveDirection.UP:
+        if direction == GravityDirection.UP:
             self.mBody.transform = (self.mBody.position, math.radians(180))
-        elif direction == MoveDirection.DOWN:
+            self.mUpsideDown = True
+        elif direction == GravityDirection.DOWN:
             self.mBody.transform = (self.mBody.position, math.radians(0))
-        elif direction == MoveDirection.LEFT:
+            self.mUpsideDown = False
+        elif direction == GravityDirection.LEFT:
             self.mBody.transform = (self.mBody.position, math.radians(90))
-        elif direction == MoveDirection.RIGHT:
+        elif direction == GravityDirection.RIGHT:
             self.mBody.transform = (self.mBody.position, math.radians(270))
+    
+    def enterGravityZone(self):
+        self.mInGravityZone += 1
+         
+        if self.mOldGravity == None and self.mInGravityZone == 1:
+            self.mOldGravity = b2Vec2(self.mGravity.get().x, self.mGravity.get().y)
+    
+    def exitGravityZone(self):
+        self.mInGravityZone -= 1
+        
+        if self.mInGravityZone == 0:
+            self.mOldGravity = None
+            self.mDelayedFlip = self.mGravity.getGravityDirection()
+    
+    def isOnGround(self):
+        return self.mOnGround > 0
+    
+    def isInGravityZone(self):
+        return self.mInGravityZone > 0
+    
+    def getRenderPosition(self):
+        return b2Vec2(self.position.x - self.PLAYER_WIDTH / 2, self.position.y - self.PLAYER_HEIGHT / 2)
 
-class Sensor:
-    pass 
+
+class Sensor():
+    FOOTSENSOR = 1
+    GRAVITYZONESENSOR = 2
 
 

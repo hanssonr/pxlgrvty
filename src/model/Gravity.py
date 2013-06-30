@@ -6,9 +6,12 @@ class Gravity(object):
     
     FORCE = 8
     __mGravity = b2Vec2(0, FORCE)
+    __mGravityDir = GravityDirection.DOWN
     
     
     def set(self, gravitydir):
+        self.__mGravityDir = gravitydir
+        
         if gravitydir == GravityDirection.DOWN:
             self.__mGravity.Set(0, self.FORCE)
         elif gravitydir == GravityDirection.UP:
@@ -20,3 +23,6 @@ class Gravity(object):
     
     def get(self):
         return self.__mGravity
+    
+    def getGravityDirection(self):
+        return self.__mGravityDir

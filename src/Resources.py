@@ -10,7 +10,9 @@ class Resources(object):
     INSTANCE = None
     
     mMud = None
+    mPlayer = None
     mFont = None
+    mLoaded = False
     
     def __init__(self):
         if self.INSTANCE is not None:
@@ -18,8 +20,10 @@ class Resources(object):
     
     def loadGameResources(self):
         self.mMud = pygame.image.load("assets/gfx/mud.png").convert()
+        self.mPlayer = pygame.image.load("assets/gfx/player.png").convert()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
+        self.mLoaded = True
     
     @classmethod
     def getInstance(cls):

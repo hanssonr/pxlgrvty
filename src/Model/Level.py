@@ -33,7 +33,6 @@ class Level(object):
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
         self.mPickups = parser.get("objects", "pickups") #TODO: use json or similar to extract info about enemies/pickup objects to the level
-        #self.mMap.reverse() #box2d have inverted y-axis
         """
         for section in parser.sections():
             if len(section) == 1:
@@ -53,6 +52,8 @@ class Level(object):
                     Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                 elif self.mMap[y][x] == "S":
                     self.mStartPos = (x, y)
+                elif self.mMap[y][x] == "*":
+                    Tile(self.mWorld, b2Vec2(x, y), TileType.GRAVITYZONE)
     
     def nextLevel(self):
         if self.mCurrentLevel < self.__mMaxLevels:

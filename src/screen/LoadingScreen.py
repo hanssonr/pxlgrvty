@@ -18,4 +18,5 @@ class LoadingScreen(object):
             self.mGame.setScreen(GameScreen(self.mGame))
     
     def render(self, delta):
-        Pgl.app.surface.blit(self.label, (Pgl.width/2,Pgl.height/2))
+        pass
+        #Pgl.app.surface.blit(self.label, (Pgl.width/2,Pgl.height/2))

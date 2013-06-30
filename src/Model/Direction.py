@@ -15,4 +15,10 @@ class Direction(object):
     RIGHT = 1
     DOWN = 1
     LEFT = -1
+
+class Facing(object):
+    LEFT = 1
+    RIGHT = 2
+    DOWN = 3
+    UP = 4
     
