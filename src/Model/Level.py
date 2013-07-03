@@ -38,13 +38,13 @@ class Level(object):
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
         self.mPickups = parser.get("objects", "pickups")
-        self.width = len(self.mMap[0])
-        self.height = len(self.mMap)
+        self.mWidth = len(self.mMap[0])
+        self.mHeight = len(self.mMap)
         
     
     def __createWorldCollision(self):
-        for y in range(self.height):
-            for x in range(self.width):
+        for y in range(self.mHeight):
+            for x in range(self.mWidth):
                 if self.mMap[y][x] == "#":
 
                     #do only necessary collisions
@@ -52,7 +52,7 @@ class Level(object):
                         if self.mMap[y][x+1] != "#":
                             Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                             continue
-                    elif x == self.width-1:
+                    elif x == self.mWidth-1:
                         if self.mMap[y][x-1] != "#":
                             Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                             continue
@@ -61,12 +61,12 @@ class Level(object):
                         if self.mMap[y+1][x] != "#":
                             Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                             continue
-                    elif y == self.height-1:
+                    elif y == self.mHeight-1:
                         if self.mMap[y-1][x] != "#":
                             Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                             continue
                     
-                    if y > 0 and y < self.height-1 and x > 0 and x < self.width-1:
+                    if y > 0 and y < self.mHeight-1 and x > 0 and x < self.mWidth-1:
                         if self.mMap[y-1][x] != "#" or self.mMap[y+1][x] != "#" or self.mMap[y][x-1] != "#" or self.mMap[y][x+1] != "#":  
                             Tile(self.mWorld, b2Vec2(x, y), TileType.WALL)
                             

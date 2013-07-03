@@ -21,6 +21,7 @@ class GameScreen(object):
         game.setInput(Input(self.mWorld, self.mCamera))
     
     def update(self, delta):
+        self.mCamera.update(delta, self.mWorld.player.position, self.mWorld.level.mWidth, self.mWorld.level.mHeight)
         self.mWorld.update(delta)
     
     def render(self, delta):

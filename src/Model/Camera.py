@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Box2D
-from Box2D import *
-from libs.Pgl import *
+from Box2D import b2Vec2
+import math
 
 class Camera(object):
     
@@ -18,6 +17,19 @@ class Camera(object):
         self.PPM = width / self.CAMERA_WIDTH
         self.mScale = b2Vec2(width / self.CAMERA_WIDTH, height / self.CAMERA_HEIGHT)
         self.mDisplacement = b2Vec2(0, 0)
+    
+    def update(self, delta, pos, levelwidth, levelheight):
+        if pos.x > self.CAMERA_WIDTH / 2:
+            self.mDisplacement.x = pos.x - self.CAMERA_WIDTH / 2
+            
+            if self.CAMERA_WIDTH + self.mDisplacement.x > levelwidth:
+                self.mDisplacement.x = levelwidth - self.CAMERA_WIDTH
+
+        if pos.y > self.CAMERA_HEIGHT / 2:
+            self.mDisplacement.y = pos.y - self.CAMERA_HEIGHT / 2
+            
+            if self.mDisplacement.y + self.CAMERA_HEIGHT > levelheight:
+                self.mDisplacement.y = levelheight - self.CAMERA_HEIGHT
           
     def __getScale(self):
         return self.mScale
