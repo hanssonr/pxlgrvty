@@ -81,13 +81,13 @@ class DebugDraw(b2Draw):
         Draw a wireframe circle given the b2Vec2 center_v, radius, axis of orientation and color.
         """
         color = self.convertColor(color)
-        radius *= self.viewZoom
+        radius *= self.camera.scale.x
         if radius < 1: radius = 1
         else: radius = int(radius)
 
         center = self.toScreen(center)
-        gl.draw.circle(center, radius, color)
-        #pygame.draw.circle(self.surface, color, center, radius, drawwidth)
+        #gl.draw.circle(center, radius, color)
+        pygame.draw.circle(self.surface, color, center, radius, drawwidth)
 
     def DrawSolidCircle(self, center_v, radius, axis, color):
         """
@@ -133,6 +133,6 @@ class DebugDraw(b2Draw):
         Output: (x, y) - a tuple in screen coordinates
         """   
         pt = b2Vec2(pt[0], pt[1])
-        pt = self.camera.getViewCoordinats(pt)
+        pt = self.camera.getViewCoords(pt)
         return (int(pt.x), int(pt.y))
                  

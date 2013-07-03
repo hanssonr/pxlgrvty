@@ -1,7 +1,9 @@
 import Box2D
 from Box2D import b2ContactListener
 from model.entities.Player import *
-from model.Tile import TileType
+from model.Tile import *
+from model.Sensor import *
+from model.entities.Box import *
 
 class ContactListener(b2ContactListener):
     
@@ -15,18 +17,32 @@ class ContactListener(b2ContactListener):
         bodyB = fixB.body
         
         #Player onground
-        if fixB.userData == Sensor.FOOTSENSOR:
-            bodyB.userData.mOnGround += 1
-        elif fixA.userData == Sensor.FOOTSENSOR:
-            bodyA.userData.mOnGround += 1
+        if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
+            if isinstance(bodyA.userData, Tile):
+                bodyB.userData.mOnGround += 1
+            elif isinstance(bodyA.userData, Box):
+                if bodyA.userData.isMoving():
+                    bodyB.userData.mOnGround -= 1
+                else:
+                    bodyB.userData.mOnGround += 1
+                
+        elif fixA.userData == Sensor.PLAYER_FOOTSENSOR:
+            if isinstance(bodyB.userData, Tile):
+                bodyA.userData.mOnGround += 1
+            elif isinstance(bodyB.userData, Box):
+                if bodyB.userData.isMoving():
+                    bodyA.userData.mOnGround -= 1
+                else:
+                    bodyA.userData.mOnGround += 1
         
-        #Player entering gravityzone (TODO: change to some baseclass)
-        if fixB.userData == Sensor.GRAVITYZONESENSOR:
-            if fixA.userData == TileType.GRAVITYZONE:
-                bodyB.userData.enterGravityZone()
-        elif fixA.userData == Sensor.GRAVITYZONESENSOR:
+        #Entity enters gravityzone
+        if fixA.userData == Sensor.GRAVITYZONESENSOR:
+            print fixA.body
             if fixB.userData == TileType.GRAVITYZONE:
                 bodyA.userData.enterGravityZone()
+        elif fixB.userData == Sensor.GRAVITYZONESENSOR:
+            if fixA.userData == TileType.GRAVITYZONE:
+                bodyB.userData.enterGravityZone()
     
     def EndContact(self, contact):
         fixA = contact.fixtureA
@@ -35,16 +51,26 @@ class ContactListener(b2ContactListener):
         bodyB = fixB.body
         
         #Player leaving ground
-        if fixB.userData == Sensor.FOOTSENSOR:
-            bodyB.userData.mOnGround -= 1
-            
-        #Player leaving gravityzone (TODO: change to some baseclass)
-        if fixB.userData == Sensor.GRAVITYZONESENSOR:
-            if fixA.userData == TileType.GRAVITYZONE:
-                bodyB.userData.exitGravityZone()
-        elif fixA.userData == Sensor.GRAVITYZONESENSOR:
+        if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
+            if isinstance(bodyA.userData, Tile):
+                bodyB.userData.mOnGround -= 1
+            elif isinstance(bodyA.userData, Box):
+                bodyB.userData.mOnGround -= 1
+                    
+        elif fixA.userData == Sensor.PLAYER_FOOTSENSOR:
+            if isinstance(bodyB.userData, Tile):
+                bodyA.userData.mOnGround -= 1
+            elif isinstance(bodyB.userData, Box):
+                bodyA.userData.mOnGround -= 1
+        
+        
+        #Entity leaving gravityzone
+        if fixA.userData == Sensor.GRAVITYZONESENSOR:
             if fixB.userData == TileType.GRAVITYZONE:
                 bodyA.userData.exitGravityZone()
+        elif fixB.userData == Sensor.GRAVITYZONESENSOR:
+            if fixA.userData == TileType.GRAVITYZONE:
+                bodyB.userData.exitGravityZone()
     
     
     def PreSolve(self, contact, oldManifold):

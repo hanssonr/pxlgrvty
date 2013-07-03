@@ -10,18 +10,18 @@ class MovableEntity(Entity):
     mSpeed = None
     mDirection = None
     
-    def __init__(self, pos, physbody, velocity, speed, movedir):
+    def __init__(self, pos, size, physbody, velocity, speed, movedir):
         self.mVelocity = velocity
         self.mSpeed = speed
         self.mDirection = movedir
         
-        super(MovableEntity, self).__init__(pos, physbody)
+        super(MovableEntity, self).__init__(pos, size, physbody)
     
     def __setVelocity(self, value):
         self.mVelocity = value
 
     def __getVelocity(self):
-        return self.mVelocity
+        return self.mBody.linearVelocity
     
     def move(self, movedir):
         if movedir == MoveDirection.UP:
@@ -32,5 +32,8 @@ class MovableEntity(Entity):
             self.mDirection.Set(Direction.LEFT, 0)
         if movedir == MoveDirection.RIGHT:
             self.mDirection.Set(Direction.RIGHT, 0)
+    
+    def flip(self, direction):
+        self.mOldGravity = None
     
     velocity = property(__getVelocity, __setVelocity)

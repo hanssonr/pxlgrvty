@@ -42,10 +42,14 @@ class Input(BaseInputHandler):
             if event.key == K_KP5:
                 self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y - 1)
                 
+            #debug
+            if event.key == K_F1:
+                self.world.DEBUG = not self.world.DEBUG
+                
         #model mousecoords        
         elif event.type == pygame.MOUSEBUTTONUP:
             x, y = event.pos
-            cords = self.camera.getModelCoordinats(b2Vec2(x,y))
+            cords = self.camera.getModelCoords(b2Vec2(x,y))
             print cords
 
         #zero out the velocity 

@@ -3,32 +3,56 @@ from libs.Pgl import *
 
 class Sprite(object):
     
+    __mFlippedX = False
+    __mFlippedY = False
+    __mRotation = 0
+    __mSize = None
+    
     def __init__(self, image):
-        self.originalImage = image
+        self.mOriginalImage = image
         self.image = image
         self.pos = image.get_rect()
-        self.mFlippedX, self.mFlippedY = False, False
         
-    def draw(self):
-        Pgl.app.surface.blit(self.image, self.pos)
+    def draw(self, pos, area = None):
+        toDraw = self.image
+        if area != None:
+            toDraw = self.image.subsurface(area)
+            toDraw = pygame.transform.flip(toDraw, self.__mFlippedX, self.__mFlippedY)
+            toDraw = pygame.transform.rotate(toDraw, self.__mRotation)
+        
+        if self.__mSize != None:
+            toDraw = pygame.transform.scale(toDraw, self.__mSize)
+        Pgl.app.surface.blit(toDraw, pos)
     
-    def setSize(self, width, height):
-        self.image = pygame.transform.scale(self.image, (width, height))
-        self.originalImage = self.image
+    def setSize(self, size):
+        self.__mSize = (int(size.x), int(size.y))
     
     def setPosition(self, x, y):
         self.pos = (x, y)
+        
+    def flipX(self):
+        self.__mFlippedX = not self.__mFlippedX
     
-    def flip(self, xbool, ybool):
-        self.mFlippedX = xbool
-        self.mFlippedY = ybool
-        self.image = pygame.transform.flip(self.originalImage, xbool, ybool)
+    def flipY(self):
+        self.__mFlippedY = not self.__mFlippedY
+        
+    def rotate(self, degrees):
+        self.__mRotation = degrees
         
     def flippedX(self):
-        return self.mFlippedX
+        return self.__mFlippedX
     
     def flippedY(self):
-        return self.mFlippedY
+        return self.__mFlippedY
+    
+    def getRotation(self):
+        return self.__mRotation
+    
+    def getWidth(self):
+        return self.image.get_width()
+    
+    def getHeight(self):
+        return self.image.get_height()
     
     
     

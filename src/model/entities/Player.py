@@ -6,38 +6,40 @@ from Box2D import *
 from model.Direction import *
 from model.entities.MovableEntity import *
 from model.Gravity import *
+from model.Sensor import *
 
 class Player(MovableEntity):
     
-    PLAYER_WIDTH = 0.9
-    PLAYER_HEIGHT = 1.0
+    PLAYER_WIDTH = 0.75
+    PLAYER_HEIGHT = 0.9
     
     mWorld = None;
     mGravity = None
     mSensor = None
     mOnGround = 0
-    mInGravityZone = 0
-    mOldGravity = None
     mGravityToUse = b2Vec2_zero
     mDelayedFlip = None
     
     mFacing = Facing.RIGHT
     mUpsideDown = False
+    mLeftWallClimbing = False
+    mBodyDirection = GravityDirection.DOWN
     
-    def __init__(self, position, world, gravity):  
-        self.mWorld = world
+    def __init__(self, position, physworld, gravity):  
+        self.mWorld = physworld
         self.mGravity = gravity
         
         #create player physicsbody
-        body = world.CreateDynamicBody(position = position)
+        pos = b2Vec2(position[0] + self.PLAYER_WIDTH/2, position[1] + self.PLAYER_HEIGHT/2)
+        body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()
         fd = b2FixtureDef()
         fd.shape = shape
         fd.isSensor = True
         
         #footsensor
-        shape.SetAsBox(0.35, 0.1, (0, 0.4), 0)
-        fd.userData = Sensor.FOOTSENSOR
+        shape.SetAsBox(self.PLAYER_WIDTH/2.2, 0.1, (0, 0.4), 0)
+        fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         
         #gravitysensor
@@ -46,78 +48,55 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #collisionbody
-        body.CreatePolygonFixture(box=(0.4,0.4), density=1, friction=0)
-        
-        #Fix for dynamic body getting stuck in static bodies sometimes
-        body.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(0.4,0.4))
-        body.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(-0.4,-0.4)) 
-        body.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(-0.4,0.4)) 
-        body.CreateCircleFixture(radius=0.05, density=30, friction=0, pos=(0.4,-0.4))
+        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/2, self.PLAYER_HEIGHT/2), density=10, friction=0)
+        body.bullet = True
         body.fixedRotation = True
         body.userData = self
               
-        super(Player, self).__init__(position, body, b2Vec2(0,0), 4, b2Vec2(0,0))
+        super(Player, self).__init__(pos, b2Vec2(self.PLAYER_WIDTH, self.PLAYER_HEIGHT), body, b2Vec2(0,0), 4, b2Vec2(0,0))
      
-    def update(self, delta):
-        #do we have a delayed flip, do it
-        if self.mDelayedFlip != None:
-            self.flip(self.mDelayedFlip)
-            self.mDelayedFlip = None
-        
+    def update(self, delta): 
         if self.mOldGravity != None:
-            self.mGravityToUse.Set(self.mOldGravity.x, self.mOldGravity.y)
+            self.mGravityToUse = self.mOldGravity.copy()
         else:
-            self.mGravityToUse.Set(self.mGravity.get().x, self.mGravity.get().y)
-            
+            self.mGravityToUse = self.mGravity.get().copy()
+               
         self.mVelocity.Set(self.mDirection.x * self.mSpeed, self.mDirection.y * self.mSpeed)    
         self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
         
+        
+        #spriteorientation
         if self.mVelocity.x > 0:
             self.mFacing = Facing.RIGHT
         elif self.mVelocity.x < 0:
             self.mFacing = Facing.LEFT
-        elif self.mVelocity.y > 0:
-            self.mFacing = Facing.UP
         elif self.mVelocity.y < 0:
-            self.mFacing = Facing.DOWN
+            if self.mBodyDirection == GravityDirection.LEFT:
+                self.mFacing = Facing.LEFT
+            elif self.mBodyDirection == GravityDirection.RIGHT:
+                self.mFacing = Facing.RIGHT
+        elif self.mVelocity.y > 0:
+            if self.mBodyDirection == GravityDirection.LEFT:
+                self.mFacing = Facing.RIGHT
+            elif self.mBodyDirection == GravityDirection.RIGHT:
+                self.mFacing = Facing.LEFT
     
     def flip(self, direction):
+        MovableEntity.flip(self, direction)
+        
+        self.mBodyDirection = direction
+        
         if direction == GravityDirection.UP:
-            self.mBody.transform = (self.mBody.position, math.radians(180))
-            self.mUpsideDown = True
+            self.mBody.transform = (self.mBody.position, math.radians(180))  
         elif direction == GravityDirection.DOWN:
             self.mBody.transform = (self.mBody.position, math.radians(0))
-            self.mUpsideDown = False
         elif direction == GravityDirection.LEFT:
             self.mBody.transform = (self.mBody.position, math.radians(90))
         elif direction == GravityDirection.RIGHT:
             self.mBody.transform = (self.mBody.position, math.radians(270))
     
-    def enterGravityZone(self):
-        self.mInGravityZone += 1
-         
-        if self.mOldGravity == None and self.mInGravityZone == 1:
-            self.mOldGravity = b2Vec2(self.mGravity.get().x, self.mGravity.get().y)
-    
-    def exitGravityZone(self):
-        self.mInGravityZone -= 1
-        
-        if self.mInGravityZone == 0:
-            self.mOldGravity = None
-            self.mDelayedFlip = self.mGravity.getGravityDirection()
-    
+ 
     def isOnGround(self):
         return self.mOnGround > 0
-    
-    def isInGravityZone(self):
-        return self.mInGravityZone > 0
-    
-    def getRenderPosition(self):
-        return b2Vec2(self.position.x - self.PLAYER_WIDTH / 2, self.position.y - self.PLAYER_HEIGHT / 2)
-
-
-class Sensor():
-    FOOTSENSOR = 1
-    GRAVITYZONESENSOR = 2
 
 

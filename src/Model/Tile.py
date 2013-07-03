@@ -16,8 +16,16 @@ class Tile(object):
              
     def __createTile(self):
         self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
-        self.mBody.CreatePolygonFixture(box=(self.TILE_SIZE/2, self.TILE_SIZE/2))
+        #self.mBody.CreatePolygonFixture(box=(self.TILE_SIZE/2, self.TILE_SIZE/2))
         self.mBody.userData = self
+        
+        tl = b2Vec2(-self.TILE_SIZE/2, -self.TILE_SIZE/2)
+        tr = b2Vec2(self.TILE_SIZE/2, -self.TILE_SIZE/2)
+        br = b2Vec2(self.TILE_SIZE/2, self.TILE_SIZE/2)
+        bl = b2Vec2(-self.TILE_SIZE/2, self.TILE_SIZE/2)
+        
+        self.mBody.CreateEdgeChain((tl, bl, br, tr, tl))
+        
     
     def __createGravityZone(self):
         self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)

@@ -23,36 +23,33 @@ class Camera(object):
         return self.mScale
     
     def __setScale(self, value):
-        print value
         self.mScale = value
     
     def __getDisplacement(self):
         return self.mDisplacement
     
     def __setDisplacement(self, value):
-        self.mDisplacement = value
+        self.mDisplacement.Set(value.x, value.y)
         
-    def getViewCoordinats(self, modelCoords):
+    def getViewCoords(self, modelCoords):
         modelCoords.x -= self.displacement.x
         modelCoords.y -= self.displacement.y
         modelCoords = b2Vec2(modelCoords.x * self.scale.x, modelCoords.y * self.scale.y)
         return modelCoords
     
-    def getModelCoordinats(self, viewCoords):
+    def getModelCoords(self, viewCoords):
         modelCoords = viewCoords / self.scale.x
         modelCoords.x += self.displacement.x
         modelCoords.y = self.getReversedYAxis(modelCoords.y)
         return modelCoords
     
-    def spriteScale(self, size):
-        return b2Vec2(size[0] * self.scale.x, size[1] * self.scale.y)
-    
     def getReversedYAxis(self, oldY):
         return (self.CAMERA_HEIGHT - oldY)
     
+    def getScaledSize(self, x, y):
+        return b2Vec2(x * self.mScale.x, y * self.mScale.y)
     
-    
-    #properties
-    
+     
+    #properties  
     displacement = property(__getDisplacement, __setDisplacement, doc='Sets the displacement of the camera')
     scale = property(__getScale, __setScale)
