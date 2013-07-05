@@ -26,8 +26,9 @@ class Box(MovableEntity):
         body.CreateFixture(fd)
         
         #collisionbody
-        body.CreatePolygonFixture(box=(self.BOX_WIDTH/2, self.BOX_HEIGHT/2), density=0, friction=0)
+        body.CreatePolygonFixture(box=(self.BOX_WIDTH/2, self.BOX_HEIGHT/2), density=6, friction=0)
         
+        body.fixedRotation = True
         body.bullet = True
         body.userData = self
         

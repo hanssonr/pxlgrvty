@@ -20,16 +20,20 @@ class WorldModel(object):
     body = None
     dynamic_enities = []
     mFirstUpdate = True
+    mEntityToFollow = None
     
-    def __init__(self):
+    def __init__(self, camera):
+        self.mCamera = camera
         self.main()
+        
     
     def main(self):
         self.contactListener = ContactListener()
         self.gravity = Gravity()
         self.physWorld = Box2D.b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
-        self.level = Level(self.physWorld, self.gravity)
+        self.level = Level(self.physWorld, self.gravity, self.mCamera)
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
+        self.mEntityToFollow = self.player
      
     def update(self, delta):
         #set oldposition for boxes
@@ -41,6 +45,9 @@ class WorldModel(object):
         self.physWorld.Step(self.timeStep, self.vel_iters, self.pos_iters)
         self.physWorld.ClearForces()
         
+        self.level.loadChunks(self.mCamera.getChunkPosition(self.mCamera.displacement.x + self.mCamera.CAMERA_WIDTH/2, self.mCamera.displacement.y + self.mCamera.CAMERA_HEIGHT/2))
+        
+        #print len(self.physWorld.bodies)
         for body in self.physWorld.bodies:
             #dynamic body
             if body.type == Box2D.b2_dynamicBody:
@@ -69,4 +76,6 @@ class WorldModel(object):
             
             #if not self.player.isInGravityZone():
                 #self.player.flip(gravitydirection)
+
+        
 

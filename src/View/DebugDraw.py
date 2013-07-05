@@ -50,7 +50,7 @@ class DebugDraw(b2Draw):
                     (aabb.upperBound.x, aabb.upperBound.y ),
                     (aabb.lowerBound.x, aabb.upperBound.y ),
                     ] ]
-        
+
         pygame.draw.aalines(self.surface, color, True, points)
 
     def DrawSegment(self, p1, p2, color):
@@ -58,7 +58,8 @@ class DebugDraw(b2Draw):
         Draw the line segment from p1-p2 with the specified color.
         """
         color = self.convertColor(color)
-        pygame.draw.aaline(self.surface, color, self.toScreen(p1), self.toScreen(p2))
+        if self.camera.isInFrustum(p1[0], p1[1]) or self.camera.isInFrustum(p2[0], p2[1]):
+            pygame.draw.aaline(self.surface, color, self.toScreen(p1), self.toScreen(p2))
 
     def DrawXForm(self, xf):
         """
@@ -86,8 +87,8 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center)
-        #gl.draw.circle(center, radius, color)
-        pygame.draw.circle(self.surface, color, center, radius, drawwidth)
+        if self.camera.isInFrustum(center-radius, center+radius):
+            pygame.draw.circle(self.surface, color, center, radius, drawwidth)
 
     def DrawSolidCircle(self, center_v, radius, axis, color):
         """

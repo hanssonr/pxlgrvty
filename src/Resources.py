@@ -26,6 +26,7 @@ class Resources(object):
         self.mBox = pygame.image.load("assets/gfx/box.png").convert()
         self.mPlayer = pygame.image.load("assets/gfx/player.png").convert()
         self.mCowboy = pygame.image.load("assets/gfx/playerAnimation.png").convert_alpha()
+        self.mPxl = pygame.image.load("assets/gfx/testsprite.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         self.mLoaded = True

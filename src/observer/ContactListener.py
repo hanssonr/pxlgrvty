@@ -1,9 +1,12 @@
-import Box2D
+"""
+Callback class for Box2D collision detection
+Makes me able to alter things pre, post, and under collision
+"""
+
 from Box2D import b2ContactListener
-from model.entities.Player import *
-from model.Tile import *
-from model.Sensor import *
-from model.entities.Box import *
+from model.Tile import TileType, Tile
+from model.entities.Box import Box
+from model.Sensor import Sensor
 
 class ContactListener(b2ContactListener):
     
@@ -16,7 +19,7 @@ class ContactListener(b2ContactListener):
         bodyA = fixA.body
         bodyB = fixB.body
         
-        #Player onground
+        #Player onground/box
         if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyA.userData, Tile):
                 bodyB.userData.mOnGround += 1
@@ -24,8 +27,7 @@ class ContactListener(b2ContactListener):
                 if bodyA.userData.isMoving():
                     bodyB.userData.mOnGround -= 1
                 else:
-                    bodyB.userData.mOnGround += 1
-                
+                    bodyB.userData.mOnGround += 1         
         elif fixA.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyB.userData, Tile):
                 bodyA.userData.mOnGround += 1
@@ -37,7 +39,6 @@ class ContactListener(b2ContactListener):
         
         #Entity enters gravityzone
         if fixA.userData == Sensor.GRAVITYZONESENSOR:
-            print fixA.body
             if fixB.userData == TileType.GRAVITYZONE:
                 bodyA.userData.enterGravityZone()
         elif fixB.userData == Sensor.GRAVITYZONESENSOR:
@@ -50,7 +51,7 @@ class ContactListener(b2ContactListener):
         bodyA = fixA.body
         bodyB = fixB.body
         
-        #Player leaving ground
+        #Player leaving ground/box
         if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyA.userData, Tile):
                 bodyB.userData.mOnGround -= 1

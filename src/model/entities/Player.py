@@ -18,18 +18,18 @@ class Player(MovableEntity):
     mSensor = None
     mOnGround = 0
     mGravityToUse = b2Vec2_zero
-    mDelayedFlip = None
+    mPlayerState = None
     
     mFacing = Facing.RIGHT
-    mUpsideDown = False
-    mLeftWallClimbing = False
     mBodyDirection = GravityDirection.DOWN
     
     def __init__(self, position, physworld, gravity):  
         self.mWorld = physworld
         self.mGravity = gravity
+        self.mPlayerState = PlayerState.IDLE
         
         #create player physicsbody
+        print "Playerstart: %s" % position
         pos = b2Vec2(position[0] + self.PLAYER_WIDTH/2, position[1] + self.PLAYER_HEIGHT/2)
         body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()
@@ -48,7 +48,7 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #collisionbody
-        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/2, self.PLAYER_HEIGHT/2), density=10, friction=0)
+        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/2, self.PLAYER_HEIGHT/2), density=20, friction=0)
         body.bullet = True
         body.fixedRotation = True
         body.userData = self
@@ -65,7 +65,7 @@ class Player(MovableEntity):
         self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
         
         
-        #spriteorientation
+        #Facing
         if self.mVelocity.x > 0:
             self.mFacing = Facing.RIGHT
         elif self.mVelocity.x < 0:
@@ -80,6 +80,14 @@ class Player(MovableEntity):
                 self.mFacing = Facing.RIGHT
             elif self.mBodyDirection == GravityDirection.RIGHT:
                 self.mFacing = Facing.LEFT
+                
+        if self.mVelocity.x > 0 or self.mVelocity.x < 0 or self.mVelocity.y > 0 or self.mVelocity.y < 0:
+            self.mPlayerState = PlayerState.MOVING
+        else:
+            self.mPlayerState = PlayerState.IDLE
+        
+        if self.mOnGround == False:
+            self.mPlayerState = PlayerState.FALLING
     
     def flip(self, direction):
         MovableEntity.flip(self, direction)
@@ -99,4 +107,7 @@ class Player(MovableEntity):
     def isOnGround(self):
         return self.mOnGround > 0
 
-
+class PlayerState():
+    IDLE = 0
+    MOVING = 1
+    FALLING = 2

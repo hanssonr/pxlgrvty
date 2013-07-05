@@ -11,16 +11,24 @@ class PlayerRender(object):
     def __init__(self, camera, player):
         self.mCamera = camera
         self.mPlayer = player
-        self.playerAnimation = Animation(Resources.getInstance().mCowboy, 5, 2, 0.5, self.mCamera.getScaledSize(1,1))
+        self.playerAnimation = Animation(Resources.getInstance().mPxl, 4, 2, 0.5, self.mCamera.getScaledSize(0.5,1))
         
     
     def render(self, delta):
-        viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - 1.0/2, self.mPlayer.position.y - 1.0/2))
-        self.playerAnimation.setSize(self.mCamera.getScaledSize(1,1))
+        size = b2Vec2(0.5, 1.0)
         
-        if self.mPlayer.velocity.x == 0 or self.mPlayer.velocity.y == 0:
+        if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
+            size.Set(size.y, size.x)
+         
+        viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - size.x/2, self.mPlayer.position.y - size.y/2))
+        self.playerAnimation.setSize(self.mCamera.getScaledSize(size.x, size.y))
+        
+        if self.mPlayer.mPlayerState == PlayerState.IDLE:
             self.playerAnimation.freeze(0)
+        elif self.mPlayer.mPlayerState == PlayerState.FALLING:
+            self.playerAnimation.freeze(0, 1)
         else:
+            self.playerAnimation.gotoRow(0)
             self.playerAnimation.continueAnimation()
 
         self.__flipAndRotate()

@@ -21,10 +21,10 @@ class WorldRender(object):
         
         self.objectRender = ObjectRender(self.mCamera, self.mWorld.level.mObjects)
         self.playerRender = PlayerRender(self.mCamera, self.mWorld.player)
-        self.tileRender = TileRender(self.mCamera, self.mWorld.level.mMap)
+        self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles)
     
     def render(self, delta):
-        Pgl.app.surface.fill((0,0,0))
+        Pgl.app.surface.fill((255,255,255))
         
         if self.mWorld.DEBUG:
             self.mWorld.physWorld.DrawDebugData()
@@ -35,5 +35,5 @@ class WorldRender(object):
         self.playerRender.render(delta)
         
         
-        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
+        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (0,0,0))
         Pgl.app.surface.blit(self.label, (10,10))

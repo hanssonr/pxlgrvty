@@ -45,6 +45,12 @@ class Input(BaseInputHandler):
             #debug
             if event.key == K_F1:
                 self.world.DEBUG = not self.world.DEBUG
+            #TESTING only  
+            if event.key == K_F2:
+                if not self.world.mEntityToFollow == self.world.level.mObjects[0]:
+                    self.world.mEntityToFollow = self.world.level.mObjects[0]
+                else:
+                    self.world.mEntityToFollow = self.world.player
                 
         #model mousecoords        
         elif event.type == pygame.MOUSEBUTTONUP:

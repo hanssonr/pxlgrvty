@@ -15,13 +15,13 @@ class GameScreen(object):
         print "GameScreen init"
         self.mGame = game
         
-        self.mWorld = WorldModel()
         self.mCamera = Camera(Pgl.width, Pgl.height)
+        self.mWorld = WorldModel(self.mCamera)
         self.mWorldRender = WorldRender(self.mWorld, self.mCamera)
         game.setInput(Input(self.mWorld, self.mCamera))
     
     def update(self, delta):
-        self.mCamera.update(delta, self.mWorld.player.position, self.mWorld.level.mWidth, self.mWorld.level.mHeight)
+        self.mCamera.update(delta, self.mWorld.mEntityToFollow.position, self.mWorld.level.mWidth, self.mWorld.level.mHeight)
         self.mWorld.update(delta)
     
     def render(self, delta):

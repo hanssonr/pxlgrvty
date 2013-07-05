@@ -1,3 +1,7 @@
+"""
+Class that makes an Sprite able to animate
+"""
+
 from pygame import Rect
 from libs.Sprite import Sprite
 from Box2D import b2Vec2
@@ -20,7 +24,6 @@ class Animation(Sprite):
         self.__mFrameHeight = Sprite.getHeight(self) / framesY
         self.__mFrameWidth = Sprite.getWidth(self) / framesX
         self.__mMaxTime = animationtime / self.__mFramesX
-        #self.__mSize = size  
         self.__mDrawRect = Rect(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight, self.__mFrameWidth, self.__mFrameHeight)
         
     
@@ -41,13 +44,19 @@ class Animation(Sprite):
         
         Sprite.draw(self, position, self.__mDrawRect.move(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight))
     
-    def freeze(self, frameX):
+    def freeze(self, frameX, frameY = 0):
         self.__mRunning = False
         self.__mCurrentFrame = frameX
+        self.__mCurrentRow = frameY
     
     def continueAnimation(self):
         self.__mRunning = True
     
     def setLooping(self, looping):
         self.__mLooping = looping
+        
+    def gotoRow(self, row):
+        if row <= self.__mFramesY:
+            self.__mCurrentRow = row
+    
         

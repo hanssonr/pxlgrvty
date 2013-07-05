@@ -37,6 +37,15 @@ class Tile(object):
         fd.bullet = True
         fd.userData = TileType.GRAVITYZONE
         self.mBody.CreateFixture(fd)
+    
+    def __getPosition(self):
+        return self.mPosition
+    
+    def __getType(self):
+        return self.mTiletype
+    
+    position = property(__getPosition, None)
+    tiletype = property(__getType, None)
 
 
 class TileType(object):
