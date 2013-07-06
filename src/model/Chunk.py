@@ -1,18 +1,19 @@
 
 class Chunk(object):
     
-    def __init__(self, pos):
-        self.pos = pos
+    def __init__(self, pos, tiles):
+        self.mPos = pos
+        self.mTiles = tiles
         
     
     def __getPosition(self):
-        return self.pos
+        return self.mPos
     
     def __getTiles(self):
-        return self.tiles
+        return self.mTiles
     
     def __setTile(self, tile):
-        self.tiles.append(tile)
+        self.mTiles.append(tile)
     
     
     tiles = property(__getTiles, __setTile)

@@ -69,9 +69,6 @@ class Camera(object):
                 x <= self.displacement.x + self.mFrustumBias + self.CAMERA_WIDTH and
                 y >= self.displacement.y - self.mFrustumBias and
                 y <= self.displacement.y + self.mFrustumBias + self.CAMERA_WIDTH) else False
-                
-    def getChunkPosition(self, x, y):
-        return b2Vec2(int(x / 16), int(y / 16))
     
      
     #properties  

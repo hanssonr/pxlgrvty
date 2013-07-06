@@ -8,12 +8,16 @@ class Tile(object):
         self.mWorld = world
         self.mPosition = b2Vec2(position.x + self.TILE_SIZE/2, position.y + self.TILE_SIZE/2)
         self.mTiletype = tiletype
-        
-        if tiletype == TileType.WALL:
+    
+    def create(self):
+        if self.mTiletype == TileType.WALL:
             self.__createTile()
-        elif tiletype == TileType.GRAVITYZONE:
+        elif self.mTiletype == TileType.GRAVITYZONE:
             self.__createGravityZone()
-             
+    
+    def destroy(self):
+        self.mWorld.DestroyBody(self.mBody)
+            
     def __createTile(self):
         self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
         #self.mBody.CreatePolygonFixture(box=(self.TILE_SIZE/2, self.TILE_SIZE/2))

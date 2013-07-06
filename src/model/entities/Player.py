@@ -29,7 +29,6 @@ class Player(MovableEntity):
         self.mPlayerState = PlayerState.IDLE
         
         #create player physicsbody
-        print "Playerstart: %s" % position
         pos = b2Vec2(position[0] + self.PLAYER_WIDTH/2, position[1] + self.PLAYER_HEIGHT/2)
         body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()

@@ -37,6 +37,9 @@ class Entity(object):
     
     def isInGravityZone(self):
         return self.mInGravityZone > 0
+    
+    def stopMovement(self):
+        self.mBody.linearVelocity = b2Vec2(0,0)
 
     def __getSize(self):
         return self.mSize

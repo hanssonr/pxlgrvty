@@ -1,12 +1,11 @@
-from Camera import *
-from controller.Input import *
-from Level import *
-from entities.Player import *
-from view.DebugDraw import *
-from libs.Pgl import *
-from model.Gravity import *
-from observer.ContactListener import *
-from model.entities.Box import *
+from controller.Input import Input
+from Level import Level
+from entities.Player import Player
+from libs.Pgl import Pgl
+from model.Gravity import Gravity
+from observer.ContactListener import ContactListener
+from model.entities.Box import Box
+from Box2D import b2World, b2_dynamicBody, b2Vec2
 
 class WorldModel(object):
     
@@ -30,8 +29,8 @@ class WorldModel(object):
     def main(self):
         self.contactListener = ContactListener()
         self.gravity = Gravity()
-        self.physWorld = Box2D.b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
-        self.level = Level(self.physWorld, self.gravity, self.mCamera)
+        self.physWorld = b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
+        self.level = Level(self.physWorld, self.gravity)
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
         self.mEntityToFollow = self.player
      
@@ -45,12 +44,12 @@ class WorldModel(object):
         self.physWorld.Step(self.timeStep, self.vel_iters, self.pos_iters)
         self.physWorld.ClearForces()
         
-        self.level.loadChunks(self.mCamera.getChunkPosition(self.mCamera.displacement.x + self.mCamera.CAMERA_WIDTH/2, self.mCamera.displacement.y + self.mCamera.CAMERA_HEIGHT/2))
+        self.level.update(self.player.position)
         
         #print len(self.physWorld.bodies)
         for body in self.physWorld.bodies:
             #dynamic body
-            if body.type == Box2D.b2_dynamicBody:
+            if body.type == b2_dynamicBody:
                 if self.mFirstUpdate:
                     self.dynamic_enities.append(body)
                 
@@ -59,7 +58,10 @@ class WorldModel(object):
                     body.userData.update(delta)
                 #box
                 elif isinstance(body.userData, Box):
-                    body.userData.update(delta)
+                    if self.level.isInActiveChunks(body.userData.position):
+                        body.userData.update(delta)
+                    else:
+                        body.userData.stopMovement()
                     
         self.mFirstUpdate = False
         
@@ -67,13 +69,13 @@ class WorldModel(object):
     
     
     def changeGravity(self, gravitydirection):
-        if self.player.isOnGround() == True:
-            self.gravity.set(gravitydirection)
-            
-            for body in self.dynamic_enities:
-                if not body.userData.isInGravityZone():
-                    body.userData.flip(gravitydirection)
-            
+        #if self.player.isOnGround() == True:
+        self.gravity.set(gravitydirection)
+        
+        for body in self.dynamic_enities:
+            if not body.userData.isInGravityZone():
+                body.userData.flip(gravitydirection)
+        
             #if not self.player.isInGravityZone():
                 #self.player.flip(gravitydirection)
 

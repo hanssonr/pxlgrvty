@@ -11,13 +11,13 @@ from model.entities.Box import Box
 from model.entities.Nugget import Nugget
 from Color import Color
 from pygame import Rect
-from model.Camera import Camera
 from model.Chunk import Chunk
+from model.ChunkHandler import ChunkHandler
 
 
 class Level(object):
     
-    CHUNK_SIZE = 16
+    CHUNK_SIZE = 8
     __mMaxLevels = 3 #read out from all the .lvl files later
     mCurrentLevel = 1
     mTiles = []
@@ -29,15 +29,17 @@ class Level(object):
     mObjects = []
     mChunks = None
     
+    mChunkHandler = None
+    
     
     mActiveChunks = []
     mActiveChunk = None
     mMapType = None
     
-    def __init__(self, world, gravity, camera):
+    def __init__(self, world, gravity):
         self.mWorld = world
         self.mGravity = gravity
-        self.mCamera = camera
+        self.mChunkHandler = ChunkHandler(world, self.CHUNK_SIZE)
         self.__loadLevel()
         
     def __loadLevel(self):
@@ -45,24 +47,35 @@ class Level(object):
         
         if self.mMapType == MapType.PICTURE:
             self.__createPictureWorldCollision()
+            self.mChunkHandler.activateChunk(self.mChunkHandler.getChunk(self.mChunkHandler.getChunkPosition(self.mStartPos)))
+            self.mTiles = self.mChunkHandler.mActiveTiles
         else:
             self.__createTextWorldCollision()
-        #self.__createPickups()
-    
+        self.__createPickups()
+        
+
+    """ Reads in enemies, pickups and if there's not a picture specified, worldcollision """
     def __readLevel(self):
+        parser = ConfigParser.ConfigParser()
+        parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
+        self.mPickups = parser.get("objects", "pickups")
+        
+        #Mapcollision
         #check for pictures first
         if os.path.exists("Assets/Levels/level%d.png" % self.mCurrentLevel):
             self.mMap = pygame.image.load("Assets/Levels/level%d.png" % self.mCurrentLevel)
             self.mWidth, self.mHeight = self.mMap.get_size()
             self.mMapType = MapType.PICTURE
         else: #check for lvl-file
-            parser = ConfigParser.ConfigParser()
-            parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
             self.mMap = parser.get("level", "map").replace(" ", "").split("\n")
-            self.mPickups = parser.get("objects", "pickups")
             self.mWidth = len(self.mMap[0])
             self.mHeight = len(self.mMap)
             self.mMapType = MapType.TEXT
+    
+    
+    def update(self, playerpos):
+        if self.mMapType == MapType.PICTURE:
+            self.mChunkHandler.manageChunks(playerpos)
         
     
     def __createTextWorldCollision(self):
@@ -100,6 +113,9 @@ class Level(object):
                     self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.GRAVITYZONE))
                 elif self.mMap[y][x] == "B":
                     self.mObjects.append(Box(b2Vec2(x, y), self.mWorld, self.mGravity))
+        
+        for tile in self.mTiles:
+            tile.create()
     
     
     def __createPictureWorldCollision(self):
@@ -108,12 +124,10 @@ class Level(object):
         chunkx = self.mWidth / self.CHUNK_SIZE
         chunky = self.mHeight / self.CHUNK_SIZE
         
-        self.mChunks = []
-        
         for cy in range(chunky):
-            self.mChunks.append([])
+            self.mChunkHandler.chunkslist.append([])
             for cx in range(chunkx):
-                self.mChunks[cy].append([])
+                self.mChunkHandler.chunkslist[cy].append([])
                 
                 chunkmap = self.mMap.subsurface(Rect(cx * self.CHUNK_SIZE, cy * self.CHUNK_SIZE, self.CHUNK_SIZE, self.CHUNK_SIZE))
                 chunktiles = []
@@ -124,33 +138,17 @@ class Level(object):
                         r,g,b,a = chunkmap.get_at((x, y))
                         
                         if (r,g,b) != Color.WHITE:
-                            pos = b2Vec2(x + cx * self.CHUNK_SIZE,y + cy * self.CHUNK_SIZE)
+                            pos = b2Vec2(x + cx * self.CHUNK_SIZE, y + cy * self.CHUNK_SIZE)
                             
                             if (r,g,b) == Color.WALL:
-                                #Tile(self.mWorld, pos, TileType.WALL
-                                chunktiles.append(TestTile(pos, TileType.WALL))
+                                chunktiles.append(Tile(self.mWorld, pos, TileType.WALL))
                             elif (r,g,b) == Color.STARTPOS:
                                 self.mStartPos = pos
                             elif (r,g,b) == Color.BOX:
+                                print "box"
                                 self.mObjects.append(Box(pos, self.mWorld, self.mGravity))
                 
-                self.mChunks[cy][cx].append(chunktiles)                          
-                            
-        """
-            for y in range(self.mHeight):
-                for x in range(self.mWidth):
-                
-                    r,g,b,a = self.mMap.get_at((x, y))
-                
-                    if (r,g,b) != Color.WHITE:
-                        pos = b2Vec2(x, y)
-                    
-                        if (r,g,b) == Color.WALL:
-                            self.mTiles.append(Tile(self.mWorld, pos, TileType.WALL))
-                        elif (r,g,b) == Color.STARTPOS:
-                            self.mStartPos = pos
-                        elif (r,g,b) == Color.BOX:
-                            self.mObjects.append(Box(pos, self.mWorld, self.mGravity))"""
+                self.mChunkHandler.chunkslist[cy][cx] = (Chunk(b2Vec2(cx, cy), chunktiles))                          
         self.mMap.unlock()
     
     def __createPickups(self):
@@ -169,61 +167,14 @@ class Level(object):
         if self.mCurrentLevel < self.__mMaxLevels:
             self.mCurrentLevel += 1
             self.__loadLevel(self)
-    
-    
-    def loadChunks(self, camerapos):
-        #x1, y1, x2, y2 = camerapos.x - Camera.CAMERA_WIDTH/2, camerapos.y - Camera.CAMERA_HEIGHT/2, camerapos.x + Camera.CAMERA_WIDTH/2, camerapos.y + Camera.CAMERA_HEIGHT/2
-        
-        tl = self.mCamera.getChunkPosition(self.mCamera.displacement.x, self.mCamera.displacement.y)
-        bl = self.mCamera.getChunkPosition(self.mCamera.displacement.x, self.mCamera.displacement.y + Camera.CAMERA_HEIGHT)
-        br = self.mCamera.getChunkPosition(self.mCamera.displacement.x + Camera.CAMERA_WIDTH, self.mCamera.displacement.y - Camera.CAMERA_HEIGHT)
-        tr = self.mCamera.getChunkPosition(self.mCamera.displacement.x + Camera.CAMERA_WIDTH, self.mCamera.displacement.y)
-        
-        if len(self.mActiveChunks) > 0:
-            if not any(x.position == tl for x in self.mActiveChunks):
-                print "add TL"
-                self.__addToChunkList(tl)
-            if not any(x.position == br for x in self.mActiveChunks):
-                print "add BR"
-                self.__addToChunkList(br)
-            if not any(x.position == tr for x in self.mActiveChunks):
-                print "add TR"
-                self.__addToChunkList(tr)
-            if not any(x.position == bl for x in self.mActiveChunks):
-                print "add BL"
-                self.__addToChunkList(bl)
-                
-        else:
-            self.__addToChunkList(camerapos)
             
-            
-        """
-            for tilerows in self.mChunks[int(chunkpos.y)][int(chunkpos.x)]:
-                for tile in tilerows:
-                    print tile.type
-                    #self.mTiles.append(Tile(self.mWorld, tile.pos, TileType.WALL))
-                    #self.mTiles.append(Tile(self.mWorld, tile.pos, tile.type))"""
+    def isInActiveChunks(self, position):
+        return self.mChunkHandler.isPositionInActiveChunks(position)
     
-    def __addToChunkList(self, pos):
-        x = int(pos.x)
-        y = int(pos.y)
-        
-        if x >= 0 and x <= self.mWidth / self.CHUNK_SIZE and y >= 0 and y <= self.mHeight / self.CHUNK_SIZE:
-            self.mActiveChunks.append(Chunk(pos))
-            for tile in self.mChunks[y][x][0]:
-                self.mTiles.append(Tile(self.mWorld, tile.pos, tile.type))
-    
-    def unloadChunks(self, chunkpos):
-        pass
-            
+
 class ObjectType(object):
     NUGGET = "NUGGET"
 
 class MapType(object):
     PICTURE = 0
     TEXT = 1
-    
-class TestTile(object):
-    def __init__(self, pos, type):
-        self.pos = pos
-        self.type = type
