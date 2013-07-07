@@ -6,9 +6,9 @@ from view.TileRender import TileRender
 from view.PlayerRender import PlayerRender
 from Resources import *
 from view.ObjectRender import ObjectRender
+from observer.Observers import *
 
-
-class WorldRender(object):
+class WorldRender(LevelupdateListener):
     
     def __init__(self, world, camera):
         self.mWorld = world
@@ -37,3 +37,7 @@ class WorldRender(object):
         
         self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (0,0,0))
         Pgl.app.surface.blit(self.label, (10,10))
+    
+
+    def levelChanged(self, tiles):
+        self.tileRender.levelUpdate(tiles)

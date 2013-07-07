@@ -24,7 +24,7 @@ class Entity(object):
         return self.mBody.position
     
     def __setPosition(self, pos, angle):
-        self.mBody.transform(pos, angle)
+        self.mBody.transform = (pos, angle)
     
     def enterGravityZone(self):
         self.mInGravityZone += 1
@@ -44,5 +44,8 @@ class Entity(object):
     def __getSize(self):
         return self.mSize
     
-    position = property(__getPosition, __setPosition)
+    def getBody(self):
+        return self.mBody
+    
+    position = property(__getPosition, lambda self, value: self.__setPosition(*value))
     size = property(__getSize, None)

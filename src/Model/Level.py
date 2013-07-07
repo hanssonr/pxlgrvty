@@ -1,6 +1,3 @@
-"""
-http://qq.readthedocs.org/en/latest/tiles.html#map-definition
-"""
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -25,15 +22,11 @@ class Level(object):
     mWidth = None
     mHeight = None
     mStartPos = None
-    mPickups = None
+    mEndPos = None
+    mPickupData = None
     mObjects = []
-    mChunks = None
-    
+    mLevelDone = False
     mChunkHandler = None
-    
-    
-    mActiveChunks = []
-    mActiveChunk = None
     mMapType = None
     
     def __init__(self, world, gravity):
@@ -54,16 +47,19 @@ class Level(object):
         self.__createPickups()
         
 
-    """ Reads in enemies, pickups and if there's not a picture specified, worldcollision """
+    """ 
+        Reads in enemies, pickups and if there's not a picture specified, worldcollision
+        http://qq.readthedocs.org/en/latest/tiles.html#map-definition
+    """
     def __readLevel(self):
         parser = ConfigParser.ConfigParser()
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
-        self.mPickups = parser.get("objects", "pickups")
+        self.mPickupData = parser.get("objects", "pickups")
         
         #Mapcollision
         #check for pictures first
-        if os.path.exists("Assets/Levels/level%d.png" % self.mCurrentLevel):
-            self.mMap = pygame.image.load("Assets/Levels/level%d.png" % self.mCurrentLevel)
+        if os.path.exists("Assets/Levels/level%d.map" % self.mCurrentLevel):
+            self.mMap = pygame.image.load("Assets/Levels/level%d.map" % self.mCurrentLevel)
             self.mWidth, self.mHeight = self.mMap.get_size()
             self.mMapType = MapType.PICTURE
         else: #check for lvl-file
@@ -72,12 +68,37 @@ class Level(object):
             self.mHeight = len(self.mMap)
             self.mMapType = MapType.TEXT
     
+    def __unloadCurrentLevel(self):
+        self.mEndPos = None
+        self.mStartPos = None
+        
+        for obj in self.mObjects:
+            self.mWorld.DestroyBody(obj.getBody())
+        
+        for tile in self.mTiles:
+            tile.destroy()
+        
+        self.mTiles = []
     
-    def update(self, playerpos):
+    
+    def update(self, playerpos):        
         if self.mMapType == MapType.PICTURE:
             self.mChunkHandler.manageChunks(playerpos)
+          
+        
+        if not self.mLevelDone:
+            self.isLevelDone(playerpos)    
+        else:
+            self.nextLevel()
+            self.mLevelDone = False
+            return True
         
     
+    def isLevelDone(self, pos):
+        self.mLevelDone = True if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
+            pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE) else False
+                 
+        
     def __createTextWorldCollision(self):
         for y in range(self.mHeight):
             for x in range(self.mWidth):
@@ -108,7 +129,9 @@ class Level(object):
                             self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
                             
                 elif self.mMap[y][x] == "S":
-                    self.mStartPos = (x, y)
+                    self.mStartPos = b2Vec2(x, y)
+                elif self.mMap[y][x] == "E":
+                    self.mEndPos = b2Vec2(x, y)
                 elif self.mMap[y][x] == "*":
                     self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.GRAVITYZONE))
                 elif self.mMap[y][x] == "B":
@@ -144,15 +167,16 @@ class Level(object):
                                 chunktiles.append(Tile(self.mWorld, pos, TileType.WALL))
                             elif (r,g,b) == Color.STARTPOS:
                                 self.mStartPos = pos
+                            elif (r,g,b) == Color.ENDPOS:
+                                self.mEndPos = pos
                             elif (r,g,b) == Color.BOX:
-                                print "box"
                                 self.mObjects.append(Box(pos, self.mWorld, self.mGravity))
                 
-                self.mChunkHandler.chunkslist[cy][cx] = (Chunk(b2Vec2(cx, cy), chunktiles))                          
+                self.mChunkHandler.chunkslist[cy][cx] = Chunk(b2Vec2(cx, cy), chunktiles)                         
         self.mMap.unlock()
     
     def __createPickups(self):
-        objects = json.loads(self.mPickups)
+        objects = json.loads(self.mPickupData)
         
         if len(objects) > 0:
             for obj in range(len(objects)):
@@ -165,11 +189,12 @@ class Level(object):
     
     def nextLevel(self):
         if self.mCurrentLevel < self.__mMaxLevels:
+            self.__unloadCurrentLevel()
             self.mCurrentLevel += 1
-            self.__loadLevel(self)
+            self.__loadLevel()
             
     def isInActiveChunks(self, position):
-        return self.mChunkHandler.isPositionInActiveChunks(position)
+        return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)
     
 
 class ObjectType(object):

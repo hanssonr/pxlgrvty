@@ -24,5 +24,8 @@ class TileRender(object):
                 if tile.tiletype == TileType.WALL:
                     self.stonetile.setSize(self.mCamera.getScaledSize(1, 1))
                     self.stonetile.draw(viewpos)
+                    
+    def levelUpdate(self, tiles):
+        self.mTiles = tiles
                         
         
