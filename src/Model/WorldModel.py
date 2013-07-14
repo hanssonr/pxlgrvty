@@ -6,6 +6,7 @@ from model.Gravity import Gravity
 from observer.ContactListener import ContactListener
 from model.entities.Box import Box
 from Box2D import b2World, b2_dynamicBody, b2Vec2
+from Direction import GravityDirection
 
 class WorldModel(object):
     
@@ -33,7 +34,8 @@ class WorldModel(object):
         
     def resetWorld(self):
         self.mFirstUpdate = False
-        self.player.position = self.level.mStartPos, 0
+        self.gravity.set(GravityDirection.DOWN)
+        self.player.position = b2Vec2(self.level.mStartPos.x + self.player.size.x/3, self.level.mStartPos.y + self.player.size.y/2), 0
         self.mLuObs.levelChanged(self.level.mTiles)
         
      

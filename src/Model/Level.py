@@ -3,7 +3,7 @@
 
 from Tile import Tile, TileType
 from Box2D import b2Vec2
-import ConfigParser, json, os, pygame
+import ConfigParser, json, os, pygame, random
 from model.entities.Box import Box
 from model.entities.Nugget import Nugget
 from Color import Color
@@ -58,8 +58,8 @@ class Level(object):
         
         #Mapcollision
         #check for pictures first
-        if os.path.exists("Assets/Levels/level%d.map" % self.mCurrentLevel):
-            self.mMap = pygame.image.load("Assets/Levels/level%d.map" % self.mCurrentLevel)
+        if os.path.exists("Assets/Levels/level%d.png" % self.mCurrentLevel):
+            self.mMap = pygame.image.load("Assets/Levels/level%d.png" % self.mCurrentLevel)
             self.mWidth, self.mHeight = self.mMap.get_size()
             self.mMapType = MapType.PICTURE
         else: #check for lvl-file
@@ -85,7 +85,6 @@ class Level(object):
         if self.mMapType == MapType.PICTURE:
             self.mChunkHandler.manageChunks(playerpos)
           
-        
         if not self.mLevelDone:
             self.isLevelDone(playerpos)    
         else:
@@ -104,30 +103,7 @@ class Level(object):
             for x in range(self.mWidth):
                 
                 if self.mMap[y][x] == "#":
-
-                    #do only necessary collisions
-                    if x == 0:
-                        if self.mMap[y][x+1] != "#":
-                            self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
-                            continue
-                    elif x == self.mWidth-1:
-                        if self.mMap[y][x-1] != "#":
-                            self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
-                            continue
-                    
-                    if y == 0:
-                        if self.mMap[y+1][x] != "#":
-                            self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
-                            continue
-                    elif y == self.mHeight-1:
-                        if self.mMap[y-1][x] != "#":
-                            self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
-                            continue
-                    
-                    if y > 0 and y < self.mHeight-1 and x > 0 and x < self.mWidth-1:
-                        if self.mMap[y-1][x] != "#" or self.mMap[y+1][x] != "#" or self.mMap[y][x-1] != "#" or self.mMap[y][x+1] != "#":  
-                            self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), TileType.WALL))
-                            
+                    self.mTiles.append(Tile(self.mWorld, b2Vec2(x, y), self.__calculateTileType(x, y)))
                 elif self.mMap[y][x] == "S":
                     self.mStartPos = b2Vec2(x, y)
                 elif self.mMap[y][x] == "E":
@@ -160,11 +136,16 @@ class Level(object):
                         
                         r,g,b,a = chunkmap.get_at((x, y))
                         
+                        #mapx / mapy
+                        mx = x + cx * self.CHUNK_SIZE
+                        my = y + cy * self.CHUNK_SIZE
+                        
                         if (r,g,b) != Color.WHITE:
-                            pos = b2Vec2(x + cx * self.CHUNK_SIZE, y + cy * self.CHUNK_SIZE)
+                            
+                            pos = b2Vec2(mx, my)
                             
                             if (r,g,b) == Color.WALL:
-                                chunktiles.append(Tile(self.mWorld, pos, TileType.WALL))
+                                chunktiles.append(Tile(self.mWorld, pos, self.__calculateTileType(mx, my)))
                             elif (r,g,b) == Color.STARTPOS:
                                 self.mStartPos = pos
                             elif (r,g,b) == Color.ENDPOS:
@@ -174,6 +155,123 @@ class Level(object):
                 
                 self.mChunkHandler.chunkslist[cy][cx] = Chunk(b2Vec2(cx, cy), chunktiles)                         
         self.mMap.unlock()
+    
+    def __isWallType(self, tile):
+        if self.mMapType == MapType.PICTURE:
+            return True if tile == Color.WALL else False
+        else:
+            return True if tile == "#" else False
+       
+    def __accessMap(self, x, y):
+        if self.mMapType == MapType.PICTURE:
+            return self.mMap.get_at((x, y))
+        else:
+            return self.mMap[y][x]
+    
+    def __calculateTileType(self, mx, my):
+        tiletype = TileType.M
+        
+        if mx == 0:
+            if my == 0:
+                tiletype = TileType.ETL
+            elif my == self.mHeight-1:
+                tiletype = TileType.EBL
+            elif self.__isWallType(self.__accessMap(mx+1, my)) or self.__isWallType(self.__accessMap(mx+1, my)):
+                tiletype = TileType.EL
+            else:
+                tiletype = TileType.R
+                
+        elif mx == self.mWidth-1:
+            if my == 0:
+                tiletype = TileType.ETR
+            elif my == self.mHeight-1:
+                tiletype = TileType.EBR
+            elif self.__isWallType(self.__accessMap(mx-1, my)):
+                tiletype = TileType.ER
+            else:
+                tiletype = TileType.L
+        
+        elif my == 0:
+            if not self.__isWallType(self.__accessMap(mx, my+1)):
+                tiletype = TileType.B
+            else:
+                tiletype = TileType.ET
+        elif my == self.mHeight-1:
+            if not self.__isWallType(self.__accessMap(mx, my-1)):
+                tiletype = TileType.GM
+            else:
+                tiletype = TileType.EB
+                
+        if my > 0 and my < self.mHeight-1 and mx > 0 and mx < self.mWidth-1:
+            
+            #only under
+            if not self.__isWallType(self.__accessMap(mx, my-1)) and self.__isWallType(self.__accessMap(mx, my+1)):
+                
+                #only right side
+                if not self.__isWallType(self.__accessMap(mx-1, my)) and self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.GL
+                    
+                #only left side
+                elif not self.__isWallType(self.__accessMap(mx+1, my)) and self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.GR
+                
+                #neither sides
+                elif not self.__isWallType(self.__accessMap(mx+1, my)) and not self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.SVT
+                else:
+                    tiletype = TileType.GM
+            
+            #only over     
+            elif self.__isWallType(self.__accessMap(mx, my-1)) and not self.__isWallType(self.__accessMap(mx, my+1)):
+                
+                #only right side
+                if not self.__isWallType(self.__accessMap(mx-1, my)) and self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.BL
+                    
+                #only left side
+                elif not self.__isWallType(self.__accessMap(mx+1, my)) and self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.BR
+                
+                #neither sides
+                elif not self.__isWallType(self.__accessMap(mx+1, my)) and not self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.SVB
+                else:
+                    tiletype = TileType.B
+            
+            #not over nor under        
+            elif not self.__isWallType(self.__accessMap(mx, my-1)) and not self.__isWallType(self.__accessMap(mx, my+1)):
+                
+                #neither sides
+                if not self.__isWallType(self.__accessMap(mx-1, my)) and not self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.SG
+                
+                #only right side
+                elif not self.__isWallType(self.__accessMap(mx-1, my)) and self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.SGL
+                
+                #only left side
+                elif not self.__isWallType(self.__accessMap(mx+1, my)) and self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.SGR
+                else:
+                    tiletype = TileType.SGM
+            else:
+                
+                #only left side
+                if not self.__isWallType(self.__accessMap(mx+1, my)) and self.__isWallType(self.__accessMap(mx-1, my)):
+                    tiletype = TileType.R
+                
+                #only right side
+                elif not self.__isWallType(self.__accessMap(mx-1, my)) and self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.L
+                
+                #neither sides
+                elif not self.__isWallType(self.__accessMap(mx-1, my)) and not self.__isWallType(self.__accessMap(mx+1, my)):
+                    tiletype = TileType.SVM
+                
+                else:
+                    tiletype = TileType.M
+                    
+        return tiletype
     
     def __createPickups(self):
         objects = json.loads(self.mPickupData)

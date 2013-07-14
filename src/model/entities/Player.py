@@ -29,7 +29,7 @@ class Player(MovableEntity):
         self.mPlayerState = PlayerState.IDLE
         
         #create player physicsbody
-        pos = b2Vec2(position[0] + self.PLAYER_WIDTH/2, position[1] + self.PLAYER_HEIGHT/2)
+        pos = b2Vec2(position[0] + self.PLAYER_WIDTH/3, position[1] + self.PLAYER_HEIGHT/2)
         body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()
         fd = b2FixtureDef()
@@ -37,7 +37,7 @@ class Player(MovableEntity):
         fd.isSensor = True
         
         #footsensor
-        shape.SetAsBox(self.PLAYER_WIDTH/2.2, 0.1, (0, 0.4), 0)
+        shape.SetAsBox(self.PLAYER_WIDTH/3.2, 0.1, (0, 0.4), 0)
         fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         
@@ -47,7 +47,7 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #collisionbody
-        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/2, self.PLAYER_HEIGHT/2), density=20, friction=0)
+        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/3, self.PLAYER_HEIGHT/2), density=20, friction=0)
         body.bullet = True
         body.fixedRotation = True
         body.userData = self
