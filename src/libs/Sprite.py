@@ -1,4 +1,4 @@
-import pygame, libs.pygl2d as gl
+import pygame
 from libs.Pgl import *
 
 class Sprite(object):

@@ -7,6 +7,7 @@ from observer.ContactListener import ContactListener
 from model.entities.Box import Box
 from Box2D import b2World, b2_dynamicBody, b2Vec2
 from Direction import GravityDirection
+from entities.Enemy import Enemy
 
 class WorldModel(object):
     
@@ -33,10 +34,13 @@ class WorldModel(object):
         self.mEntityToFollow = self.player
         
     def resetWorld(self):
-        self.mFirstUpdate = False
+        self.dynamic_enities = []
+        self.mFirstUpdate = True
         self.gravity.set(GravityDirection.DOWN)
+        self.player.alive = True
         self.player.position = b2Vec2(self.level.mStartPos.x + self.player.size.x/3, self.level.mStartPos.y + self.player.size.y/2), 0
-        self.mLuObs.levelChanged(self.level.mTiles)
+        self.player.mBodyDirection = GravityDirection.DOWN
+        self.mLuObs.levelChanged(self.level)
         
      
     def update(self, delta):
@@ -53,7 +57,8 @@ class WorldModel(object):
             #dynamic body
             if body.type == b2_dynamicBody:
                 if self.mFirstUpdate:
-                    self.dynamic_enities.append(body)
+                    if not isinstance(body.userData, Enemy):
+                        self.dynamic_enities.append(body)
                 
                 #playerobject
                 if isinstance(body.userData, Player):
@@ -64,13 +69,20 @@ class WorldModel(object):
                     body.userData.update(delta)
                     #else:
                         #body.userData.stopMovement()
-        
-        #is level done, reset and start next level
-        if self.level.update(self.player.position):
-            self.resetWorld()
+                elif isinstance(body.userData, Enemy):
+                    body.userData.update(delta)
         
         if self.mFirstUpdate == True:          
             self.mFirstUpdate = False
+            
+        #is level done, reset and start next level
+        if self.level.update(self.player.position):
+            self.resetWorld()
+            
+        #is player dead?
+        if not self.player.alive:
+            self.level.retryLevel()
+            self.resetWorld()
         
     
     def changeGravity(self, gravitydirection):

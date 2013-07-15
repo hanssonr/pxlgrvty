@@ -1,5 +1,5 @@
 class GravityDirection(object):
-    UP, RIGHT, DOWN, LEFT = range(4)
+    UP, RIGHT, DOWN, LEFT = range(4)  
  
 class MoveDirection(object):
     UP, RIGHT, DOWN, LEFT = range(4)

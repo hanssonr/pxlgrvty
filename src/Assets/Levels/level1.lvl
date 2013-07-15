@@ -13,5 +13,6 @@ map =   # # # # # # # # # # # # # # # #
 		 
 
 [objects]
-pickups = [{"POS":"3,7", "TYPE":"NUGGET"}, {"POS":"14,11", "TYPE":"NUGGET"}, {"POS":"27,8", "TYPE":"NUGGET"}]
-enemies = []
+boxes = [{"POS":"4,4"}] 
+pickups = []
+enemies = [{"POS":"3,4", "DIR":"1,0", "DELAY":"0.25", "TYPE":"SPIKEBOX"}, {"POS":"6,3", "DIR":"0,1", "DELAY":"0.25", "TYPE":"SPIKEBOX"}]

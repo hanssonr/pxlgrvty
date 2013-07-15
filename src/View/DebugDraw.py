@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pygame, Box2D, libs.pygl2d as gl
+import pygame, Box2D
 from Box2D import *
 from pygame.locals import *
 from model.Camera import *

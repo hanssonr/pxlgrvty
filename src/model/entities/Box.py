@@ -18,7 +18,7 @@ class Box(MovableEntity):
         shape = b2PolygonShape()
         fd = b2FixtureDef()
         fd.shape = shape
-        fd.isSensor = True      
+        fd.isSensor = True
         
         #gravitysensor
         shape.SetAsBox(0.1,0.1)
@@ -30,6 +30,8 @@ class Box(MovableEntity):
         
         body.fixedRotation = True
         body.bullet = True
+        body.allowSleep = False
+        body.mass = 2
         body.userData = self
         
         super(Box, self).__init__(pos, b2Vec2(self.BOX_WIDTH, self.BOX_HEIGHT), body, b2Vec2(0,0), 0, b2Vec2(0,0))

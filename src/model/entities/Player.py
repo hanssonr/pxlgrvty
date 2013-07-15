@@ -50,6 +50,7 @@ class Player(MovableEntity):
         body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/3, self.PLAYER_HEIGHT/2), density=20, friction=0)
         body.bullet = True
         body.fixedRotation = True
+        body.mass = 1
         body.userData = self
               
         super(Player, self).__init__(pos, b2Vec2(self.PLAYER_WIDTH, self.PLAYER_HEIGHT), body, b2Vec2(0,0), 4, b2Vec2(0,0))

@@ -3,8 +3,6 @@ from Box2D import *
 
 class PickableObject(Entity):
     
-    __isAlive = True
-    
     def __init__(self, pos, physworld, size, userData):
         self.mWorld = physworld
         body = self.__createCollisionBody(pos, size, userData)
@@ -22,11 +20,5 @@ class PickableObject(Entity):
         body.CreateFixture(fd)
         return body 
     
-    def __isAlive(self):
-        return self.__isAlive
-    
-    def __setIsAlive(self, isAlive):
-        self.__isAlive = isAlive
-    
-    alive = property(__isAlive, __setIsAlive)
+
         

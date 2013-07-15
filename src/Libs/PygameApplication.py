@@ -1,6 +1,5 @@
 import pygame
 from Pgl import *
-import pygl2d
 
 class PygameApplication(object):
     

@@ -14,6 +14,7 @@ class Resources(object):
     mPlayer = None
     mFont = None
     mBox = None
+    mSpikeBox = None
     mLoaded = False
     
     #Tiles
@@ -33,6 +34,7 @@ class Resources(object):
         self.mDirtTiles = pygame.image.load("assets/gfx/tiles/dirt.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
+        self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mLoaded = True
     
     @classmethod

@@ -18,5 +18,8 @@ class ObjectRender(object):
             viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2, obj.position.y - obj.size.y/2))
             if isinstance(obj, Box):
                 self.box.draw(viewpos)
+    
+    def levelUpdate(self, objects):
+        self.mObjects = objects
                 
         

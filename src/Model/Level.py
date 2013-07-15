@@ -6,6 +6,7 @@ from Box2D import b2Vec2
 import ConfigParser, json, os, pygame, random
 from model.entities.Box import Box
 from model.entities.Nugget import Nugget
+from model.entities.SpikeBox import SpikeBox
 from Color import Color
 from pygame import Rect
 from model.Chunk import Chunk
@@ -23,11 +24,16 @@ class Level(object):
     mHeight = None
     mStartPos = None
     mEndPos = None
-    mPickupData = None
+    mEnemies = []
     mObjects = []
     mLevelDone = False
     mChunkHandler = None
     mMapType = None
+    
+    #dataholders
+    mPickupData = None
+    mEnemyData = None
+    mBoxData = None
     
     def __init__(self, world, gravity):
         self.mWorld = world
@@ -45,6 +51,8 @@ class Level(object):
         else:
             self.__createTextWorldCollision()
         self.__createPickups()
+        self.__createEnemies()
+        self.__createBoxes()
         
 
     """ 
@@ -55,6 +63,8 @@ class Level(object):
         parser = ConfigParser.ConfigParser()
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mPickupData = parser.get("objects", "pickups")
+        self.mEnemyData = parser.get("objects", "enemies")
+        self.mBoxData = parser.get("objects", "boxes")
         
         #Mapcollision
         #check for pictures first
@@ -71,14 +81,21 @@ class Level(object):
     def __unloadCurrentLevel(self):
         self.mEndPos = None
         self.mStartPos = None
-        
-        for obj in self.mObjects:
-            self.mWorld.DestroyBody(obj.getBody())
-        
+        self.__unloadEntities()
         for tile in self.mTiles:
             tile.destroy()
         
         self.mTiles = []
+            
+    def __unloadEntities(self):
+        for obj in self.mObjects:
+            self.mWorld.DestroyBody(obj.getBody())
+        
+        for e in self.mEnemies:
+            self.mWorld.DestroyBody(e.getBody())
+        
+        self.mObjects = []
+        self.mEnemies = []
     
     
     def update(self, playerpos):        
@@ -115,8 +132,7 @@ class Level(object):
         
         for tile in self.mTiles:
             tile.create()
-    
-    
+       
     def __createPictureWorldCollision(self):
         self.mMap.lock()
         
@@ -278,18 +294,47 @@ class Level(object):
         
         if len(objects) > 0:
             for obj in range(len(objects)):
-                x, y = objects[obj]["POS"].split(",")
+                x, y = [float(i) for i in objects[obj]["POS"].split(",")]
                 objtype = objects[obj]["TYPE"]
                 
                 if objtype == ObjectType.NUGGET:
                     self.mObjects.append(Nugget((x,y), self.mWorld))
-                    
+    
+    def __createEnemies(self):
+        enemies = json.loads(self.mEnemyData)
+        
+        if len(enemies) > 0:
+            for e in range(len(enemies)):
+                x, y = [float(i) for i in enemies[e]["POS"].split(",")]
+                dx, dy = [float(i) for i in enemies[e]["DIR"].split(",")]
+                etype = enemies[e]["TYPE"]
+                delay = float(enemies[e]["DELAY"])
+                
+                if etype == EnemyType.SPIKEBOX:
+                    self.mEnemies.append(SpikeBox(self.mWorld, (x,y), b2Vec2(dx, dy), delay))
+    
+    def __createBoxes(self):
+        boxes = json.loads(self.mBoxData)
+        
+        if len(boxes) > 0:
+            for box in range(len(boxes)):
+                x, y = [float(i) for i in boxes[box]["POS"].split(",")]
+                self.mObjects.append(Box(b2Vec2(x, y), self.mWorld, self.mGravity))
     
     def nextLevel(self):
         if self.mCurrentLevel < self.__mMaxLevels:
             self.__unloadCurrentLevel()
             self.mCurrentLevel += 1
             self.__loadLevel()
+    
+    def retryLevel(self):
+        self.__unloadEntities()
+        self.__createPickups()
+        self.__createEnemies()
+        self.__createBoxes()
+        #self.__unloadCurrentLevel()
+        #self.__loadLevel()
+            
             
     def isInActiveChunks(self, position):
         return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)
@@ -297,6 +342,9 @@ class Level(object):
 
 class ObjectType(object):
     NUGGET = "NUGGET"
+    
+class EnemyType(object):
+    SPIKEBOX = "SPIKEBOX"
 
 class MapType(object):
     PICTURE = 0

@@ -4,7 +4,7 @@ class LevelupdateListener(object):
     __metaclass__ = ABCMeta
     
     @abstractmethod
-    def levelChanged(self, tiles):
+    def levelChanged(self, level):
         pass
         
 
@@ -18,6 +18,6 @@ class LevelupdateObserver(object):
     def addListener(self, listener):
         self.__mListeners.append(listener)
     
-    def levelChanged(self, tiles):
+    def levelChanged(self, level):
         for listener in self.__mListeners:
-            listener.levelChanged(tiles)
+            listener.levelChanged(level)
