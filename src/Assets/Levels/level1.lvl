@@ -1,18 +1,27 @@
 [level]
-tileset = ground.png
+tileset = dirt.png
 map =   # # # # # # # # # # # # # # # #
 		# # # # # # # # # # # # # # # #
 		# # . . . . . . . . . . . E # #
 		# # . . . . . . . . . . . . # #
-		# # . . . . . # # . . . . . # #
+		# # . S . . . # # . . . . . # #
 		# # . . # . . # # # # . # . # #
-		# # . . . . . . . . . . . . # #
-		# # S . . . . . . . . . . . # #
+		# # # . . . . . . . . . . . # #
+		# # # # . . . . . . . . . . # #
 		# # # # # # # # # # # # # # # #
 		# # # # # # # # # # # # # # # #
 		 
 
 [objects]
-boxes = [{"POS":"4,4"}] 
+boxes = [] 
 pickups = []
-enemies = [{"POS":"3,4", "DIR":"1,0", "DELAY":"0.25", "TYPE":"SPIKEBOX"}, {"POS":"6,3", "DIR":"0,1", "DELAY":"0.25", "TYPE":"SPIKEBOX"}]
+enemies = [{"POS":"6,2", 
+			"DIR":"0,1", 
+			"DELAY":"0.25", 
+			"TYPE":"SPIKEBOX", 
+			"SPEED":"3"},
+			
+
+			{"POS":"9,4", "DIR":"1,0", "DELAY":"1.5", "TYPE":"SPIKEBOX", "SPEED":"3"},
+			{"POS":"13,4", "DIR":"-1,0", "DELAY":"0.5", "TYPE":"SPIKEBOX", "SPEED":"3"}
+			]

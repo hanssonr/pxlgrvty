@@ -16,8 +16,8 @@ class EnemyRender(object):
     def render(self, delta):
         
         for e in self.mEnemies:
-            self.spikebox.setSize(self.mCamera.getScaledSize(e.size.x, e.size.y)) 
-            viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - e.size.x/2, e.position.y - e.size.y/2))
+            self.spikebox.setSize(self.mCamera.getScaledSize(e.size.x + 0.1, e.size.y + 0.1)) 
+            viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (e.size.x + 0.1)/2, e.position.y - (e.size.y + 0.1)/2))
             if isinstance(e, SpikeBox):
                 self.spikebox.draw(viewpos)
     

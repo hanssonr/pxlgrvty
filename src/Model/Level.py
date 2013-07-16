@@ -15,8 +15,8 @@ from model.ChunkHandler import ChunkHandler
 
 class Level(object):
     
-    CHUNK_SIZE = 8
-    __mMaxLevels = 3 #read out from all the .lvl files later
+    CHUNK_SIZE = 16
+    __mMaxLevels = 2 #read out from all the .lvl files later
     mCurrentLevel = 1
     mTiles = []
     mMap = None
@@ -29,6 +29,7 @@ class Level(object):
     mLevelDone = False
     mChunkHandler = None
     mMapType = None
+    mCurrentTileset = None
     
     #dataholders
     mPickupData = None
@@ -62,6 +63,7 @@ class Level(object):
     def __readLevel(self):
         parser = ConfigParser.ConfigParser()
         parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
+        self.mCurrentTileset = parser.get("level", "tileset")
         self.mPickupData = parser.get("objects", "pickups")
         self.mEnemyData = parser.get("objects", "enemies")
         self.mBoxData = parser.get("objects", "boxes")
@@ -311,7 +313,8 @@ class Level(object):
                 delay = float(enemies[e]["DELAY"])
                 
                 if etype == EnemyType.SPIKEBOX:
-                    self.mEnemies.append(SpikeBox(self.mWorld, (x,y), b2Vec2(dx, dy), delay))
+                    speed = float(enemies[e]["SPEED"])
+                    self.mEnemies.append(SpikeBox(self.mWorld, (x,y), b2Vec2(dx, dy), delay, speed))
     
     def __createBoxes(self):
         boxes = json.loads(self.mBoxData)

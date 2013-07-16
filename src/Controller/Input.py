@@ -31,6 +31,8 @@ class Input(BaseInputHandler):
                 self.world.changeGravity(GravityDirection.UP)
             if event.key == K_DOWN:
                 self.world.changeGravity(GravityDirection.DOWN)
+            if event.key == K_SPACE:
+                self.player.jump()
                 
             #cameradisplacement
             if event.key == K_KP4:
@@ -58,8 +60,9 @@ class Input(BaseInputHandler):
             cords = self.camera.getModelCoords(b2Vec2(x,y))
             print cords
 
-        #zero out the velocity 
+       #button down
         elif event.type == KEYUP:
+            #zero out the velocity 
             if event.key == K_a or event.key == K_d or event.key == K_w or event.key == K_s:
                 self.player.mDirection.Set(0,0)
         

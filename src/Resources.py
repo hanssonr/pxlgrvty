@@ -17,24 +17,19 @@ class Resources(object):
     mSpikeBox = None
     mLoaded = False
     
-    #Tiles
-    mDirtTiles = None
-    
     def __init__(self):
         if self.INSTANCE is not None:
             raise ValueError("already instantiated")
     
     def loadGameResources(self):
-        self.mMud = pygame.image.load("assets/gfx/mud.png").convert()
-        self.mRock = pygame.image.load("assets/gfx/rock.png").convert()
         self.mBox = pygame.image.load("assets/gfx/box.png").convert()
         self.mPlayer = pygame.image.load("assets/gfx/player.png").convert()
         self.mCowboy = pygame.image.load("assets/gfx/playerAnimation.png").convert_alpha()
         self.mPxl = pygame.image.load("assets/gfx/testsprite.png").convert_alpha()
-        self.mDirtTiles = pygame.image.load("assets/gfx/tiles/dirt.png").convert_alpha()
+        self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
-        self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
+        
         self.mLoaded = True
     
     @classmethod

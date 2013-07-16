@@ -14,9 +14,10 @@ class ObjectRender(object):
     def render(self, delta):
         
         for obj in self.mObjects:
-            self.box.setSize(self.mCamera.getScaledSize(obj.size.x, obj.size.y)) 
+            
             viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2, obj.position.y - obj.size.y/2))
             if isinstance(obj, Box):
+                self.box.setSize(self.mCamera.getScaledSize(1.04, 1.04)) 
                 self.box.draw(viewpos)
     
     def levelUpdate(self, objects):

@@ -59,10 +59,10 @@ class ContactListener(b2ContactListener):
                 
         #Spikebox collides with Tile/other entity
         if isinstance(bodyA.userData, SpikeBox):
-            if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box):
+            if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box) or isinstance(bodyB.userData, SpikeBox):
                 bodyA.userData.touch()
-        elif isinstance(bodyB.userData, SpikeBox):
-            if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box):
+        if isinstance(bodyB.userData, SpikeBox):
+            if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box) or isinstance(bodyA.userData, SpikeBox):
                 bodyB.userData.touch()
     
     def EndContact(self, contact):
@@ -84,7 +84,6 @@ class ContactListener(b2ContactListener):
             elif isinstance(bodyB.userData, Box):
                 bodyA.userData.mOnGround -= 1
         
-        
         #Entity leaving gravityzone
         if fixA.userData == Sensor.GRAVITYZONESENSOR:
             if fixB.userData == TileType.GRAVITYZONE:
@@ -95,10 +94,10 @@ class ContactListener(b2ContactListener):
                 
         #Spikebox leaving Tile/other entity
         if isinstance(bodyA.userData, SpikeBox):
-            if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box):
+            if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box) or isinstance(bodyB.userData, SpikeBox):
                 bodyA.userData.endtouch()
-        elif isinstance(bodyB.userData, SpikeBox):
-            if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box):
+        if isinstance(bodyB.userData, SpikeBox):
+            if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box) or isinstance(bodyA.userData, SpikeBox):
                 bodyB.userData.endtouch()
     
     

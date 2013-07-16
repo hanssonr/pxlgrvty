@@ -6,21 +6,37 @@ class SpikeBox(Enemy):
     __SIZE = b2Vec2(0.5, 0.5)
     __mVelocity = b2Vec2(0,0)
     __mDirection = None
-    __mSpeed = 3.0
+    __mSpeed = 0.0
     
     #For directionchange
-    __isTouching = 0
-    __dirChange = True
+    isTouching = 0
+    __dirChange = False
+    __stuckTimer = 0.1
     
     
-    def __init__(self, physworld, startpos, direction, delay):
+    def __init__(self, physworld, startpos, direction, delay, speed):
+        self.__mSpeed = speed
         self.__mStartPos = b2Vec2(startpos[0] + self.__SIZE.x / 2, startpos[1] + self.__SIZE.y / 2) 
         self.__mDirection = direction
         self.__mDelay = delay
         
         super(SpikeBox, self).__init__(physworld, self.__mStartPos, self.__SIZE, self)
     
-    def update(self, delta):        
+    def update(self, delta):     
+        if self.isTouching > 0:
+            self.mBody.mass = 1
+            self.__changeDirection()
+        else:
+            self.mBody.mass = 10000
+        
+        #hack for getting stuck
+        if self.__dirChange:
+            self.__stuckTimer -= delta
+            
+            if self.__stuckTimer < 0:
+                self.__stuckTimer = 0.2
+                self.__dirChange = False
+        
         if self.__mDelay > 0:
             self.__mDelay -= delta
         else:
@@ -28,13 +44,12 @@ class SpikeBox(Enemy):
             self.mBody.linearVelocity = self.__mVelocity
     
     def __changeDirection(self):
-        self.__mDirection *= -1
+        if self.__dirChange == False:
+            self.__dirChange = True
+            self.__mDirection *= -1
             
     def touch(self):
-        if self.__isTouching == 0:
-            self.__changeDirection()
-            
-        self.__isTouching += 1
-    
+        self.isTouching += 1 
+        
     def endtouch(self):
-        self.__isTouching -= 1
+        self.isTouching -= 1

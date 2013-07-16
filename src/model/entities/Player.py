@@ -17,8 +17,11 @@ class Player(MovableEntity):
     mGravity = None
     mSensor = None
     mOnGround = 0
+    mJumping = False
     mGravityToUse = b2Vec2_zero
     mPlayerState = None
+    
+    mJumpTimer = 0
     
     mFacing = Facing.RIGHT
     mBodyDirection = GravityDirection.DOWN
@@ -37,7 +40,7 @@ class Player(MovableEntity):
         fd.isSensor = True
         
         #footsensor
-        shape.SetAsBox(self.PLAYER_WIDTH/3.2, 0.1, (0, 0.4), 0)
+        shape.SetAsBox(self.PLAYER_WIDTH/3.6, 0.1, (0, 0.4), 0)
         fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         
@@ -47,24 +50,40 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #collisionbody
-        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/3, self.PLAYER_HEIGHT/2), density=20, friction=0)
+        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/3.5, self.PLAYER_HEIGHT/2), density=0, friction=0)
         body.bullet = True
         body.fixedRotation = True
-        body.mass = 1
         body.userData = self
               
-        super(Player, self).__init__(pos, b2Vec2(self.PLAYER_WIDTH, self.PLAYER_HEIGHT), body, b2Vec2(0,0), 4, b2Vec2(0,0))
+        super(Player, self).__init__(pos, b2Vec2(self.PLAYER_WIDTH, self.PLAYER_HEIGHT), body, b2Vec2(0,0), 3.5, b2Vec2(0,0))
      
     def update(self, delta): 
         if self.mOldGravity != None:
             self.mGravityToUse = self.mOldGravity.copy()
         else:
             self.mGravityToUse = self.mGravity.get().copy()
-               
-        self.mVelocity.Set(self.mDirection.x * self.mSpeed, self.mDirection.y * self.mSpeed)    
+        
+        #setting velocity
+        self.mVelocity = self.mDirection.copy() * self.mSpeed
+        
+        #jumping
+        if self.mJumping:
+            #changing velocity depending on bodyDirection due to gravity
+            if self.mBodyDirection == GravityDirection.LEFT or self.mBodyDirection == GravityDirection.RIGHT:
+                self.mVelocity.x = -self.mGravityToUse.x * 0.78
+            else:
+                self.mVelocity.y = -self.mGravityToUse.y * 0.78
+            
+            #zero out gravity
+            self.mGravityToUse = b2Vec2(0,0)
+            
+            self.mJumpTimer += delta
+            if self.mJumpTimer > 0.3:
+                self.mJumpTimer = 0
+                self.mJumping = False
+  
         self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
-        
-        
+
         #Facing
         if self.mVelocity.x > 0:
             self.mFacing = Facing.RIGHT
@@ -80,6 +99,7 @@ class Player(MovableEntity):
                 self.mFacing = Facing.RIGHT
             elif self.mBodyDirection == GravityDirection.RIGHT:
                 self.mFacing = Facing.LEFT
+                   
                 
         if self.mVelocity.x > 0 or self.mVelocity.x < 0 or self.mVelocity.y > 0 or self.mVelocity.y < 0:
             self.mPlayerState = PlayerState.MOVING
@@ -106,6 +126,11 @@ class Player(MovableEntity):
  
     def isOnGround(self):
         return self.mOnGround > 0
+    
+    def jump(self):
+        if self.mOnGround:
+            print "jumping"
+            self.mJumping = True
 
 class PlayerState():
     IDLE = 0

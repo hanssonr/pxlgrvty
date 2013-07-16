@@ -6,7 +6,7 @@ from model.Direction import MoveDirection, Direction
     
 class MovableEntity(Entity):
     
-    mVelocity = None
+    mVelocity = b2Vec2(0,0)
     mSpeed = None
     mDirection = None
     

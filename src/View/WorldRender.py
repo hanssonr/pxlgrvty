@@ -21,7 +21,7 @@ class WorldRender(LevelupdateListener):
         
         self.objectRender = ObjectRender(self.mCamera, self.mWorld.level.mObjects)
         self.playerRender = PlayerRender(self.mCamera, self.mWorld.player)
-        self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles)
+        self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles, self.mWorld.level.mCurrentTileset)
         self.enemyRender = EnemyRender(self.mCamera, self.mWorld.level.mEnemies)
     
     def render(self, delta):
@@ -30,11 +30,13 @@ class WorldRender(LevelupdateListener):
         if self.mWorld.DEBUG:
             self.mWorld.physWorld.DrawDebugData()
         else:
-            self.tileRender.render(delta)
             self.objectRender.render(delta)
+            self.tileRender.render(delta)
+            self.enemyRender.render(delta)
+            
         
         self.playerRender.render(delta)
-        self.enemyRender.render(delta)
+        
         
         
         self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (0,0,0))
@@ -42,6 +44,6 @@ class WorldRender(LevelupdateListener):
     
 
     def levelChanged(self, level):
-        self.tileRender.levelUpdate(level.mTiles)
+        self.tileRender.levelUpdate(level.mTiles, level.mCurrentTileset)
         self.objectRender.levelUpdate(level.mObjects)
         self.enemyRender.levelUpdate(level.mEnemies)

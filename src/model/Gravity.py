@@ -4,7 +4,7 @@ from Direction import GravityDirection
 
 class Gravity(object):
     
-    FORCE = 8
+    FORCE = 6
     __mGravity = b2Vec2(0, FORCE)
     __mGravityDir = GravityDirection.DOWN
     
