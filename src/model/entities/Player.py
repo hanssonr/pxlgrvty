@@ -83,12 +83,14 @@ class Player(MovableEntity):
                 self.mJumping = False
   
         self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
-
+        
         #Facing
         if self.mVelocity.x > 0:
-            self.mFacing = Facing.RIGHT
+            if self.mBodyDirection == GravityDirection.DOWN or self.mBodyDirection == GravityDirection.UP:
+                self.mFacing = Facing.RIGHT
         elif self.mVelocity.x < 0:
-            self.mFacing = Facing.LEFT
+            if self.mBodyDirection == GravityDirection.DOWN or self.mBodyDirection == GravityDirection.UP:
+                self.mFacing = Facing.LEFT
         elif self.mVelocity.y < 0:
             if self.mBodyDirection == GravityDirection.LEFT:
                 self.mFacing = Facing.LEFT

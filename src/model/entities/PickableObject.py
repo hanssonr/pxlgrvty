@@ -10,15 +10,19 @@ class PickableObject(Entity):
     
     def __createCollisionBody(self, pos, size, ud):
         #collisionbody       
-        body = self.mWorld.CreateStaticBody(position = pos)
+        body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()
         shape.SetAsBox(size.x/2, size.y/2)
         fd = b2FixtureDef()
         fd.shape = shape
         fd.isSensor = True
-        fd.userData = ud
         body.CreateFixture(fd)
-        return body 
+        body.userData = ud
+        return body
+    
+    def update(self, delta):
+        if not self.alive:
+            self.mWorld.DestroyBody(self.mBody)
     
 
         

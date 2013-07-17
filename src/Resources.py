@@ -16,6 +16,7 @@ class Resources(object):
     mBox = None
     mSpikeBox = None
     mLoaded = False
+    mNugget = None
     
     def __init__(self):
         if self.INSTANCE is not None:
@@ -27,6 +28,7 @@ class Resources(object):
         self.mCowboy = pygame.image.load("assets/gfx/playerAnimation.png").convert_alpha()
         self.mPxl = pygame.image.load("assets/gfx/testsprite.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
+        self.mNugget = pygame.image.load("assets/gfx/nugget.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         

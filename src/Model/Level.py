@@ -91,7 +91,8 @@ class Level(object):
             
     def __unloadEntities(self):
         for obj in self.mObjects:
-            self.mWorld.DestroyBody(obj.getBody())
+            if obj.alive:
+                self.mWorld.DestroyBody(obj.getBody())
         
         for e in self.mEnemies:
             self.mWorld.DestroyBody(e.getBody())
@@ -105,16 +106,25 @@ class Level(object):
             self.mChunkHandler.manageChunks(playerpos)
           
         if not self.mLevelDone:
-            self.isLevelDone(playerpos)    
+            self.checkLevelCompletion(playerpos)    
         else:
             self.nextLevel()
             self.mLevelDone = False
             return True
         
     
-    def isLevelDone(self, pos):
-        self.mLevelDone = True if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
-            pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE) else False
+    def checkLevelCompletion(self, pos):        
+        if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
+            pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):
+                done = True
+                
+                for o in self.mObjects:
+                    if isinstance(o, Nugget):
+                        if o.alive:
+                            done = False
+                            break
+                
+                self.mLevelDone = True if done == True else False 
                  
         
     def __createTextWorldCollision(self):

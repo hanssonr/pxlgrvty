@@ -8,6 +8,7 @@ from model.entities.Box import Box
 from Box2D import b2World, b2_dynamicBody, b2Vec2
 from Direction import GravityDirection
 from entities.Enemy import Enemy
+from entities.PickableObject import PickableObject
 
 class WorldModel(object):
     
@@ -57,7 +58,7 @@ class WorldModel(object):
             #dynamic body
             if body.type == b2_dynamicBody:
                 if self.mFirstUpdate:
-                    if not isinstance(body.userData, Enemy):
+                    if isinstance(body.userData, Player) or isinstance(body.userData, Box):
                         self.dynamic_enities.append(body)
                 
                 #playerobject
@@ -71,6 +72,9 @@ class WorldModel(object):
                         #body.userData.stopMovement()
                 elif isinstance(body.userData, Enemy):
                     body.userData.update(delta)
+                elif isinstance(body.userData, PickableObject):
+                    body.userData.update(delta)
+                    
         
         if self.mFirstUpdate == True:          
             self.mFirstUpdate = False

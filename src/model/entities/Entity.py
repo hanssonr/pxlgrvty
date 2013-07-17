@@ -6,9 +6,11 @@ Basklass för alla rörliga objekt
 """
 import Box2D
 from Box2D import b2Vec2
+from libs.Id import Id
 
 class Entity(object):
     
+    mId = None
     mPosition = None
     mBody = None
     mInGravityZone = 0
@@ -17,6 +19,7 @@ class Entity(object):
     __mAlive = True
     
     def __init__(self, pos, size, physbody):
+        self.mId = Id.getInstance().getId()
         self.mPosition = pos
         self.mSize = size
         self.mBody = physbody
@@ -53,7 +56,11 @@ class Entity(object):
     
     def __setIsAlive(self, isAlive):
         self.__mAlive = isAlive
-    
+        
+    def __getId(self):
+        return self.mId
+
+    id = property(__getId, None)   
     alive = property(__isAlive, __setIsAlive)
     position = property(__getPosition, lambda self, value: self.__setPosition(*value))
     size = property(__getSize, None)

@@ -11,6 +11,7 @@ from model.entities.Enemy import Enemy
 from model.entities.SpikeBox import SpikeBox
 from model.entities.Entity import Entity
 from model.entities.Player import Player
+from model.entities.PickableObject import PickableObject
 
 class ContactListener(b2ContactListener):
     
@@ -48,6 +49,14 @@ class ContactListener(b2ContactListener):
         elif isinstance(bodyB.userData, Player):
             if isinstance(bodyA.userData, Enemy):
                 bodyB.userData.alive = False
+        
+        #Player collides pickupable
+        if isinstance(bodyA.userData, Player):
+            if isinstance(bodyB.userData, PickableObject):
+                bodyB.userData.alive = False
+        if isinstance(bodyB.userData, Player):
+            if isinstance(bodyA.userData, PickableObject):
+                bodyA.userData.alive = False
         
         #Entity enters gravityzone
         if fixA.userData == Sensor.GRAVITYZONESENSOR:
