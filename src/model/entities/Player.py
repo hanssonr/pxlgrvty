@@ -10,8 +10,8 @@ from model.Sensor import *
 
 class Player(MovableEntity):
     
-    PLAYER_WIDTH = 0.75
-    PLAYER_HEIGHT = 0.9
+    PLAYER_WIDTH = 0.625
+    PLAYER_HEIGHT = 0.75
     
     mWorld = None;
     mGravity = None
@@ -40,7 +40,7 @@ class Player(MovableEntity):
         fd.isSensor = True
         
         #footsensor
-        shape.SetAsBox(self.PLAYER_WIDTH/3.6, 0.1, (0, 0.4), 0)
+        shape.SetAsBox(self.PLAYER_WIDTH/5, 0.1, (0, 0.3), 0)
         fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         
@@ -131,7 +131,6 @@ class Player(MovableEntity):
     
     def jump(self):
         if self.mOnGround:
-            print "jumping"
             self.mJumping = True
 
 class PlayerState():

@@ -16,7 +16,7 @@ class SpikeBox(Enemy):
     
     def __init__(self, physworld, startpos, direction, delay, speed):
         self.__mSpeed = speed
-        self.__mStartPos = b2Vec2(startpos[0] + self.__SIZE.x / 2, startpos[1] + self.__SIZE.y / 2) 
+        self.__mStartPos = b2Vec2(startpos[0] + 0.5, startpos[1] + 0.5) 
         self.__mDirection = direction
         self.__mDelay = delay
         

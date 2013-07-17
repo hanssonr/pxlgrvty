@@ -23,10 +23,12 @@ class ObjectRender(object):
                 self.box.setSize(self.mCamera.getScaledSize(1.04, 1.04)) 
                 self.box.draw(viewpos)
             elif isinstance(obj, Nugget):
-                self.__mNuggetAnimations[obj.id].draw(delta, viewpos)
+                if obj.alive:
+                    self.__mNuggetAnimations[obj.id].draw(delta, viewpos)
                 
     
     def levelUpdate(self, objects):
+        self.__mNuggetAnimations = {}
         self.mObjects = objects
         
         for obj in objects:

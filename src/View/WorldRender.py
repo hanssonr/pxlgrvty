@@ -33,9 +33,10 @@ class WorldRender(LevelupdateListener):
             self.objectRender.render(delta)
             self.tileRender.render(delta)
             self.enemyRender.render(delta)
+            self.playerRender.render(delta)
             
         
-        self.playerRender.render(delta)
+        
         
         
         

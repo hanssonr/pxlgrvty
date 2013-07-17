@@ -9,8 +9,6 @@ class Resources(object):
 
     INSTANCE = None
     
-    mMud = None
-    mRock = None
     mPlayer = None
     mFont = None
     mBox = None
@@ -24,9 +22,7 @@ class Resources(object):
     
     def loadGameResources(self):
         self.mBox = pygame.image.load("assets/gfx/box.png").convert()
-        self.mPlayer = pygame.image.load("assets/gfx/player.png").convert()
-        self.mCowboy = pygame.image.load("assets/gfx/playerAnimation.png").convert_alpha()
-        self.mPxl = pygame.image.load("assets/gfx/testsprite.png").convert_alpha()
+        self.mPxl = pygame.image.load("assets/gfx/player.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mNugget = pygame.image.load("assets/gfx/nugget.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
