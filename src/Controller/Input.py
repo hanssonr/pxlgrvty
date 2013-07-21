@@ -10,7 +10,8 @@ from model.Camera import *
 
 class Input(BaseInputHandler):
     
-    def __init__(self, world, camera):
+    def __init__(self, screen, world, camera):
+        self.mCurrentScreen = screen
         self.world = world
         self.player = world.player
         self.camera = camera
@@ -33,6 +34,8 @@ class Input(BaseInputHandler):
                 self.world.changeGravity(GravityDirection.DOWN)
             if event.key == K_SPACE:
                 self.player.jump()
+            if event.key == K_ESCAPE:
+                self.mCurrentScreen.goBack()
                 
             #cameradisplacement
             if event.key == K_KP4:
@@ -53,12 +56,6 @@ class Input(BaseInputHandler):
                     self.world.mEntityToFollow = self.world.level.mObjects[0]
                 else:
                     self.world.mEntityToFollow = self.world.player
-                
-        #model mousecoords        
-        elif event.type == pygame.MOUSEBUTTONUP:
-            x, y = event.pos
-            cords = self.camera.getModelCoords(b2Vec2(x,y))
-            print cords
 
        #button down
         elif event.type == KEYUP:

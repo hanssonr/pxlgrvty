@@ -6,16 +6,16 @@ from libs.Animation import Animation
 
 class ObjectRender(object):
     
-    __mNuggetAnimations = {}
+    __mNuggetAnimations = None
     
     def __init__(self, camera, objects):
+        self.__mNuggetAnimations = {}
         self.mCamera = camera
         self.box = Sprite(Resources.getInstance().mBox)
         self.levelUpdate(objects)
         
         
     def render(self, delta):
-        
         for obj in self.mObjects:
             
             viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2, obj.position.y - obj.size.y/2))

@@ -27,7 +27,6 @@ class PygameApplication(object):
     def __mainloop(self):
         pygame.init()
         self.surface = pygame.display.set_mode((self.width, self.height))
-        #pygl2d.window.init([self.width, self.height], caption='pxlgrvty')
         Pgl.clock = pygame.time.Clock()
         
         self.game.create()
@@ -39,10 +38,8 @@ class PygameApplication(object):
                             
             self.game.update(delta)
             
-            #pygl2d.window.begin_draw()
             self.game.render(delta)
             pygame.display.flip()
-            #pygl2d.window.end_draw()
                 
         pygame.quit()
     

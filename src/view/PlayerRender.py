@@ -11,7 +11,7 @@ class PlayerRender(object):
     def __init__(self, camera, player):
         self.mCamera = camera
         self.mPlayer = player
-        self.playerAnimation = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(0.5,0.6))
+        self.playerAnimation = Animation(Resources.getInstance().mPxl, 4, 2, 0.5, self.mCamera.getScaledSize(0.5,0.6))
         
     
     def render(self, delta):

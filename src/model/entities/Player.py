@@ -65,9 +65,10 @@ class Player(MovableEntity):
         
         #setting velocity
         self.mVelocity = self.mDirection.copy() * self.mSpeed
-        
+    
         #jumping
         if self.mJumping:
+
             #changing velocity depending on bodyDirection due to gravity
             if self.mBodyDirection == GravityDirection.LEFT or self.mBodyDirection == GravityDirection.RIGHT:
                 self.mVelocity.x = -self.mGravityToUse.x * 0.78
@@ -108,7 +109,7 @@ class Player(MovableEntity):
         else:
             self.mPlayerState = PlayerState.IDLE
         
-        if self.mOnGround == False:
+        if self.mOnGround == False or self.mJumping:
             self.mPlayerState = PlayerState.FALLING
     
     def flip(self, direction):

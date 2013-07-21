@@ -24,13 +24,14 @@ class WorldModel(object):
     mFirstUpdate = True
     mEntityToFollow = None
     
-    def __init__(self, camera, luObserver):
+    
+    def __init__(self, camera, luObserver, lvl):
         self.mCamera = camera
         self.mLuObs = luObserver
         self.contactListener = ContactListener()
         self.gravity = Gravity()
         self.physWorld = b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
-        self.level = Level(self.physWorld, self.gravity)
+        self.level = Level(self.physWorld, self.gravity, lvl)
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
         self.mEntityToFollow = self.player
         

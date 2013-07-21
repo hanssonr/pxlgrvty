@@ -53,9 +53,8 @@ class Camera(object):
         return viewCoords
     
     def getModelCoords(self, viewCoords):
-        modelCoords = viewCoords / self.scale.x
+        modelCoords = b2Vec2(viewCoords.x / self.scale.x, viewCoords.y / self.scale.y)
         modelCoords.x += self.displacement.x
-        modelCoords.y = self.getReversedYAxis(modelCoords.y)
         return modelCoords
     
     def getReversedYAxis(self, oldY):

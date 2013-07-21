@@ -4,10 +4,14 @@ from Direction import GravityDirection
 
 class Gravity(object):
     
-    FORCE = 6
-    __mGravity = b2Vec2(0, FORCE)
-    __mGravityDir = GravityDirection.DOWN
+    FORCE = None
+    __mGravity = None
+    __mGravityDir = None
     
+    def __init__(self):
+        self.FORCE = 6
+        self.__mGravity = b2Vec2(0, self.FORCE)
+        self.__mGravityDir = GravityDirection.DOWN
     
     def set(self, gravitydir):
         self.__mGravityDir = gravitydir

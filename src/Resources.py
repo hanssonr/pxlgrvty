@@ -15,6 +15,8 @@ class Resources(object):
     mSpikeBox = None
     mLoaded = False
     mNugget = None
+    mSwirlSheet = None
+    mLevelButton = None
     
     def __init__(self):
         if self.INSTANCE is not None:
@@ -25,6 +27,8 @@ class Resources(object):
         self.mPxl = pygame.image.load("assets/gfx/player.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mNugget = pygame.image.load("assets/gfx/nugget.png").convert_alpha()
+        self.mSwirlSheet = pygame.image.load("assets/gfx/swirl.png").convert_alpha()
+        self.mLevelButton = pygame.image.load("assets/gfx/levelbutton.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         

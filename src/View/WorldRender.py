@@ -6,6 +6,7 @@ from view.PlayerRender import PlayerRender
 from Resources import *
 from view.ObjectRender import ObjectRender
 from view.EnemyRender import EnemyRender
+from view.SwirlRender import SwirlRender
 from observer.Observers import *
 
 class WorldRender(LevelupdateListener):
@@ -23,9 +24,10 @@ class WorldRender(LevelupdateListener):
         self.playerRender = PlayerRender(self.mCamera, self.mWorld.player)
         self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles, self.mWorld.level.mCurrentTileset)
         self.enemyRender = EnemyRender(self.mCamera, self.mWorld.level.mEnemies)
+        self.swirlRender = SwirlRender(self.mCamera, self.mWorld.level)
     
     def render(self, delta):
-        Pgl.app.surface.fill((255,255,255))
+        Pgl.app.surface.fill((60,59,77))
         
         if self.mWorld.DEBUG:
             self.mWorld.physWorld.DrawDebugData()
@@ -33,14 +35,10 @@ class WorldRender(LevelupdateListener):
             self.objectRender.render(delta)
             self.tileRender.render(delta)
             self.enemyRender.render(delta)
+            self.swirlRender.render(delta)
             self.playerRender.render(delta)
             
-        
-        
-        
-        
-        
-        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (0,0,0))
+        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,0,0))
         Pgl.app.surface.blit(self.label, (10,10))
     
 
@@ -48,3 +46,4 @@ class WorldRender(LevelupdateListener):
         self.tileRender.levelUpdate(level.mTiles, level.mCurrentTileset)
         self.objectRender.levelUpdate(level.mObjects)
         self.enemyRender.levelUpdate(level.mEnemies)
+        self.swirlRender.levelUpdate()

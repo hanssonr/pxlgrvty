@@ -1,5 +1,6 @@
 from Resources import *
 from libs.Pgl import *
+from screen.LevelScreen import LevelScreen
 from screen.GameScreen import GameScreen
 
 class LoadingScreen(object):
@@ -15,8 +16,5 @@ class LoadingScreen(object):
         self.loadingTime = self.loadingTime - delta
         #print self.loadingTime
         #if self.loadingTime < 0:
-        self.mGame.setScreen(GameScreen(self.mGame))
-    
-    def render(self, delta):
-        pass
-        #Pgl.app.surface.blit(self.label, (Pgl.width/2,Pgl.height/2))
+        self.mGame.setScreen(LevelScreen(self.mGame))
+        #self.mGame.setScreen(GameScreen(self.mGame))

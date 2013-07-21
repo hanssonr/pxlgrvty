@@ -17,29 +17,37 @@ class Level(object):
     
     CHUNK_SIZE = 16
     __mMaxLevels = 2 #read out from all the .lvl files later
-    mCurrentLevel = 1
-    mTiles = []
+    mCurrentLevel = None
+    mTiles = None
     mMap = None
     mWidth = None
     mHeight = None
     mStartPos = None
     mEndPos = None
-    mEnemies = []
-    mObjects = []
-    mLevelDone = False
+    mEnemies = None
+    mObjects = None
+    mLevelDone = None
     mChunkHandler = None
     mMapType = None
     mCurrentTileset = None
+    mSwirlActive = None
     
     #dataholders
     mPickupData = None
     mEnemyData = None
     mBoxData = None
     
-    def __init__(self, world, gravity):
+    def __init__(self, world, gravity, lvl):
+        self.mSwirlActive = False
+        self.mLevelDone = False
+        self.mTiles = []
+        self.mObjects = []
+        self.mEnemies = []
+        
         self.mWorld = world
         self.mGravity = gravity
         self.mChunkHandler = ChunkHandler(world, self.CHUNK_SIZE)
+        self.mCurrentLevel = lvl
         self.__loadLevel()
         
     def __loadLevel(self):
@@ -83,6 +91,7 @@ class Level(object):
     def __unloadCurrentLevel(self):
         self.mEndPos = None
         self.mStartPos = None
+        self.mSwirlActive = False
         self.__unloadEntities()
         for tile in self.mTiles:
             tile.destroy()
@@ -113,18 +122,20 @@ class Level(object):
             return True
         
     
-    def checkLevelCompletion(self, pos):        
-        if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
-            pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):
-                done = True
-                
-                for o in self.mObjects:
-                    if isinstance(o, Nugget):
-                        if o.alive:
-                            done = False
-                            break
-                
-                self.mLevelDone = True if done == True else False 
+    def checkLevelCompletion(self, pos):
+        done = True
+        for o in self.mObjects:
+            if isinstance(o, Nugget):
+                if o.alive:
+                    done = False
+                    break
+        
+        if done:
+            self.mSwirlActive = True
+        
+            if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
+                pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):                
+                    self.mLevelDone = True if done == True else False 
                  
         
     def __createTextWorldCollision(self):
@@ -345,10 +356,8 @@ class Level(object):
         self.__createPickups()
         self.__createEnemies()
         self.__createBoxes()
-        #self.__unloadCurrentLevel()
-        #self.__loadLevel()
-            
-            
+        self.mSwirlActive = False
+               
     def isInActiveChunks(self, position):
         return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)
     

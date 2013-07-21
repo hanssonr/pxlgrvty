@@ -100,14 +100,7 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center_v)
-        #pygame.draw.circle(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), center, radius, 0)
-        pygame.draw.circle(self.surface, color, center, radius, 1)
-        #gl.draw.circle(center, radius, color, 0)
-        
-        
-        p = radius * axis
-        #p = (p[0]*self.camera.scale.x, p[1]*self.camera.scale.x)
-        #pygame.draw.aaline(self.surface, (255,0,0), center, (center[0] - p[0], center[1] + p[1])) 
+        pygame.draw.circle(self.surface, color, center, radius, 1)  
 
     def DrawPolygon(self, in_vertices, color):
         """
@@ -123,10 +116,7 @@ class DebugDraw(b2Draw):
         """
         color = self.convertColor(color)
         vertices = [self.toScreen(v) for v in in_vertices]
-        #pygame.draw.polygon(self.surface, (color[0]/2, color[1]/2, color[1]/2, 127), vertices, 0)
         pygame.draw.polygon(self.surface, color, vertices, 1)
-        #gl.draw.polygon(vertices, (color[0]/2, color[1]/2, color[1]/2, 127), 0)
-        #gl.draw.polygon(vertices, color, 1)
 
     def toScreen(self, pt):
         """
