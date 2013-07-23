@@ -21,7 +21,7 @@ class GameScreen(object):
         self.mCamera = Camera(Pgl.width, Pgl.height)
         self.mWorld = WorldModel(self.mCamera, self.mLuObs, lvl)
         self.mWorldRender = WorldRender(self.mWorld, self.mCamera)
-        game.setInput(Input(self, self.mWorld, self.mCamera))
+        self.mGame.input = Input(self, self.mWorld, self.mCamera)
         
         self.mLuObs.addListener(self.mWorldRender)
     

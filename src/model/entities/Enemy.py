@@ -16,18 +16,10 @@ class Enemy(Entity.Entity):
         shape.SetAsBox(size.x/2, size.y/2)
         fd = b2FixtureDef()
         fd.shape = shape
-        fd.isSensor = False
+        fd.isSensor = True
         body.CreateFixture(fd)
         body.isbullet = True
         body.fixedRotation = True
         body.userData = self if ud == None else ud
-        """
-        if isinstance(ud, SpikeBox.SpikeBox):
-            #create collisionsensor
-            shape.SetAsBox(size.x/1.5, size.y/1.5, (0, 0), 0)
-            fd.shape = shape
-            fd.isSensor = True
-            fd.userData = ud
-            body.CreateFixture(fd)"""
         
         return body

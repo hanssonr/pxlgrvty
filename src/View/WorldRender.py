@@ -31,14 +31,17 @@ class WorldRender(LevelupdateListener):
         
         if self.mWorld.DEBUG:
             self.mWorld.physWorld.DrawDebugData()
+            self.enemyRender.render(delta)
         else:
             self.objectRender.render(delta)
-            self.tileRender.render(delta)
-            self.enemyRender.render(delta)
             self.swirlRender.render(delta)
+            self.enemyRender.render(delta)
             self.playerRender.render(delta)
+            self.tileRender.render(delta)
             
-        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,0,0))
+            
+            
+        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))
     
 

@@ -13,7 +13,7 @@ class Sprite(object):
         self.image = image
         self.pos = image.get_rect()
         
-    def draw(self, pos, area = None):
+    def draw(self, pos = None, area = None):
         toDraw = self.image        
         if area != None:
             toDraw = self.image.subsurface(area)
@@ -22,8 +22,11 @@ class Sprite(object):
 
         if self.__mSize != None:
             toDraw = pygame.transform.scale(toDraw, self.__mSize)
-
-        Pgl.app.surface.blit(toDraw, pos)
+            
+        if pos != None:
+            Pgl.app.surface.blit(toDraw, pos)
+        else:
+            Pgl.app.surface.blit(toDraw, self.pos)
     
     def setSize(self, size):
         self.__mSize = (int(size.x), int(size.y))

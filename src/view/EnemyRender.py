@@ -1,6 +1,9 @@
 from Resources import *
 from libs.Sprite import *
+from model.Direction import Facing
 from model.entities.SpikeBox import SpikeBox
+from model.entities.Spike import Spike
+from libs.Animation import Animation
 from Box2D import b2Vec2
 
 class EnemyRender(object):
@@ -9,17 +12,35 @@ class EnemyRender(object):
         self.mCamera = camera
         self.mEnemies = enemies
         
-        #TODO: load all enemies from spritesheet(Animation)
-        self.spikebox = Sprite(Resources.getInstance().mSpikeBox)
+        self.spikebox = Animation(Resources.getInstance().mSpikeBox, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
+        self.spike = Animation(Resources.getInstance().mSpike, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
         
         
     def render(self, delta):
         
         for e in self.mEnemies:
-            self.spikebox.setSize(self.mCamera.getScaledSize(e.size.x + 0.1, e.size.y + 0.1)) 
-            viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (e.size.x + 0.1)/2, e.position.y - (e.size.y + 0.1)/2))
+            toDraw = None
+            size = b2Vec2(e.size.x, e.size.y)
+                   
             if isinstance(e, SpikeBox):
-                self.spikebox.draw(viewpos)
+                toDraw = self.spikebox
+            elif isinstance(e, Spike):
+                toDraw = self.spike
+                
+                if e.mFacing == Facing.UP:
+                    toDraw.rotate(0)
+                    size.Set(size.y, size.x)
+                elif e.mFacing == Facing.DOWN:
+                    toDraw.rotate(180)
+                    size.Set(size.y, size.x)
+                elif e.mFacing == Facing.LEFT:
+                    toDraw.rotate(90)
+                elif e.mFacing == Facing.RIGHT:
+                    toDraw.rotate(-90)       
+            
+            viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (size.x)/2, e.position.y - (size.y)/2))
+            toDraw.setSize(self.mCamera.getScaledSize(size.x, size.y))
+            toDraw.draw(delta, viewpos)
     
     def levelUpdate(self, enemies):
         self.mEnemies = enemies

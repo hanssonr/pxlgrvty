@@ -12,5 +12,5 @@ class RectF(object):
         
     
     def collidepoint(self, pos):
-        return True if (pos.x >= self.x and pos.x <= self.x + self.w and
-                pos.y >= self.y and pos.y <= self.y + self.h) else False 
+        return True if (pos.x > self.x and pos.x < self.x + self.w and
+                pos.y > self.y and pos.y < self.y + self.h) else False 

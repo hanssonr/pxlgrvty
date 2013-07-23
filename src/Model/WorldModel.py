@@ -35,7 +35,7 @@ class WorldModel(object):
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
         self.mEntityToFollow = self.player
         
-    def resetWorld(self):
+    def __resetWorld(self):
         self.dynamic_enities = []
         self.mFirstUpdate = True
         self.gravity.set(GravityDirection.DOWN)
@@ -43,7 +43,10 @@ class WorldModel(object):
         self.player.position = b2Vec2(self.level.mStartPos.x + self.player.size.x/3, self.level.mStartPos.y + self.player.size.y/2), 0
         self.player.mBodyDirection = GravityDirection.DOWN
         self.mLuObs.levelChanged(self.level)
-        
+    
+    def restart(self):
+        self.level.retryLevel()
+        self.__resetWorld()
      
     def update(self, delta):
         #set oldposition for boxes
@@ -82,12 +85,12 @@ class WorldModel(object):
             
         #is level done, reset and start next level
         if self.level.update(self.player.position):
-            self.resetWorld()
+            self.__resetWorld()
             
         #is player dead?
         if not self.player.alive:
             self.level.retryLevel()
-            self.resetWorld()
+            self.__resetWorld()
         
     
     def changeGravity(self, gravitydirection):

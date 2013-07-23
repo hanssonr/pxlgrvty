@@ -8,17 +8,26 @@ from Box2D import b2Vec2
 
 class Animation(Sprite):
     
-    __mElapsedTime = 0.0
-    __mLooping = True
-    __mRunning = True
-    __mIsDone = False
+    __mElapsedTime = None
+    __mLooping = None
+    __mRunning = None
+    __mIsDone = None
     
-    __mCurrentFrame = 0
-    __mCurrentRow = 0
+    __mCurrentFrame = None
+    __mCurrentRow = None
     __mDrawRect = None  
     
-    def __init__(self, sprite, framesX, framesY, animationtime, size):
+    def __init__(self, sprite, framesX, framesY, animationtime, size, looping = True):
         super(Animation, self).__init__(sprite)
+        
+        self.__mElapsedTime = 0.0
+        self.__mLooping = looping
+        self.__mRunning = True
+        self.__mIsDone = False
+        self.__mCurrentFrame = 0
+        self.__mCurrentRow = 0
+        self.__mDrawRect = None
+        
         Sprite.setSize(self, size)
         self.__mFramesX = framesX
         self.__mFramesY = framesY
@@ -66,5 +75,10 @@ class Animation(Sprite):
     
     def isAnimationDone(self):
         return self.__mIsDone
+    
+    def reset(self):
+        self.__mIsDone = False
+        self.__mCurrentFrame = 0
+        self.__mCurrentRow = 0
     
         

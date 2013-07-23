@@ -8,8 +8,7 @@ from Pxlgrvty import *
 
 class Main(object):
     
-    #initialize windowsize and fps
-    width = 1280
+    width =  1280
     height = 800
     fps = 60
     

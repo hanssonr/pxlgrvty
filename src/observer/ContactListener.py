@@ -41,7 +41,7 @@ class ContactListener(b2ContactListener):
                     bodyA.userData.mOnGround -= 1
                 else:
                     bodyA.userData.mOnGround += 1
-        
+        """
         #Player collides Enemy
         if isinstance(bodyA.userData, Player):
             if isinstance(bodyB.userData, Enemy):
@@ -49,6 +49,14 @@ class ContactListener(b2ContactListener):
         elif isinstance(bodyB.userData, Player):
             if isinstance(bodyA.userData, Enemy):
                 bodyB.userData.alive = False
+        """
+        if fixA.userData == Sensor.PLAYER_DEATHSENSOR:
+            if isinstance(bodyB.userData, Enemy):
+                bodyA.userData.alive = False
+        elif fixB.userData == Sensor.PLAYER_DEATHSENSOR:
+            if isinstance(bodyA.userData, Enemy):
+                bodyB.userData.alive = False
+        
         
         #Player collides pickupable
         if isinstance(bodyA.userData, Player):

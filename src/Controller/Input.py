@@ -36,6 +36,8 @@ class Input(BaseInputHandler):
                 self.player.jump()
             if event.key == K_ESCAPE:
                 self.mCurrentScreen.goBack()
+            if event.key == K_r:
+                self.world.restart()
                 
             #cameradisplacement
             if event.key == K_KP4:

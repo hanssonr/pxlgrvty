@@ -6,3 +6,4 @@ class Pgl(object):
     width = None
     height = None
     clock = None
+    options = None

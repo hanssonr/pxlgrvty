@@ -7,6 +7,7 @@ import ConfigParser, json, os, pygame, random
 from model.entities.Box import Box
 from model.entities.Nugget import Nugget
 from model.entities.SpikeBox import SpikeBox
+from model.entities.Spike import Spike
 from Color import Color
 from pygame import Rect
 from model.Chunk import Chunk
@@ -16,7 +17,7 @@ from model.ChunkHandler import ChunkHandler
 class Level(object):
     
     CHUNK_SIZE = 16
-    __mMaxLevels = 2 #read out from all the .lvl files later
+    __mMaxLevels = None
     mCurrentLevel = None
     mTiles = None
     mMap = None
@@ -48,7 +49,15 @@ class Level(object):
         self.mGravity = gravity
         self.mChunkHandler = ChunkHandler(world, self.CHUNK_SIZE)
         self.mCurrentLevel = lvl
+        self.__mMaxLevels = self.__countLevels()
         self.__loadLevel()
+        
+    def __countLevels(self):
+        lvls = 0
+        for filename in os.listdir("assets/levels"):
+            if filename.endswith(".lvl"):
+                lvls += 1
+        return lvls
         
     def __loadLevel(self):
         self.__readLevel()
@@ -70,7 +79,7 @@ class Level(object):
     """
     def __readLevel(self):
         parser = ConfigParser.ConfigParser()
-        parser.read("Assets/Levels/level%d.lvl" % self.mCurrentLevel)
+        parser.read("assets/Levels/level%d.lvl" % self.mCurrentLevel)
         self.mCurrentTileset = parser.get("level", "tileset")
         self.mPickupData = parser.get("objects", "pickups")
         self.mEnemyData = parser.get("objects", "enemies")
@@ -78,8 +87,8 @@ class Level(object):
         
         #Mapcollision
         #check for pictures first
-        if os.path.exists("Assets/Levels/level%d.png" % self.mCurrentLevel):
-            self.mMap = pygame.image.load("Assets/Levels/level%d.png" % self.mCurrentLevel)
+        if os.path.exists("assets/Levels/level%d.png" % self.mCurrentLevel):
+            self.mMap = pygame.image.load("assets/Levels/level%d.png" % self.mCurrentLevel)
             self.mWidth, self.mHeight = self.mMap.get_size()
             self.mMapType = MapType.PICTURE
         else: #check for lvl-file
@@ -134,9 +143,20 @@ class Level(object):
             self.mSwirlActive = True
         
             if (pos.x > self.mEndPos.x and pos.x < self.mEndPos.x + Tile.TILE_SIZE and 
-                pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):                
-                    self.mLevelDone = True if done == True else False 
-                 
+                pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):    
+                    self.__updateLevelLockState()            
+                    self.mLevelDone = True
+                    
+    
+    def __updateLevelLockState(self):
+        with open("assets/state/state.json", "r") as state:
+            lvldata = json.load(state)
+        
+        if int(lvldata["LVL"]) <= self.mCurrentLevel:
+            with open("assets/state/state.json", "w") as data:
+                lvl = min(self.mCurrentLevel+1, self.__mMaxLevels)
+                json.dump({"LVL":str(lvl)}, data)
+          
         
     def __createTextWorldCollision(self):
         for y in range(self.mHeight):
@@ -329,13 +349,16 @@ class Level(object):
         if len(enemies) > 0:
             for e in range(len(enemies)):
                 x, y = [float(i) for i in enemies[e]["POS"].split(",")]
-                dx, dy = [float(i) for i in enemies[e]["DIR"].split(",")]
                 etype = enemies[e]["TYPE"]
-                delay = float(enemies[e]["DELAY"])
                 
                 if etype == EnemyType.SPIKEBOX:
                     speed = float(enemies[e]["SPEED"])
+                    delay = float(enemies[e]["DELAY"])
+                    dx, dy = [float(i) for i in enemies[e]["DIR"].split(",")]
                     self.mEnemies.append(SpikeBox(self.mWorld, (x,y), b2Vec2(dx, dy), delay, speed))
+                elif etype == EnemyType.SPIKE:
+                    facing = int(enemies[e]["FACING"])
+                    self.mEnemies.append(Spike(self.mWorld, (x,y), facing))
     
     def __createBoxes(self):
         boxes = json.loads(self.mBoxData)
@@ -367,6 +390,7 @@ class ObjectType(object):
     
 class EnemyType(object):
     SPIKEBOX = "SPIKEBOX"
+    SPIKE = "SPIKE"
 
 class MapType(object):
     PICTURE = 0

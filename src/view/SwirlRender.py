@@ -9,9 +9,10 @@ from libs.Animation import Animation
 
 class SwirlRender(object):
     
-    __swirlActivation = False
+    __swirlActivation = None
     
     def __init__(self, camera, level):
+        self.__swirlActivation = False
         self.mLevel = level
         self.mCamera = camera
         self.swirl = Animation(Resources.getInstance().mSwirlSheet, 3, 2, 0.45, self.mCamera.getScaledSize(1,1))
@@ -35,4 +36,6 @@ class SwirlRender(object):
     
     def levelUpdate(self):
         self.__swirlActivation = False
+        self.swirl.setLooping(False)
+        self.swirl.reset()
         
