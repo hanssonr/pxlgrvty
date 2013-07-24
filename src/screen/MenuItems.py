@@ -31,15 +31,44 @@ class ListCreator(object):
     mItems = None
     mListItem = None
     
-    def __init__(self, x, y, size, items):
+    def __init__(self, listheight, x, y, itemsize, items):
+        self.viewRect = RectF(x, y, itemsize.x, listheight)
+        self.itemSize = itemsize
         self.mListItem = []
         self.mItems = items
         self.pos = b2Vec2(x,y)
         
+        self.mListItem.append(Button("+", x + itemsize.x, y, b2Vec2(0.5,0.5), ListItemAction.UP))
+        self.mListItem.append(Button("-", x + itemsize.x, y + listheight - itemsize.y, b2Vec2(0.5,0.5), ListItemAction.DOWN))
+        
         counter = 0
         for resolution in self.mItems:
-            self.mListItem.append(ListItem(counter, x, y + (counter * size.y), size, resolution))
+            self.mListItem.append(ListItem(counter, x, y + (counter * itemsize.y), itemsize, resolution))
             counter += 1
+    
+    def isInViewRect(self, item):
+        return self.viewRect.collidepoint(b2Vec2((item.x + item.size.x / 2.0, item.y + item.size.y / 2.0)))
+    
+    def scrollUp(self):
+        for fi in self.mListItem:
+            if isinstance(fi, ListItem):
+                if fi.rect.y == self.viewRect.y:
+                    return
+                break
+        
+        for li in self.mListItem:
+            if isinstance(li, ListItem):
+                li.y += li.size.y
+                li.rect.y = li.y
+    
+    def scrollDown(self):
+        if self.mListItem[len(self.mListItem)-1].rect.y == self.viewRect.y + self.viewRect.h - self.itemSize.y:
+            return
+        
+        for li in self.mListItem:
+            if isinstance(li, ListItem):
+                li.y -= li.size.y
+                li.rect.y = li.y
 
 
 class ListItem(object):
@@ -90,3 +119,5 @@ class CheckbuttonAction(object):
 
 class ListItemAction(object):
     ACTION = "ListItemAction::ACTION"
+    UP = "ListItemAction::UP"
+    DOWN = "ListItemAction::DOWN"

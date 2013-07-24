@@ -11,10 +11,8 @@ class OptionScreen(object):
     
     def __init__(self, game):
         pygame.mouse.set_visible(False)
+        self.__initializeOptions()
         self.mGame = game
-        self.mCamera = Camera(Pgl.width, Pgl.height)
-        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 3.0)
-        self.titleFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x * 2.0)
         self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
         self.mMenuItems = []
         
@@ -32,42 +30,19 @@ class OptionScreen(object):
         self.mMenuItems.append(CheckButton("music on/off", 7, 4, b2Vec2(0.5,0.5), CheckbuttonAction.MUSIC, Pgl.options.music))
         self.mMenuItems.append(CheckButton("sound on/off", 7, 4.5, b2Vec2(0.5,0.5), CheckbuttonAction.SOUND, Pgl.options.sound))
         
-        self.mResolutionList = ListCreator(8, 3.5, b2Vec2(3,0.5), self.__getResolutionList())
+        self.mResolutionList = ListCreator(2, 8, 3.5, b2Vec2(3,0.5), self.__getResolutionList())
         self.mMenuItems.extend(self.mResolutionList.mListItem)
         
         self.mGame.input = MenuInput(self)
-
-    def __readOptions(self):
-        options = []
-        optionData = None
         
-        try:
-            with open("assets/state/options.json", "r") as readstate:
-                optionData = json.load(readstate)
-        except (IOError, ValueError):
-            with open("assets/state/options.json", "w+") as writestate:
-                json.dump({"FULLSCREEN": False, "MUSIC": True, "SOUND": True, "RESOLUTION":"640x480"}, writestate)
-            
-        finally:
-            with open("assets/state/options.json", "r") as readstate:
-                optionData = json.load(readstate)
-        options.append(optionData["FULLSCREEN"])
-        options.append(optionData["MUSIC"])
-        options.append(optionData["SOUND"])
-        options.append(optionData["RESOLUTION"])
-        return options
+    def __initializeOptions(self):
+        self.mCamera = Camera(Pgl.width, Pgl.height)
+        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 3.0)
+        self.titleFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x * 2.0)
+        
     
     def __getResolutionList(self):
-        for mi in self.mMenuItems:
-            if mi.mAction == CheckbuttonAction.FULLSCREEN:
-                if mi.mActive:
-                    return ["640x480", "800x600", "1440x900", "1920x1080"]
-                else:
-                    return ["640x400", "800x500", "1280x800", "1680x1050"]
-    
-    def __writeOptions(self):
-        with open("assets/state/options.json", "w+") as state:
-                json.dump({"FULLSCREEN":self.options[Option.FULLSCREEN], "MUSIC":self.options[Option.MUSIC], "SOUND":self.options[Option.SOUND], "RESOLUTION":self.options[Option.RESOLUTION]}, state)
+        return ["%sx%s" % (x[0], x[1]) for x in pygame.display.list_modes()]
     
     def update(self, delta):            
         pos = self.mGame.input.getMousePosition()
@@ -97,8 +72,11 @@ class OptionScreen(object):
                 iDraw = self.checkbutton
                 txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x - mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x), mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
             elif isinstance(mi, ListItem):
-                color = (255,255,255) if mi.mActive else (150,150,150)
-                txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x + mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x) / 2.0, mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
+                if self.mResolutionList.isInViewRect(mi):
+                    color = (255,255,255) if mi.mActive else (150,150,150)
+                    txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x + mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x) / 2.0, mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
+                else:
+                    continue
             
             if mi.mActive:
                 iDraw.freeze(1, 0)
@@ -118,7 +96,7 @@ class OptionScreen(object):
         Pgl.app.fullscreen(Pgl.options.fullscreen, Pgl.options.getResolutionAsList())
         #turn on/off sound and music
         Pgl.options.writeOptions()
-        self.mGame.setScreen(OptionScreen(self.mGame))
+        self.__initializeOptions()
             
     def mouseClick(self, pos):
             mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
@@ -135,19 +113,7 @@ class OptionScreen(object):
                         self.__applyOptions()
                     elif mi.mAction == CheckbuttonAction.FULLSCREEN:
                         mi.mActive = not mi.mActive
-                        Pgl.options.fullscreen = mi.mActive
-                        
-                        toRemove = []
-                        for x in self.mMenuItems:
-                            if isinstance(x, ListItem):
-                                toRemove.append(x)
-                        
-                        for i in toRemove:
-                            self.mMenuItems.remove(i)
-                            
-                        self.mResolutionList = ListCreator(8, 3.5, b2Vec2(3,0.5), self.__getResolutionList())
-                        self.mMenuItems.extend(self.mResolutionList.mListItem)          
-                        
+                        Pgl.options.fullscreen = mi.mActive               
                     elif mi.mAction == CheckbuttonAction.MUSIC:
                         mi.mActive = not mi.mActive
                         Pgl.options.music = mi.mActive
@@ -160,6 +126,10 @@ class OptionScreen(object):
                                 listItem.mActive = False
                         mi.mActive = True
                         Pgl.options.resolution = mi.mText
+                    elif mi.mAction == ListItemAction.UP:
+                        self.mResolutionList.scrollUp()
+                    elif mi.mAction == ListItemAction.DOWN:
+                        self.mResolutionList.scrollDown()
                     break
         
     def mouseOver(self, pos):
