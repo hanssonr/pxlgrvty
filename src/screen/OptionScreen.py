@@ -73,7 +73,7 @@ class OptionScreen(object):
                 txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x - mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x), mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
             elif isinstance(mi, ListItem):
                 if self.mResolutionList.isInViewRect(mi):
-                    color = (255,255,255) if mi.mActive else (150,150,150)
+                    color = (255,255,255) if mi.mActive else (141,60,1)
                     txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x + mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x) / 2.0, mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
                 else:
                     continue

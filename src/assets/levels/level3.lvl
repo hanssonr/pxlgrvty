@@ -17,6 +17,11 @@ map =   # # # # # # # # # # # # # # # #
 		# # . . . . . # # # # # # # # #
 		# # # # # # # # # # # # # # # #
 
+[time]
+gold = 00:10:00
+silver = 00:15:00
+bronze = 00:25:00
+
 [objects]
 boxes = [] 
 pickups = [{"POS":"7,6", "TYPE":"NUGGET"}, {"POS":"3,13", "TYPE":"NUGGET"}, {"POS":"5,13", "TYPE":"NUGGET"}]

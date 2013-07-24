@@ -6,7 +6,7 @@ from Resources import Resources
 from Box2D import b2Vec2
 from libs.RectF import RectF
 from libs.Sprite import Sprite
-import os, pygame, GameScreen, json, MenuScreen
+import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen
 from screen.MenuItems import Button, MenuAction
 
 class LevelScreen(object):
@@ -22,10 +22,8 @@ class LevelScreen(object):
         self.arrow = Sprite(Resources.getInstance().mArrow) 
         self.arrow.setSize(self.mCamera.getScaledSize((self.arrow.getWidth()/float(self.arrow.getHeight())) * 0.5, 0.5))
         
-        self.button = Animation(Resources.getInstance().mLevelButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1))
-        self.button.setLooping(False)
-        self.menubutton = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1))
-        self.menubutton.setLooping(False)
+        self.button = Animation(Resources.getInstance().mLevelButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1), False)
+        self.menubutton = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1), False)
         
         self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
         
@@ -89,7 +87,8 @@ class LevelScreen(object):
             if btn.rect.collidepoint(mmp):
                 if isinstance(btn, LevelButton):
                     if not btn.mLocked:
-                        self.mGame.setScreen(GameScreen.GameScreen(self.mGame, btn.mText))
+                        self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, btn.mText))
+                       #self.mGame.setScreen(GameScreen.GameScreen(self.mGame, btn.mText))
                 elif isinstance(btn, Button):
                     if btn.mAction == MenuAction.BACK:
                         self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))

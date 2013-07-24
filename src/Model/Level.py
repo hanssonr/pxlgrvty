@@ -38,12 +38,16 @@ class Level(object):
     mEnemyData = None
     mBoxData = None
     
+    #timer
+    mTimer = None
+    
     def __init__(self, world, gravity, lvl):
         self.mSwirlActive = False
         self.mLevelDone = False
         self.mTiles = []
         self.mObjects = []
         self.mEnemies = []
+        self.mTimer = 0.0
         
         self.mWorld = world
         self.mGravity = gravity
@@ -100,6 +104,7 @@ class Level(object):
     def __unloadCurrentLevel(self):
         self.mEndPos = None
         self.mStartPos = None
+        self.mTimer = 0.0
         self.mSwirlActive = False
         self.__unloadEntities()
         for tile in self.mTiles:
@@ -119,7 +124,8 @@ class Level(object):
         self.mEnemies = []
     
     
-    def update(self, playerpos):        
+    def update(self, delta, playerpos):
+        self.mTimer += delta
         if self.mMapType == MapType.PICTURE:
             self.mChunkHandler.manageChunks(playerpos)
           
@@ -146,8 +152,7 @@ class Level(object):
                 pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):    
                     self.__updateLevelLockState()            
                     self.mLevelDone = True
-                    
-    
+                       
     def __updateLevelLockState(self):
         with open("assets/state/state.json", "r") as state:
             lvldata = json.load(state)
@@ -156,8 +161,7 @@ class Level(object):
             with open("assets/state/state.json", "w") as data:
                 lvl = min(self.mCurrentLevel+1, self.__mMaxLevels)
                 json.dump({"LVL":str(lvl)}, data)
-          
-        
+               
     def __createTextWorldCollision(self):
         for y in range(self.mHeight):
             for x in range(self.mWidth):
@@ -373,6 +377,7 @@ class Level(object):
             self.__unloadCurrentLevel()
             self.mCurrentLevel += 1
             self.__loadLevel()
+
     
     def retryLevel(self):
         self.__unloadEntities()

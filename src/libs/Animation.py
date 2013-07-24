@@ -17,12 +17,12 @@ class Animation(Sprite):
     __mCurrentRow = None
     __mDrawRect = None  
     
-    def __init__(self, sprite, framesX, framesY, animationtime, size, looping = True):
+    def __init__(self, sprite, framesX, framesY, animationtime, size, looping = True, running = True):
         super(Animation, self).__init__(sprite)
         
         self.__mElapsedTime = 0.0
         self.__mLooping = looping
-        self.__mRunning = True
+        self.__mRunning = running
         self.__mIsDone = False
         self.__mCurrentFrame = 0
         self.__mCurrentRow = 0

@@ -84,7 +84,7 @@ class WorldModel(object):
             self.mFirstUpdate = False
             
         #is level done, reset and start next level
-        if self.level.update(self.player.position):
+        if self.level.update(delta, self.player.position):
             self.__resetWorld()
             
         #is player dead?

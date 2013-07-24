@@ -22,6 +22,7 @@ class Resources(object):
     mCheckButton = None
     mArrow = None
     mLock = None
+    mMedallions = None
     
     def __init__(self):
         if self.INSTANCE is not None:
@@ -39,6 +40,7 @@ class Resources(object):
         self.mCheckButton = pygame.image.load("assets/gfx/checkbutton.png").convert_alpha()
         self.mArrow = pygame.image.load("assets/gfx/arrow.png").convert_alpha()
         self.mLock = pygame.image.load("assets/gfx/lock.png").convert_alpha()
+        self.mMedallions = pygame.image.load("assets/gfx/medallions.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         
