@@ -41,8 +41,11 @@ class WorldRender(LevelupdateListener):
             
             
             
-        self.label = Resources.getInstance().mFpsFont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
+        self.label = Resources.getInstance().getScaledFont(20).render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))
+        
+        self.time = Resources.getInstance().getScaledFont(self.mCamera.scale.x).render("%.2f" % self.mWorld.mTimer, 0, (255, 255, 255))
+        Pgl.app.surface.blit(self.time, (self.mCamera.getScaledSize(Camera.CAMERA_WIDTH / 2.2, Camera.CAMERA_HEIGHT - 1)))
     
 
     def levelChanged(self, level):

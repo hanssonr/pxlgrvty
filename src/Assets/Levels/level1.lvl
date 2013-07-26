@@ -18,9 +18,9 @@ map =   # # # # # # # # # # # # # # # #
 		# # # # # # # # # # # # # # # #
 	
 [time]
-gold = 00:10:00
-silver = 00:15:00
-bronze = 00:25:00
+gold = 00:09:50
+silver = 00:12:00
+bronze = 00:15:00
 
 [objects]
 boxes = [] 

@@ -23,9 +23,12 @@ class WorldModel(object):
     dynamic_enities = []
     mFirstUpdate = True
     mEntityToFollow = None
+    mTimer = None
     
     
     def __init__(self, camera, luObserver, lvl):
+        self.mTimer = 0.0
+        self.mLevelDone = False
         self.mCamera = camera
         self.mLuObs = luObserver
         self.contactListener = ContactListener()
@@ -36,6 +39,7 @@ class WorldModel(object):
         self.mEntityToFollow = self.player
         
     def __resetWorld(self):
+        self.mTimer = 0.0
         self.dynamic_enities = []
         self.mFirstUpdate = True
         self.gravity.set(GravityDirection.DOWN)
@@ -49,6 +53,8 @@ class WorldModel(object):
         self.__resetWorld()
      
     def update(self, delta):
+        self.mTimer += delta
+        print self.mTimer
         #set oldposition for boxes
         for box in self.level.mObjects:
             if isinstance(box, Box):
@@ -85,7 +91,8 @@ class WorldModel(object):
             
         #is level done, reset and start next level
         if self.level.update(delta, self.player.position):
-            self.__resetWorld()
+            self.mLevelDone = True
+            #self.__resetWorld()
             
         #is player dead?
         if not self.player.alive:

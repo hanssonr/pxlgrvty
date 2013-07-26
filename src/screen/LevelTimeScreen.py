@@ -1,7 +1,7 @@
 from controller.MenuInput import MenuInput
 from model.Camera import Camera
 from libs.Pgl import *
-import pygame, LevelScreen, json, ConfigParser, GameScreen
+import pygame, LevelScreen, json, ConfigParser, GameScreen, model.Level as Level, EndScreen
 from Box2D import b2Vec2
 from Resources import Resources
 from libs.Sprite import Sprite
@@ -11,7 +11,8 @@ from model.Time import Time
 
 class LevelTimeScreen(object):
     
-    def __init__(self, game, levelInt):
+    def __init__(self, game, levelInt, currentTime = None):
+        self.mCurrentTime = currentTime
         pygame.mouse.set_visible(False)
         self.mGame = game
         self.mCamera = Camera(Pgl.width, Pgl.height)
@@ -27,27 +28,66 @@ class LevelTimeScreen(object):
         self.arrow.setSize(self.mCamera.getScaledSize((self.arrow.getWidth()/float(self.arrow.getHeight())) * 0.5, 0.5))
         
         self.medallions = Animation(Resources.getInstance().mMedallions, 3, 3, 0, self.mCamera.getScaledSize(1, 1), False, False)
-
-        self.mButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
-        self.mButtons.append(Button("play", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
         
         self.mTime = Time(self.__readPlayerTime())
+        
+        if currentTime != None:
+            self.__initializeFromGame()
+        else:
+            self.__initializeFromMenu()
+              
         self.mLevelTimes = [Time(x) for x in self.__readLevelTimes()]
+        self.mButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
         
         self.achivedMedallion = self.__calculateMedallion()
-        
         self.mGame.input = MenuInput(self)
     
+    def __initializeFromMenu(self):
+        self.mButtons.append(Button("play", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
+    
+    def __initializeFromGame(self):
+        print self.mLevelInt, Level.Level.countLevels()
+        if self.mLevelInt < Level.Level.countLevels():
+            self.mButtons.append(Button("next", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
+        else:
+            self.mButtons.append(Button("end", 13.5, 8.5, b2Vec2(2,1), MenuAction.EXIT))
+            
+        self.mButtons.append(Button("retry", 11, 8.5, b2Vec2(2,1), MenuAction.RETRY))
+        
+        if self.mCurrentTime.isFaster(self.mTime):
+            self.mTime = self.mCurrentTime
+            #check if level is in time.json
+            data = None
+            try:
+                with open("assets/state/time.json", "r") as readstate:
+                    data = json.load(readstate)
+                    
+                    found = False
+                    #leta efter tiden, finns den uppdatera
+                    for time in data:
+                        if time["ID"] == str(self.mLevelInt):
+                            found = True
+                            time["TIME"] = self.mCurrentTime.toString()
+                    
+                    if not found:
+                        data.append({"ID":"%s" % str(self.mLevelInt), "TIME":"%s" % self.mCurrentTime.toString()})
+            finally:
+                #update the file
+                with open("assets/state/time.json", "w+") as writestate:
+                    json.dump(data, writestate)
+        
+    
     def __calculateMedallion(self):
-        if self.mLevelTimes[0].compareTimes(self.mTime):
+        if self.mTime.isFaster(self.mLevelTimes[0]):
             return b2Vec2(0,0)
-        elif self.mLevelTimes[1].compareTimes(self.mTime):
+        elif self.mTime.isFaster(self.mLevelTimes[1]):
             return b2Vec2(1,0)
-        elif self.mLevelTimes[2].compareTimes(self.mTime):
+        elif self.mTime.isFaster(self.mLevelTimes[2]):
             return b2Vec2(2,0)
         else:
             return b2Vec2(0,2)
     
+    #TODO: create a new json list if the one isnt found
     def __readPlayerTime(self):
         pTime = None
         
@@ -55,11 +95,17 @@ class LevelTimeScreen(object):
             with open("assets/state/time.json", "r") as readstate:
                 pTime = json.load(readstate)
                 
-            return pTime[str(self.mLevelInt)]["TIME"]
-        except:
-            pTime = "00:00:00"
+                found = False
+                for time in pTime:
+                    if time["ID"] == str(self.mLevelInt):
+                        pTime = time["TIME"]
+                        found = True
+                        break
         
-        return pTime
+                if not found:
+                    pTime = "00:00:00"
+        finally:           
+            return pTime
     
     def __readLevelTimes(self):
         times = []
@@ -85,12 +131,22 @@ class LevelTimeScreen(object):
         titlepos = self.mCamera.getViewCoords(b2Vec2(self.modelsize.x / 2.0, self.modelsize.y / 6))
         Pgl.app.surface.blit(title, (titlepos.x - size[0] / 2.0, titlepos.y - size[1] / 2.0))
         
+        #current runningtime (if comming from gamescreen)
+        if self.mCurrentTime != None:
+            current = Resources.getInstance().getScaledFont(self.mCamera.mScale.x / 1.5).render("Current time:", 0, (255, 255, 255))
+            currentsize = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 1.5).size("Current time:")
+            ctime = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 1.5).render(self.mCurrentTime.toString(), 0, (255,74,20))
+            currentpos = self.mCamera.getViewCoords(b2Vec2(5, 3.3))
+            ctimepos = self.mCamera.getViewCoords(b2Vec2(5.5, 3.3))
+            Pgl.app.surface.blit(current, currentpos)
+            Pgl.app.surface.blit(ctime, (ctimepos.x + currentsize[0], ctimepos.y))
+        
         #besttime
         best = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 1.5).render("Best time:", 0, (255, 255, 255))
         bestsize = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 1.5).size("Best time:")
         time = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 1.5).render(self.mTime.toString(), 0, (255,74,20))
-        bestpos = self.mCamera.getViewCoords(b2Vec2(5, 3.5))
-        timepos = self.mCamera.getViewCoords(b2Vec2(5.5, 3.5))
+        bestpos = self.mCamera.getViewCoords(b2Vec2(5, 3.8))
+        timepos = self.mCamera.getViewCoords(b2Vec2(5.5, 3.8))
         Pgl.app.surface.blit(best, bestpos)
         Pgl.app.surface.blit(time, (timepos.x + bestsize[0], timepos.y))
         
@@ -138,7 +194,14 @@ class LevelTimeScreen(object):
                 if btn.mAction == MenuAction.BACK:
                     self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))
                 elif btn.mAction == MenuAction.NEWGAME:
+                    if self.mCurrentTime != None:
+                        self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt+1))
+                    else:
+                        self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
+                elif btn.mAction == MenuAction.RETRY:
                     self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
+                elif btn.mAction == MenuAction.EXIT:
+                    self.mGame.setScreen(EndScreen.EndScreen(self.mGame))
                 break
         
     def mouseOver(self, pos):

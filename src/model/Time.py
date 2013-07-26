@@ -1,4 +1,3 @@
-
 class Time(object):
     
     mMinutes = 0
@@ -9,14 +8,15 @@ class Time(object):
         self.mMinutes, self.mSeconds, self.mMilliseconds = timestring.split(":")
         
     """
-    Return true if othertime is better(lower) than self
+    Return true if this is better(lower) than other
     """
-    def compareTimes(self, othertime):
-        mtime1 = int(int(self.minutes) * 60000 + int(self.seconds) * 1000 + float(self.milliseconds))
-        mtime2 = int(int(othertime.minutes) * 60000 + int(othertime.seconds) * 1000 + float(othertime.milliseconds))
+    def isFaster(self, othertime):
+        this = int(int(self.minutes) * 60000 + int(self.seconds) * 1000 + float(self.milliseconds))
+        other= int(int(othertime.minutes) * 60000 + int(othertime.seconds) * 1000 + float(othertime.milliseconds))
         
-        if mtime2 == 0: return False
-        return True if mtime2 <= mtime1 else False
+        if this == 0: return False
+        if other == 0: return True
+        return True if this <= other else False
         
     def toString(self):
         return "%s:%s:%s" % (self.minutes, self.seconds, self.milliseconds)
@@ -29,6 +29,17 @@ class Time(object):
     
     def __milliseconds(self):
         return self.mMilliseconds
+    
+    @staticmethod
+    def convertToTimeFormat(floattime):
+        m, s = divmod(floattime, 60)
+        s, mi = str(s).split(".")
+        
+        m = str(int(m))
+        if len(str(m)) == 1: m = "0" + m
+        if len(s) == 1: s = "0" + s
+        if len(mi) == 3: mi = mi[:-1]
+        return Time("%s:%s:%s" % (m, s, mi))
     
     minutes = property(__minutes, None)
     seconds = property(__seconds, None)

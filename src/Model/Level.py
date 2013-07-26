@@ -17,7 +17,7 @@ from model.ChunkHandler import ChunkHandler
 class Level(object):
     
     CHUNK_SIZE = 16
-    __mMaxLevels = None
+    mMaxLevels = None
     mCurrentLevel = None
     mTiles = None
     mMap = None
@@ -42,26 +42,19 @@ class Level(object):
     mTimer = None
     
     def __init__(self, world, gravity, lvl):
+        self.mMaxLevels = self.countLevels()
         self.mSwirlActive = False
         self.mLevelDone = False
         self.mTiles = []
         self.mObjects = []
         self.mEnemies = []
         self.mTimer = 0.0
-        
         self.mWorld = world
         self.mGravity = gravity
         self.mChunkHandler = ChunkHandler(world, self.CHUNK_SIZE)
         self.mCurrentLevel = lvl
-        self.__mMaxLevels = self.__countLevels()
-        self.__loadLevel()
         
-    def __countLevels(self):
-        lvls = 0
-        for filename in os.listdir("assets/levels"):
-            if filename.endswith(".lvl"):
-                lvls += 1
-        return lvls
+        self.__loadLevel()
         
     def __loadLevel(self):
         self.__readLevel()
@@ -132,7 +125,7 @@ class Level(object):
         if not self.mLevelDone:
             self.checkLevelCompletion(playerpos)    
         else:
-            self.nextLevel()
+            #self.nextLevel()
             self.mLevelDone = False
             return True
         
@@ -159,7 +152,7 @@ class Level(object):
         
         if int(lvldata["LVL"]) <= self.mCurrentLevel:
             with open("assets/state/state.json", "w") as data:
-                lvl = min(self.mCurrentLevel+1, self.__mMaxLevels)
+                lvl = min(self.mCurrentLevel+1, self.mMaxLevels)
                 json.dump({"LVL":str(lvl)}, data)
                
     def __createTextWorldCollision(self):
@@ -373,7 +366,7 @@ class Level(object):
                 self.mObjects.append(Box(b2Vec2(x, y), self.mWorld, self.mGravity))
     
     def nextLevel(self):
-        if self.mCurrentLevel < self.__mMaxLevels:
+        if self.mCurrentLevel < self.mMaxLevels:
             self.__unloadCurrentLevel()
             self.mCurrentLevel += 1
             self.__loadLevel()
@@ -389,6 +382,13 @@ class Level(object):
     def isInActiveChunks(self, position):
         return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)
     
+    @staticmethod
+    def countLevels():
+        lvls = 0
+        for filename in os.listdir("assets/levels"):
+            if filename.endswith(".lvl"):
+                lvls += 1
+        return lvls
 
 class ObjectType(object):
     NUGGET = "NUGGET"

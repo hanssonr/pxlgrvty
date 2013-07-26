@@ -9,12 +9,16 @@ from Tile import Tile
 
 class ChunkHandler(object):
     
-    __mActiveChunks = []
-    __mChunks = []
+    __mActiveChunks = None
+    __mChunks = None
     CHUNK_SIZE = None
-    mActiveTiles = []
+    mActiveTiles = None
     
     def __init__(self, physworld, chunksize):
+        self.__mActiveChunks = []
+        self.__mChunks = []
+        self.mActiveTiles = []
+        
         self.mWorld = physworld
         self.CHUNK_SIZE = chunksize
     

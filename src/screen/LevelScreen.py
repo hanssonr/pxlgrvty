@@ -6,7 +6,7 @@ from Resources import Resources
 from Box2D import b2Vec2
 from libs.RectF import RectF
 from libs.Sprite import Sprite
-import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen
+import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen, model.Time as Time
 from screen.MenuItems import Button, MenuAction
 
 class LevelScreen(object):

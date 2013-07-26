@@ -104,6 +104,7 @@ class CheckButton(object):
 
 class MenuAction(object):
     NEWGAME = "MenuAction::NEWGAME"
+    RETRY = "MenuAction::RETRY"
     OPTIONS = "MenuAction::OPTIONS"
     EXIT = "MenuAction::EXIT"
     BACK = "MenuAction::BACK"
