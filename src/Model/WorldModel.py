@@ -9,6 +9,9 @@ from Box2D import b2World, b2_dynamicBody, b2Vec2
 from Direction import GravityDirection
 from entities.Enemy import Enemy
 from entities.PickableObject import PickableObject
+from effects.Particle import Particle
+from effects.BloodSplatter import BloodSplatter
+from Resources import *
 
 class WorldModel(object):
     
@@ -24,13 +27,18 @@ class WorldModel(object):
     mFirstUpdate = True
     mEntityToFollow = None
     mTimer = None
+    mDeathTimer = 1.0
+    
+    mSwitch = None
     
     
-    def __init__(self, camera, luObserver, lvl):
+    def __init__(self, camera, luObserver, fxObserver, lvl):
+        self.mSwitch = True
         self.mTimer = 0.0
         self.mLevelDone = False
         self.mCamera = camera
         self.mLuObs = luObserver
+        self.mFxObs = fxObserver
         self.contactListener = ContactListener()
         self.gravity = Gravity()
         self.physWorld = b2World(gravity=(0,0),doSleep=True, contactListener=self.contactListener)
@@ -39,13 +47,13 @@ class WorldModel(object):
         self.mEntityToFollow = self.player
         
     def __resetWorld(self):
+        self.mSwitch = True
+        self.mDeathTimer = 1.0
         self.mTimer = 0.0
         self.dynamic_enities = []
         self.mFirstUpdate = True
-        self.gravity.set(GravityDirection.DOWN)
-        self.player.alive = True
-        self.player.position = b2Vec2(self.level.mStartPos.x + self.player.size.x/3, self.level.mStartPos.y + self.player.size.y/2), 0
-        self.player.mBodyDirection = GravityDirection.DOWN
+        self.gravity.reset()
+        self.player.reset(b2Vec2(self.level.mStartPos.x + self.player.size.x/3, self.level.mStartPos.y + self.player.size.y/2))
         self.mLuObs.levelChanged(self.level)
     
     def restart(self):
@@ -54,7 +62,6 @@ class WorldModel(object):
      
     def update(self, delta):
         self.mTimer += delta
-        print self.mTimer
         #set oldposition for boxes
         for box in self.level.mObjects:
             if isinstance(box, Box):
@@ -84,6 +91,8 @@ class WorldModel(object):
                     body.userData.update(delta)
                 elif isinstance(body.userData, PickableObject):
                     body.userData.update(delta)
+                elif isinstance(body.userData, Particle):
+                    body.userData.update(delta)
                     
         
         if self.mFirstUpdate == True:          
@@ -96,8 +105,18 @@ class WorldModel(object):
             
         #is player dead?
         if not self.player.alive:
-            self.level.retryLevel()
-            self.__resetWorld()
+            
+            if self.mSwitch:
+                Resources.getInstance().mFleshExplosion.play()
+                self.mFxObs.addFx(BloodSplatter(self.physWorld, self.gravity, self.player.position))
+                self.mSwitch = False
+            
+            self.player.stopMovement()
+            self.mDeathTimer -= delta
+            
+            if self.mDeathTimer < 0:
+                self.level.retryLevel()
+                self.__resetWorld()
         
     
     def changeGravity(self, gravitydirection):

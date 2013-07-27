@@ -87,8 +87,8 @@ class DebugDraw(b2Draw):
         else: radius = int(radius)
 
         center = self.toScreen(center)
-        if self.camera.isInFrustum(center-radius, center+radius):
-            pygame.draw.circle(self.surface, color, center, radius, drawwidth)
+        #if self.camera.isInFrustum(center-radius, center+radius):
+        pygame.draw.circle(self.surface, color, center, radius, drawwidth)
 
     def DrawSolidCircle(self, center_v, radius, axis, color):
         """

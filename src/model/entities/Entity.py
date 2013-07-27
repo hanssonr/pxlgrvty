@@ -16,9 +16,10 @@ class Entity(object):
     mInGravityZone = 0
     mOldGravity = None
     mSize = b2Vec2(0,0)
-    __mAlive = True
+    __mAlive = None
     
     def __init__(self, pos, size, physbody):
+        self.__mAlive = True
         self.mId = Id.getInstance().getId()
         self.mPosition = pos
         self.mSize = size

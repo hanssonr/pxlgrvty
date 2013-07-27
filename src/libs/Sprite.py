@@ -18,7 +18,7 @@ class Sprite(object):
         if area != None:
             toDraw = self.image.subsurface(area)
             toDraw = pygame.transform.flip(toDraw, self.__mFlippedX, self.__mFlippedY)
-            toDraw = pygame.transform.rotate(toDraw, self.__mRotation)  
+            toDraw = pygame.transform.rotate(toDraw, self.__mRotation)
 
         if self.__mSize != None:
             toDraw = pygame.transform.scale(toDraw, self.__mSize)

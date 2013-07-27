@@ -1,4 +1,5 @@
 from Box2D.Box2D import *
+from model.Filter import *
 
 class Tile(object):
     
@@ -26,16 +27,23 @@ class Tile(object):
         return True if any(t == tiletype for t in self.mCollideableWalls) else False
                 
     def __createTile(self):
-        self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
-        #self.mBody.CreatePolygonFixture(box=(self.TILE_SIZE/2, self.TILE_SIZE/2))
-        self.mBody.userData = self
-        
         tl = b2Vec2(-self.TILE_SIZE/2, -self.TILE_SIZE/2)
         tr = b2Vec2(self.TILE_SIZE/2, -self.TILE_SIZE/2)
         br = b2Vec2(self.TILE_SIZE/2, self.TILE_SIZE/2)
         bl = b2Vec2(-self.TILE_SIZE/2, self.TILE_SIZE/2)
         
-        self.mBody.CreateEdgeChain((tl, bl, br, tr, tl))
+        shape = b2ChainShape()
+        shape.vertices = (tl, bl, br, tr)
+        fd = b2FixtureDef()
+        fd.categoryBits = Filter.CATEGORY_WALLS
+        fd.maskBits = Filter.MASK_WALLS
+        fd.shape = shape
+        
+        self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
+        
+        self.mBody.CreateFixture(fd)
+        self.mBody.userData = self
+        #self.mBody.CreateEdgeChain((tl, bl, br, tr, tl))
         
     
     def __createGravityZone(self):

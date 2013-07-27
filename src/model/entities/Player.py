@@ -7,6 +7,7 @@ from model.Direction import *
 from model.entities.MovableEntity import *
 from model.Gravity import *
 from model.Sensor import *
+from effects.BloodSplatter import *
 
 class Player(MovableEntity):
     
@@ -26,7 +27,7 @@ class Player(MovableEntity):
     mFacing = Facing.RIGHT
     mBodyDirection = GravityDirection.DOWN
     
-    def __init__(self, position, physworld, gravity):  
+    def __init__(self, position, physworld, gravity):
         self.mWorld = physworld
         self.mGravity = gravity
         self.mPlayerState = PlayerState.IDLE
@@ -56,13 +57,22 @@ class Player(MovableEntity):
         body.userData = self
               
         super(Player, self).__init__(pos, b2Vec2(self.PLAYER_WIDTH, self.PLAYER_HEIGHT), body, b2Vec2(0,0), 3.5, b2Vec2(0,0))
-     
+    
+    def reset(self, pos):
+        self.alive = True
+        self.mJumping = False
+        self.mBodyDirection = GravityDirection.DOWN
+        self.position = pos, 0
+        self.mDirection.Set(0,0)
+        self.mVelocity.Set(0,0)
+        
+    
     def update(self, delta): 
         if self.mOldGravity != None:
             self.mGravityToUse = self.mOldGravity.copy()
         else:
             self.mGravityToUse = self.mGravity.get().copy()
-        
+            
         #setting velocity
         self.mVelocity = self.mDirection.copy() * self.mSpeed
     
@@ -133,7 +143,7 @@ class Player(MovableEntity):
     def jump(self):
         if self.mOnGround:
             self.mJumping = True
-
+    
 class PlayerState():
     IDLE = 0
     MOVING = 1

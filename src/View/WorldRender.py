@@ -7,9 +7,10 @@ from Resources import *
 from view.ObjectRender import ObjectRender
 from view.EnemyRender import EnemyRender
 from view.SwirlRender import SwirlRender
+from view.EffectRender import EffectRender
 from observer.Observers import *
 
-class WorldRender(LevelupdateListener):
+class WorldRender(object):
     
     def __init__(self, world, camera):
         self.mWorld = world
@@ -25,6 +26,7 @@ class WorldRender(LevelupdateListener):
         self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles, self.mWorld.level.mCurrentTileset)
         self.enemyRender = EnemyRender(self.mCamera, self.mWorld.level.mEnemies)
         self.swirlRender = SwirlRender(self.mCamera, self.mWorld.level)
+        self.fxRender = EffectRender(self.mCamera)
     
     def render(self, delta):
         Pgl.app.surface.fill((60,59,77))
@@ -38,6 +40,7 @@ class WorldRender(LevelupdateListener):
             self.enemyRender.render(delta)
             self.playerRender.render(delta)
             self.tileRender.render(delta)
+            self.fxRender.render(delta)
             
             
             
@@ -48,8 +51,13 @@ class WorldRender(LevelupdateListener):
         Pgl.app.surface.blit(self.time, (self.mCamera.getScaledSize(Camera.CAMERA_WIDTH / 2.2, Camera.CAMERA_HEIGHT - 1)))
     
 
+    "implementing LevelupdateListener"
     def levelChanged(self, level):
         self.tileRender.levelUpdate(level.mTiles, level.mCurrentTileset)
         self.objectRender.levelUpdate(level.mObjects)
         self.enemyRender.levelUpdate(level.mEnemies)
         self.swirlRender.levelUpdate()
+    
+    "implementing FXListener"    
+    def addFx(self, fx):
+        self.fxRender.addFx(fx)

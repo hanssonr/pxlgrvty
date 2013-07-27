@@ -12,6 +12,9 @@ class Gravity(object):
         self.FORCE = 6
         self.__mGravity = b2Vec2(0, self.FORCE)
         self.__mGravityDir = GravityDirection.DOWN
+        
+    def reset(self):
+        self.__mGravity = b2Vec2(0, self.FORCE)
     
     def set(self, gravitydir):
         self.__mGravityDir = gravitydir

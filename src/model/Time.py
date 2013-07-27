@@ -39,6 +39,7 @@ class Time(object):
         if len(str(m)) == 1: m = "0" + m
         if len(s) == 1: s = "0" + s
         if len(mi) == 3: mi = mi[:-1]
+        if len(mi) == 1: mi = "0" + mi
         return Time("%s:%s:%s" % (m, s, mi))
     
     minutes = property(__minutes, None)

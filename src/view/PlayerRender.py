@@ -15,25 +15,26 @@ class PlayerRender(object):
         
     
     def render(self, delta):
-        size = b2Vec2(self.mPlayer.size.x, self.mPlayer.size.y)
-        
-        if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
-            size.Set(size.y, size.x)
-         
-        viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - size.x/2, self.mPlayer.position.y - size.y/2))
-        self.playerAnimation.setSize(self.mCamera.getScaledSize(size.x, size.y))
-        
-        if self.mPlayer.mPlayerState == PlayerState.IDLE:
-            self.playerAnimation.freeze(0)
-        elif self.mPlayer.mPlayerState == PlayerState.FALLING:
-            self.playerAnimation.freeze(0, 1)
-        else:
-            self.playerAnimation.gotoRow(0)
-            self.playerAnimation.continueAnimation()
-
-        self.__flipAndRotate()
-        
-        self.playerAnimation.draw(delta, viewpos)
+        if self.mPlayer.alive:
+            size = b2Vec2(self.mPlayer.size.x, self.mPlayer.size.y)
+            
+            if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
+                size.Set(size.y, size.x)
+             
+            viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - size.x/2, self.mPlayer.position.y - size.y/2))
+            self.playerAnimation.setSize(self.mCamera.getScaledSize(size.x, size.y))
+            
+            if self.mPlayer.mPlayerState == PlayerState.IDLE:
+                self.playerAnimation.freeze(0)
+            elif self.mPlayer.mPlayerState == PlayerState.FALLING:
+                self.playerAnimation.freeze(0, 1)
+            else:
+                self.playerAnimation.gotoRow(0)
+                self.playerAnimation.continueAnimation()
+    
+            self.__flipAndRotate()
+            
+            self.playerAnimation.draw(delta, viewpos)
             
                 
     def __flipAndRotate(self):

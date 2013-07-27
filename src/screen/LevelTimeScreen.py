@@ -46,7 +46,6 @@ class LevelTimeScreen(object):
         self.mButtons.append(Button("play", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
     
     def __initializeFromGame(self):
-        print self.mLevelInt, Level.Level.countLevels()
         if self.mLevelInt < Level.Level.countLevels():
             self.mButtons.append(Button("next", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
         else:

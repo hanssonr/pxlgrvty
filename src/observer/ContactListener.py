@@ -52,10 +52,12 @@ class ContactListener(b2ContactListener):
         """
         if fixA.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyB.userData, Enemy):
-                bodyA.userData.alive = False
+                if bodyA.userData.alive:
+                    bodyA.userData.alive = False
         elif fixB.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyA.userData, Enemy):
-                bodyB.userData.alive = False
+                if bodyB.userData.alive:
+                    bodyB.userData.alive = False
         
         
         #Player collides pickupable

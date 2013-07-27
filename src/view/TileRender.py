@@ -30,7 +30,11 @@ class TileRender(object):
                 elif tile.tiletype == TileType.L:
                     self.mTileSprite.freeze(0,1)
                 elif tile.tiletype == TileType.M:
-                    self.mTileSprite.freeze(1,1)
+                    random.seed(tile.position.x / tile.position.y)
+                    if random.randint(0,9) > 3:
+                        self.mTileSprite.freeze(1,1)
+                    else:
+                        self.mTileSprite.freeze(2,7)
                 elif tile.tiletype == TileType.R:
                     self.mTileSprite.freeze(2,1)
                 elif tile.tiletype == TileType.BL:
