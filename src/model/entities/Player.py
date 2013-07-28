@@ -45,8 +45,8 @@ class Player(MovableEntity):
         fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         
-        #gravitysensor/collisionsensor
-        shape.SetAsBox(0.15,0.25)
+        #gravitysensor/deathsensor
+        shape.SetAsBox(0.15,0.3)
         fd.userData = Sensor.PLAYER_DEATHSENSOR
         body.CreateFixture(fd)
         
@@ -78,18 +78,17 @@ class Player(MovableEntity):
     
         #jumping
         if self.mJumping:
-
             #changing velocity depending on bodyDirection due to gravity
             if self.mBodyDirection == GravityDirection.LEFT or self.mBodyDirection == GravityDirection.RIGHT:
-                self.mVelocity.x = -self.mGravityToUse.x * 0.78
+                self.mVelocity.x = -self.mGravityToUse.x * (1 - self.mJumpTimer)
             else:
-                self.mVelocity.y = -self.mGravityToUse.y * 0.78
+                self.mVelocity.y = -self.mGravityToUse.y * (1 - self.mJumpTimer)
             
             #zero out gravity
             self.mGravityToUse = b2Vec2(0,0)
             
             self.mJumpTimer += delta
-            if self.mJumpTimer > 0.3:
+            if self.mJumpTimer >= 0.3:
                 self.mJumpTimer = 0
                 self.mJumping = False
   
@@ -142,6 +141,7 @@ class Player(MovableEntity):
     
     def jump(self):
         if self.mOnGround:
+            self.mJumpStartY = self.position.y - self.size.y / 2.0
             self.mJumping = True
     
 class PlayerState():

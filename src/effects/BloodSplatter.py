@@ -17,7 +17,7 @@ class BloodSplatter(object):
             particle = Particle(physworld, b2Vec2(0,1), b2Vec2(rs, rs), min(rs * 10, 1), pos)
             randDir = b2Vec2(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
             randDir.Normalize()
-            particle.mVelocity = randDir * (particle.mSpeed * random.uniform(0.2, 1.5))
+            particle.mVelocity = randDir * (particle.mSpeed * random.uniform(0.2, 1.5))         
             self.mParticles.append(particle)
     
     def isAlive(self):

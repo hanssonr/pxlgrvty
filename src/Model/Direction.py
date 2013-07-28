@@ -2,7 +2,7 @@ class GravityDirection(object):
     UP, RIGHT, DOWN, LEFT = range(4)  
  
 class MoveDirection(object):
-    UP, RIGHT, DOWN, LEFT = range(4)
+    UP, RIGHT, DOWN, LEFT = range(1, 5)
 
 class Direction(object):
     UP = -1

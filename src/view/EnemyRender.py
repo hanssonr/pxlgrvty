@@ -3,6 +3,7 @@ from libs.Sprite import *
 from model.Direction import Facing
 from model.entities.SpikeBox import SpikeBox
 from model.entities.Spike import Spike
+from model.entities.Saw import Saw
 from libs.Animation import Animation
 from Box2D import b2Vec2
 
@@ -14,6 +15,7 @@ class EnemyRender(object):
         
         self.spikebox = Animation(Resources.getInstance().mSpikeBox, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
         self.spike = Animation(Resources.getInstance().mSpike, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
+        self.saw = Animation(Resources.getInstance().mSaw, 2, 1, 0.1, self.mCamera.getScaledSize(1,1))
         
         
     def render(self, delta):
@@ -36,7 +38,9 @@ class EnemyRender(object):
                 elif e.mFacing == Facing.LEFT:
                     toDraw.rotate(90)
                 elif e.mFacing == Facing.RIGHT:
-                    toDraw.rotate(-90)       
+                    toDraw.rotate(-90)
+            elif isinstance(e, Saw):
+                toDraw = self.saw
             
             viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (size.x)/2, e.position.y - (size.y)/2))
             toDraw.setSize(self.mCamera.getScaledSize(size.x, size.y))

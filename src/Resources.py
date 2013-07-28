@@ -25,6 +25,7 @@ class Resources(object):
     mLock = None
     mMedallions = None
     mBlood = None
+    mSaw = None
     
     
     
@@ -44,6 +45,7 @@ class Resources(object):
         self.mPxl = pygame.image.load("assets/gfx/player.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mSpike = pygame.image.load("assets/gfx/spike.png").convert_alpha()
+        self.mSaw = pygame.image.load("assets/gfx/saw.png").convert_alpha()
         self.mNugget = pygame.image.load("assets/gfx/nugget.png").convert_alpha()
         self.mSwirlSheet = pygame.image.load("assets/gfx/swirl.png").convert_alpha()
         self.mLevelButton = pygame.image.load("assets/gfx/levelbutton.png").convert_alpha()

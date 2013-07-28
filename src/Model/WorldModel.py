@@ -18,7 +18,7 @@ class WorldModel(object):
     DEBUG = False
     
     physWorld = None
-    timeStep = 1.0 / 60
+    timeStep = 1.0 / 60.0
     vel_iters, pos_iters = 6, 2 
     debugRender = None;
     player = None

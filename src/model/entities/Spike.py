@@ -1,5 +1,5 @@
 from Box2D import b2Vec2
-from Enemy import Enemy
+from Enemy import Enemy, EnemyShape
 from model.Direction import Facing
 
 class Spike(Enemy):
@@ -25,7 +25,7 @@ class Spike(Enemy):
             self.__SIZE.Set(0.5, 1)
             position.Set(position.x + self.__SIZE.x / 2.5, position.y + self.__SIZE.y / 2.0)
         
-        super(Spike, self).__init__(physworld, position, self.__SIZE, self)
+        super(Spike, self).__init__(physworld, position, self.__SIZE, EnemyShape.POLYGON, self)
     
     def update(self, delta):
         pass

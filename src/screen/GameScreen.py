@@ -15,7 +15,7 @@ class GameScreen(object):
     mWorldRender = None
     
     def __init__(self, game, lvl):
-        pygame.mouse.set_visible(True)
+        pygame.mouse.set_visible(False)
         #pygame.mixer.music.play(0)
         self.mGame = game
         self.mLuObs = LevelupdateObserver()

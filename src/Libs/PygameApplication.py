@@ -12,6 +12,8 @@ class PygameApplication(object):
     
     game = None
     
+    timestep = 1.0 / 60.0
+    
     def __init__(self, game, width, height, fps):        
         self.game = game
         self.width = width
@@ -34,9 +36,12 @@ class PygameApplication(object):
         Pgl.clock = pygame.time.Clock()
         
         self.game.create()
-        while self.running:
-            delta = Pgl.clock.tick(self.fps) / 1000.0
 
+        while self.running:        
+            Pgl.clock.tick(self.fps) / 1000.0
+
+            delta = self.timestep
+            
             if self.game.input != None:
                 self.game.input.update()
                             

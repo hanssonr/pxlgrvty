@@ -8,6 +8,7 @@ from model.entities.Box import Box
 from model.entities.Nugget import Nugget
 from model.entities.SpikeBox import SpikeBox
 from model.entities.Spike import Spike
+from model.entities.Saw import Saw
 from Color import Color
 from pygame import Rect
 from model.Chunk import Chunk
@@ -356,6 +357,13 @@ class Level(object):
                 elif etype == EnemyType.SPIKE:
                     facing = int(enemies[e]["FACING"])
                     self.mEnemies.append(Spike(self.mWorld, (x,y), facing))
+                elif etype == EnemyType.SAW:
+                    pattern = [(k, v) for k,v in (str(enemies[e]["PATTERN"][x]).split(",") for x in range(len(enemies[e]["PATTERN"])))]
+                    speed = float(enemies[e]["SPEED"])
+                    radius = float(enemies[e]["RADIUS"])
+                    self.mEnemies.append(Saw(self.mWorld, (x,y), pattern, radius, speed))
+                    
+                    
     
     def __createBoxes(self):
         boxes = json.loads(self.mBoxData)
@@ -396,6 +404,7 @@ class ObjectType(object):
 class EnemyType(object):
     SPIKEBOX = "SPIKEBOX"
     SPIKE = "SPIKE"
+    SAW = "SAW"
 
 class MapType(object):
     PICTURE = 0

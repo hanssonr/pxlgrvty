@@ -31,14 +31,14 @@ class Time(object):
         return self.mMilliseconds
     
     @staticmethod
-    def convertToTimeFormat(floattime):
+    def convertToTimeFormat(floattime):     
         m, s = divmod(floattime, 60)
         s, mi = str(s).split(".")
         
         m = str(int(m))
         if len(str(m)) == 1: m = "0" + m
         if len(s) == 1: s = "0" + s
-        if len(mi) == 3: mi = mi[:-1]
+        if len(mi) > 2: mi = mi[:2]
         if len(mi) == 1: mi = "0" + mi
         return Time("%s:%s:%s" % (m, s, mi))
     

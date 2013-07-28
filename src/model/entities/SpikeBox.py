@@ -1,4 +1,4 @@
-from Enemy import Enemy
+from Enemy import Enemy, EnemyShape
 from Box2D import b2Vec2
 
 class SpikeBox(Enemy):
@@ -20,7 +20,7 @@ class SpikeBox(Enemy):
         self.__mDirection = direction
         self.__mDelay = delay
         
-        super(SpikeBox, self).__init__(physworld, self.__mStartPos, self.__SIZE, self)
+        super(SpikeBox, self).__init__(physworld, self.__mStartPos, self.__SIZE, EnemyShape.POLYGON, self)
     
     def update(self, delta):     
         if self.isTouching > 0:
