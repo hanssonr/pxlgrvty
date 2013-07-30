@@ -3,7 +3,7 @@ Singleton
 http://blog.amir.rachum.com/post/21850841339/implementing-the-singleton-pattern-in-python
 """
 
-import pygame, libs.Options
+import pygame
 
 class Resources(object):
 
@@ -26,21 +26,18 @@ class Resources(object):
     mMedallions = None
     mBlood = None
     mSaw = None
-    
-    
+    mUI = None
     
     #sound
     mFleshExplosion = None
-    
-    #music
-    mBgMusic = None
+    mJump = None
     
     def __init__(self):
         if self.INSTANCE is not None:
             raise ValueError("already instantiated")
     
     def loadGameResources(self):
-        pygame.mixer.init()
+        #gfx
         self.mBox = pygame.image.load("assets/gfx/box.png").convert_alpha()
         self.mPxl = pygame.image.load("assets/gfx/player.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
@@ -54,15 +51,16 @@ class Resources(object):
         self.mArrow = pygame.image.load("assets/gfx/arrow.png").convert_alpha()
         self.mLock = pygame.image.load("assets/gfx/lock.png").convert_alpha()
         self.mMedallions = pygame.image.load("assets/gfx/medallions.png").convert_alpha()
+        self.mUI = pygame.image.load("assets/gfx/ui.png").convert_alpha()
         self.mBlood = pygame.image.load("assets/gfx/blood.png").convert_alpha()
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         
+        pygame.mixer.init()
         #sound
-        self.mFleshExplosion = pygame.mixer.Sound("assets/audio/sound/explosion.wav")
+        self.mFleshExplosion = pygame.mixer.Sound("assets/audio/sound/explo.ogg")
+        self.mJump = pygame.mixer.Sound("assets/audio/sound/jump.ogg")
         
-        #music
-        self.mBgMusic = pygame.mixer.music.load("assets/audio/music/bg.mp3")
         self.mLoaded = True
     
     def getScaledFont(self, size):

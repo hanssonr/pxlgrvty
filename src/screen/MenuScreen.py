@@ -6,10 +6,12 @@ from Box2D import b2Vec2
 from MenuItems import TableCreator, MenuAction
 from libs.Animation import Animation
 import LevelScreen, libs.Sprite as Sprite, OptionScreen
+from libs.SoundManager import SoundManager, MusicID
 
 class MenuScreen(object):
     
     def __init__(self, game):
+        SoundManager.getInstance().playMusic(MusicID.MENU)
         pygame.mouse.set_visible(False)
         self.mGame = game
         self.mCamera = Camera(Pgl.width, Pgl.height)

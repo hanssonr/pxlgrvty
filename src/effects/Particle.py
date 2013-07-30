@@ -33,9 +33,8 @@ class Particle(object):
         
     
     def update(self, delta):
-        self.mBody.linearVelocity = self.mGravity + self.mVelocity
-        
         self.mVelocity.y += delta * 20
+        self.mBody.linearVelocity = self.mGravity + self.mVelocity
         
         self.mLifetime -= delta
         
@@ -48,6 +47,10 @@ class Particle(object):
         
     def __getPosition(self):
         return self.mBody.position
+
+    def __getIsAlive(self):
+        return self.mIsAlive
     
     position = property(__getPosition, None)
+    alive = property(__getIsAlive, None)
         

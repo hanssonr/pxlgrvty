@@ -4,6 +4,7 @@
 from libs.PygameApplication import *
 from libs.Pgl import *
 from Pxlgrvty import *
+import crypter
 
 
 class Main(object):

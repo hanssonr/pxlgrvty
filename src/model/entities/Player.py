@@ -8,6 +8,8 @@ from model.entities.MovableEntity import *
 from model.Gravity import *
 from model.Sensor import *
 from effects.BloodSplatter import *
+from libs.SoundManager import SoundManager, SoundID
+from Resources import Resources
 
 class Player(MovableEntity):
     
@@ -85,13 +87,21 @@ class Player(MovableEntity):
                 self.mVelocity.y = -self.mGravityToUse.y * (1 - self.mJumpTimer)
             
             #zero out gravity
-            self.mGravityToUse = b2Vec2(0,0)
+            #self.mGravityToUse = b2Vec2(0,0)
+            self.mGravityToUse *= self.mJumpTimer
             
             self.mJumpTimer += delta
+
             if self.mJumpTimer >= 0.3:
                 self.mJumpTimer = 0
                 self.mJumping = False
-  
+        else:
+            self.mJumpTimer = 0
+            if self.mBodyDirection == GravityDirection.LEFT or self.mBodyDirection == GravityDirection.RIGHT:
+                self.mVelocity.x = self.mVelocity.x * 0.2
+            else:
+                self.mVelocity.y = self.mVelocity.y * 0.2
+                
         self.mBody.linearVelocity = self.mGravityToUse + self.mVelocity
         
         #Facing
@@ -141,8 +151,13 @@ class Player(MovableEntity):
     
     def jump(self):
         if self.mOnGround:
-            self.mJumpStartY = self.position.y - self.size.y / 2.0
+            SoundManager.getInstance().playSound(SoundID.JUMP)
             self.mJumping = True
+    
+    def endJump(self):
+        if self.mJumping:
+            self.mJumping = False
+        
     
 class PlayerState():
     IDLE = 0

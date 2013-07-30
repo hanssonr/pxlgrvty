@@ -17,10 +17,12 @@ class EffectRender(object):
         for fx in self.mEffects:
             if fx.isAlive():
                 for particle in fx.particles:
-                    random.seed(particle.mSize.x)
-                    self.blood.freeze(random.randint(0, 4), 0)
-                    self.blood.setSize(self.mCamera.getScaledSize(particle.mSize.x, particle.mSize.y))
-                    self.blood.draw(delta, self.mCamera.getViewCoords(particle.position))
+                    if particle.alive:
+                        viewpos = self.mCamera.getViewCoords(particle.position)
+                        random.seed(particle.mSize.x)
+                        self.blood.freeze(random.randint(0, 4), 0)
+                        self.blood.setSize(self.mCamera.getScaledSize(particle.mSize.x, particle.mSize.y))
+                        self.blood.draw(delta, viewpos)
             else:
                 remove.append(fx)
         

@@ -27,18 +27,24 @@ class EnemyRender(object):
             if isinstance(e, SpikeBox):
                 toDraw = self.spikebox
             elif isinstance(e, Spike):
-                toDraw = self.spike
+                toDraw = self.spike      
                 
                 if e.mFacing == Facing.UP:
                     toDraw.rotate(0)
-                    size.Set(size.y, size.x)
-                elif e.mFacing == Facing.DOWN:
+                    size.Set(size.x, size.y)
+                    
+                if e.mFacing == Facing.DOWN:
                     toDraw.rotate(180)
-                    size.Set(size.y, size.x)
-                elif e.mFacing == Facing.LEFT:
+                    size.Set(size.x, size.y)
+                    
+                if e.mFacing == Facing.LEFT:
                     toDraw.rotate(90)
-                elif e.mFacing == Facing.RIGHT:
+                    size.Set(size.y, size.x)
+                    
+                if e.mFacing == Facing.RIGHT:
                     toDraw.rotate(-90)
+                    size.Set(size.y, size.x)
+                    
             elif isinstance(e, Saw):
                 toDraw = self.saw
             

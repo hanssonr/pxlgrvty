@@ -4,9 +4,9 @@ from Box2D import b2Vec2
 class SpikeBox(Enemy):
     
     __SIZE = b2Vec2(0.5, 0.5)
-    __mVelocity = b2Vec2(0,0)
+    mVelocity = b2Vec2(0,0)
     __mDirection = None
-    __mSpeed = 0.0
+    mSpeed = 0.0
     
     #For directionchange
     isTouching = 0
@@ -15,7 +15,7 @@ class SpikeBox(Enemy):
     
     
     def __init__(self, physworld, startpos, direction, delay, speed):
-        self.__mSpeed = speed
+        self.mSpeed = speed
         self.__mStartPos = b2Vec2(startpos[0] + 0.5, startpos[1] + 0.5) 
         self.__mDirection = direction
         self.__mDelay = delay
@@ -40,8 +40,8 @@ class SpikeBox(Enemy):
         if self.__mDelay > 0:
             self.__mDelay -= delta
         else:
-            self.__mVelocity.Set(self.__mDirection.x * self.__mSpeed, self.__mDirection.y * self.__mSpeed)    
-            self.mBody.linearVelocity = self.__mVelocity
+            self.mVelocity.Set(self.__mDirection.x * self.mSpeed, self.__mDirection.y * self.mSpeed)    
+            self.mBody.linearVelocity = self.mVelocity
     
     def __changeDirection(self):
         if self.__dirChange == False:

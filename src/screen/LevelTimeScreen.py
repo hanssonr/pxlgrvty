@@ -1,17 +1,19 @@
 from controller.MenuInput import MenuInput
 from model.Camera import Camera
 from libs.Pgl import *
-import pygame, LevelScreen, json, ConfigParser, GameScreen, model.Level as Level, EndScreen
+import pygame, LevelScreen, json, GameScreen, model.Level as Level, EndScreen
 from Box2D import b2Vec2
 from Resources import Resources
 from libs.Sprite import Sprite
 from libs.Animation import Animation
 from MenuItems import MenuAction, Button
 from model.Time import Time
+from libs.Crypt import Crypt
 
 class LevelTimeScreen(object):
     
     def __init__(self, game, levelInt, currentTime = None):
+        self.__mCrypt = Crypt()
         self.mCurrentTime = currentTime
         pygame.mouse.set_visible(False)
         self.mGame = game
@@ -55,25 +57,32 @@ class LevelTimeScreen(object):
         
         if self.mCurrentTime.isFaster(self.mTime):
             self.mTime = self.mCurrentTime
+            found = False
+            
             #check if level is in time.json
             data = None
             try:
-                with open("assets/state/time.json", "r") as readstate:
-                    data = json.load(readstate)
+                with open("assets/state/time.json", "rb") as readstate:
+                    decryptedData = self.__mCrypt.decrypt(readstate.read())
+                    data = json.loads(decryptedData)
                     
-                    found = False
                     #leta efter tiden, finns den uppdatera
                     for time in data:
                         if time["ID"] == str(self.mLevelInt):
                             found = True
                             time["TIME"] = self.mCurrentTime.toString()
-                    
+                            
                     if not found:
                         data.append({"ID":"%s" % str(self.mLevelInt), "TIME":"%s" % self.mCurrentTime.toString()})
-            finally:
-                #update the file
-                with open("assets/state/time.json", "w+") as writestate:
-                    json.dump(data, writestate)
+            except Exception, e:
+                print str(e)
+                pass
+
+            if data == None:
+                data = '[{"ID":"%s", "TIME":"%s"}]' % (str(self.mLevelInt), self.mCurrentTime.toString())
+            #update the file
+            with open("assets/state/time.json", "wb+") as writestate:
+                writestate.write(self.__mCrypt.encrypt(json.dumps(data)))
         
     
     def __calculateMedallion(self):
@@ -89,27 +98,30 @@ class LevelTimeScreen(object):
     #TODO: create a new json list if the one isnt found
     def __readPlayerTime(self):
         pTime = None
+        found = False
         
         try:
-            with open("assets/state/time.json", "r") as readstate:
-                pTime = json.load(readstate)
+            with open("assets/state/time.json", "rb") as state:
+                decryptedData = self.__mCrypt.decrypt(state.read())
+                pTime = json.loads(decryptedData)
                 
-                found = False
-                for time in pTime:
-                    if time["ID"] == str(self.mLevelInt):
-                        pTime = time["TIME"]
-                        found = True
-                        break
-        
-                if not found:
-                    pTime = "00:00:00"
-        finally:           
-            return pTime
+            for time in pTime:
+                if time["ID"] == str(self.mLevelInt):
+                    pTime = time["TIME"]
+                    found = True
+                    break
+        except Exception, e:
+            with open("assets/state/time.json", "wb+") as writer:
+                writer.write(self.__mCrypt.encrypt("[]"))
+
+        if not found:
+            pTime = "00:00:00"
+                   
+        return pTime
     
     def __readLevelTimes(self):
         times = []
-        parser = ConfigParser.ConfigParser()
-        parser.read("assets/Levels/level%d.lvl" % self.mLevelInt)
+        parser = self.__mCrypt.dectryptParser(self.mLevelInt)
         times.append(parser.get("time", "gold"))
         times.append(parser.get("time", "silver"))
         times.append(parser.get("time", "bronze"))

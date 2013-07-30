@@ -73,8 +73,8 @@ class ListCreator(object):
 
 class ListItem(object):
     
-    def __init__(self, id, x, y, size, resolution):
-        self.mId = id
+    def __init__(self, itemid, x, y, size, resolution):
+        self.mId = itemid
         self.x, self.y = x, y
         self.size = size
         self.mText = resolution

@@ -3,7 +3,7 @@
 
 from Tile import Tile, TileType
 from Box2D import b2Vec2
-import ConfigParser, json, os, pygame, random
+import ConfigParser, json, os, pygame, random, tempfile
 from model.entities.Box import Box
 from model.entities.Nugget import Nugget
 from model.entities.SpikeBox import SpikeBox
@@ -13,6 +13,7 @@ from Color import Color
 from pygame import Rect
 from model.Chunk import Chunk
 from model.ChunkHandler import ChunkHandler
+from libs.Crypt import Crypt
 
 
 class Level(object):
@@ -42,7 +43,11 @@ class Level(object):
     #timer
     mTimer = None
     
+    #crypt/decrypt
+    __mCrypt = None
+    
     def __init__(self, world, gravity, lvl):
+        self.__mCrypt = Crypt()
         self.mMaxLevels = self.countLevels()
         self.mSwirlActive = False
         self.mLevelDone = False
@@ -76,9 +81,10 @@ class Level(object):
         http://qq.readthedocs.org/en/latest/tiles.html#map-definition
     """
     def __readLevel(self):
-        parser = ConfigParser.ConfigParser()
-        parser.read("assets/Levels/level%d.lvl" % self.mCurrentLevel)
+        parser = self.__mCrypt.dectryptParser(self.mCurrentLevel)        
         self.mCurrentTileset = parser.get("level", "tileset")
+        self.mBackground = parser.get("level", "bg")
+        self.mBackgroundcolor = tuple(int(x) for x in parser.get("level", "bgcolor").split(","))
         self.mPickupData = parser.get("objects", "pickups")
         self.mEnemyData = parser.get("objects", "enemies")
         self.mBoxData = parser.get("objects", "boxes")
@@ -148,13 +154,14 @@ class Level(object):
                     self.mLevelDone = True
                        
     def __updateLevelLockState(self):
-        with open("assets/state/state.json", "r") as state:
-            lvldata = json.load(state)
+        with open("assets/state/state.json", "rb") as state:
+            decryptedData = self.__mCrypt.decrypt(state.read())
+            lvldata = json.loads(decryptedData)
         
         if int(lvldata["LVL"]) <= self.mCurrentLevel:
-            with open("assets/state/state.json", "w") as data:
+            with open("assets/state/state.json", "wb") as data:
                 lvl = min(self.mCurrentLevel+1, self.mMaxLevels)
-                json.dump({"LVL":str(lvl)}, data)
+                data.write(self.__mCrypt.encrypt('{"LVL":"%s"}' % (str(lvl))))
                
     def __createTextWorldCollision(self):
         for y in range(self.mHeight):
@@ -361,9 +368,7 @@ class Level(object):
                     pattern = [(k, v) for k,v in (str(enemies[e]["PATTERN"][x]).split(",") for x in range(len(enemies[e]["PATTERN"])))]
                     speed = float(enemies[e]["SPEED"])
                     radius = float(enemies[e]["RADIUS"])
-                    self.mEnemies.append(Saw(self.mWorld, (x,y), pattern, radius, speed))
-                    
-                    
+                    self.mEnemies.append(Saw(self.mWorld, (x,y), pattern, radius, speed))                  
     
     def __createBoxes(self):
         boxes = json.loads(self.mBoxData)
@@ -379,7 +384,6 @@ class Level(object):
             self.mCurrentLevel += 1
             self.__loadLevel()
 
-    
     def retryLevel(self):
         self.__unloadEntities()
         self.__createPickups()

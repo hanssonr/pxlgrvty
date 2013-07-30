@@ -12,6 +12,7 @@ from entities.PickableObject import PickableObject
 from effects.Particle import Particle
 from effects.BloodSplatter import BloodSplatter
 from Resources import *
+from libs.SoundManager import SoundManager, SoundID
 
 class WorldModel(object):
     
@@ -107,8 +108,8 @@ class WorldModel(object):
         if not self.player.alive:
             
             if self.mSwitch:
-                Resources.getInstance().mFleshExplosion.play()
-                self.mFxObs.addFx(BloodSplatter(self.physWorld, self.gravity, self.player.position))
+                SoundManager.getInstance().playSound(SoundID.FLESHEXPLOSION)
+                self.mFxObs.addFx(BloodSplatter(self.physWorld, self.gravity.get(), self.player.position))
                 self.mSwitch = False
             
             self.player.stopMovement()

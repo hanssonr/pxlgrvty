@@ -59,11 +59,13 @@ class Input(BaseInputHandler):
                     else:
                         self.world.mEntityToFollow = self.world.player
     
-           #button down
+           #button up
             elif event.type == KEYUP:
                 #zero out the velocity 
                 if event.key == K_a or event.key == K_d or event.key == K_w or event.key == K_s:
                     self.player.mDirection.Set(0,0)
+                if event.key == K_SPACE:
+                    self.player.endJump()
             
             #check for player movement
             pressed = pygame.key.get_pressed()

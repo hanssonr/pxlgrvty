@@ -8,6 +8,7 @@ from libs.RectF import RectF
 from libs.Sprite import Sprite
 import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen, model.Time as Time
 from screen.MenuItems import Button, MenuAction
+from libs.Crypt import Crypt
 
 class LevelScreen(object):
     
@@ -88,7 +89,6 @@ class LevelScreen(object):
                 if isinstance(btn, LevelButton):
                     if not btn.mLocked:
                         self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, btn.mText))
-                       #self.mGame.setScreen(GameScreen.GameScreen(self.mGame, btn.mText))
                 elif isinstance(btn, Button):
                     if btn.mAction == MenuAction.BACK:
                         self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))
@@ -118,6 +118,7 @@ class LevelTableCreator(object):
     mButtonSize = None
     
     def __init__(self, modelsize, lvlPerColumn, nrOfLevels):
+        self.__mCrypt = Crypt()
         self.mLevelButtons = []
         self.mButtonSize = b2Vec2(1,1)
         lock = self.__readLevelLockState()
@@ -140,15 +141,18 @@ class LevelTableCreator(object):
         lvldata = None
     
         try:
-            with open("assets/state/state.json", "r") as state:
-                lvldata = json.load(state)
+            with open("assets/state/state.json", "rb") as state:
+                decryptedData = self.__mCrypt.decrypt(state.read())
+                lvldata = json.loads(decryptedData)
+                
                 try:
                     return lvldata["LVL"]
                 except:
                     raise IOError
         except (IOError):
-            with open("assets/state/state.json", "w+") as state:
-                json.dump({"LVL":"1"}, state)
+            with open("assets/state/state.json", "wb+") as state:
+                data = self.__mCrypt.encrypt('{"LVL":"1"}')
+                state.write(data)
                 return 1       
 
 class LevelButton(object):

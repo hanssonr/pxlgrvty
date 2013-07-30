@@ -31,6 +31,9 @@ class Sprite(object):
     def setSize(self, size):
         self.__mSize = (int(size.x), int(size.y))
     
+    def getSize(self):
+        return self.__mSize
+    
     def setPosition(self, x, y):
         self.pos = (x, y)
         

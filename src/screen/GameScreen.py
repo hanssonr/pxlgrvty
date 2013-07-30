@@ -7,6 +7,7 @@ from libs.Pgl import Pgl
 from observer.Observers import *
 import LevelScreen, LevelTimeScreen, model.Time as Time
 from Resources import *
+from libs.SoundManager import SoundManager, MusicID
 
 class GameScreen(object):
     
@@ -16,7 +17,7 @@ class GameScreen(object):
     
     def __init__(self, game, lvl):
         pygame.mouse.set_visible(False)
-        #pygame.mixer.music.play(0)
+        SoundManager.getInstance().playMusic(MusicID.BG)
         self.mGame = game
         self.mLuObs = LevelupdateObserver()
         self.mFxObs = FXObserver()
