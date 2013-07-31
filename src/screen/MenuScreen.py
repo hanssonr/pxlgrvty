@@ -11,7 +11,7 @@ from libs.SoundManager import SoundManager, MusicID
 class MenuScreen(object):
     
     def __init__(self, game):
-        SoundManager.getInstance().playMusic(MusicID.MENU)
+        SoundManager.getInstance().playMenuMusic()
         pygame.mouse.set_visible(False)
         self.mGame = game
         self.mCamera = Camera(Pgl.width, Pgl.height)

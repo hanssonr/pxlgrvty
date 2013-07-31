@@ -31,7 +31,8 @@ class ListCreator(object):
     mItems = None
     mListItem = None
     
-    def __init__(self, listheight, x, y, itemsize, items):
+    def __init__(self, listheight, x, y, itemsize, items, reso):
+        self.usedResolution = reso
         self.viewRect = RectF(x, y, itemsize.x, listheight)
         self.itemSize = itemsize
         self.mListItem = []
@@ -43,7 +44,8 @@ class ListCreator(object):
         
         counter = 0
         for resolution in self.mItems:
-            self.mListItem.append(ListItem(counter, x, y + (counter * itemsize.y), itemsize, resolution))
+            active = True if resolution == self.usedResolution else False
+            self.mListItem.append(ListItem(counter, x, y + (counter * itemsize.y), itemsize, resolution, active))
             counter += 1
     
     def isInViewRect(self, item):
@@ -73,13 +75,13 @@ class ListCreator(object):
 
 class ListItem(object):
     
-    def __init__(self, itemid, x, y, size, resolution):
+    def __init__(self, itemid, x, y, size, resolution, active):
         self.mId = itemid
         self.x, self.y = x, y
         self.size = size
         self.mText = resolution
         self.mAction = ListItemAction.ACTION
-        self.mActive = False
+        self.mActive = active
         self.rect = RectF(x, y, size.x, size.y)
 
 class Button(object):
@@ -101,6 +103,40 @@ class CheckButton(object):
         self.x, self.y = x, y 
         self.size = size
         self.rect = RectF(x, y, size.x, size.y)
+    
+
+class Label(object):
+    def __init__(self, text, x, y):
+        self.mText = text
+        self.x, self.y = x, y
+        self.mActive = True
+        self.size = b2Vec2(0,0)
+        self.rect = RectF(x, y, self.size.x, self.size.y)
+        
+    def updateText(self, text):
+        self.mText = text
+   
+class Volume(object):
+    
+    def __init__(self, text, x, y, buttoninfo, baseamount):
+        self.mVolumeItems = []
+        self.amount = baseamount
+        self.x, self.y = x, y
+        
+        buttonsize = 0.5
+        self.mVolumeLabel = Label(str(self.amount) + "%", x + 1, y + buttonsize / 2.0)
+        self.mVolumeItems.append(Label(text, x, y - buttonsize / 2.0))
+        self.mVolumeItems.append(Button(buttoninfo[0][0], x, y, b2Vec2(buttonsize, buttonsize), buttoninfo[0][1]))
+        self.mVolumeItems.append(Button(buttoninfo[1][0], x + 2, y, b2Vec2(buttonsize, buttonsize), buttoninfo[1][1]))
+        self.mVolumeItems.append(self.mVolumeLabel)
+    
+    def lower(self):
+        self.amount = 0 if self.amount - 5 < 0 else self.amount - 5
+        self.mVolumeLabel.updateText(str(self.amount) + "%")
+    
+    def higher(self):
+        self.amount = 100 if self.amount + 5 > 100 else self.amount + 5
+        self.mVolumeLabel.updateText(str(self.amount) + "%")
 
 class MenuAction(object):
     NEWGAME = "MenuAction::NEWGAME"
@@ -122,3 +158,9 @@ class ListItemAction(object):
     ACTION = "ListItemAction::ACTION"
     UP = "ListItemAction::UP"
     DOWN = "ListItemAction::DOWN"
+    
+class VolumeAction(object):
+    MUSIC_VOLUME_UP = "VolumeAction::MVOLUP"
+    MUSIC_VOLUME_DOWN = "VolumeAction::MVOLDOWN"
+    SOUND_VOLUME_UP = "VolumeAction::SVOLUP"
+    SOUND_VOLUME_DOWN = "VolumeAction::SVOLDOWN"

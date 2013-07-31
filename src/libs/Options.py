@@ -6,6 +6,8 @@ class Options(object):
     __mMusic = None
     __mSound = None
     __mFullscreen = None
+    __mSoundVolume = None
+    __mMusicVolume = None
     
     __optionPath = "assets/state/options.json"
     
@@ -20,7 +22,7 @@ class Options(object):
                 optionData = json.load(readstate)
         except (IOError, ValueError):
             with open(self.__optionPath, "w+") as writestate:
-                json.dump({"FULLSCREEN": False, "MUSIC": True, "SOUND": True, "RESOLUTION":"640x480"}, writestate)
+                json.dump({"FULLSCREEN": False, "MUSIC": True, "SOUND": True, "RESOLUTION":"640x480", "MUSICVOLUME":"30", "SOUNDVOLUME":"30"}, writestate)
             
         finally:
             with open("assets/state/options.json", "r") as readstate:
@@ -30,6 +32,8 @@ class Options(object):
         self.__mMusic = optionData[OptionValue.MUSIC]
         self.__mSound = optionData[OptionValue.SOUND]
         self.__mResolution = optionData[OptionValue.RESOLUTION]
+        self.__mMusicVolume = optionData[OptionValue.MUSICVOLUME]
+        self.__mSoundVolume = optionData[OptionValue.SOUNDVOLUME]
         
     def writeOptions(self):
         try:
@@ -37,7 +41,9 @@ class Options(object):
                 json.dump({"FULLSCREEN": self.fullscreen, 
                            "MUSIC": self.music,
                            "SOUND": self.sound,
-                           "RESOLUTION": self.resolution}, writestate)      
+                           "RESOLUTION": self.resolution,
+                           "SOUNDVOLUME": self.soundvolume,
+                           "MUSICVOLUME": self.musicvolume}, writestate)      
         except:
             print "WriteError"
     
@@ -74,15 +80,30 @@ class Options(object):
     def __setResolution(self, res):
         self.__mResolution = res
         
+    def __getMusicVolume(self):
+        return int(self.__mMusicVolume)
+    
+    def __setMusicVolume(self, volume):
+        self.__mMusicVolume = int(volume)
+    
+    def __getSoundVolume(self):
+        return int(self.__mSoundVolume)
+    
+    def __setSoundVolume(self, volume):
+        self.__mSoundVolume = int(volume)
     
     fullscreen = property(__getFullscreen, __setFullscreen)
     music = property(__getMusic, __setMusic)
     sound = property(__getSound, __setSound)
     resolution = property(__getResolution, __setResolution)
+    soundvolume = property(__getSoundVolume, __setSoundVolume)
+    musicvolume = property(__getMusicVolume, __setMusicVolume)
 
 class OptionValue(object):
     FULLSCREEN = "FULLSCREEN"
     MUSIC = "MUSIC"
     SOUND = "SOUND"
     RESOLUTION = "RESOLUTION"
+    MUSICVOLUME = "MUSICVOLUME"
+    SOUNDVOLUME = "SOUNDVOLUME"
         

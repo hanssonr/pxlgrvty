@@ -3,9 +3,10 @@ from libs.Pgl import *
 from model.Camera import Camera
 from controller.MenuInput import MenuInput
 from Box2D import b2Vec2
-from MenuItems import Button, CheckButton, MenuAction, CheckbuttonAction, ListCreator, ListItem, ListItemAction
+from MenuItems import Button, CheckButton, MenuAction, CheckbuttonAction, ListCreator, ListItem, ListItemAction, Volume, VolumeAction, Label
 from libs.Animation import Animation
 import LevelScreen, libs.Sprite as Sprite, pygame, MenuScreen, json
+from libs.SoundManager import SoundManager, SoundID
 
 class OptionScreen(object):
     
@@ -30,7 +31,11 @@ class OptionScreen(object):
         self.mMenuItems.append(CheckButton("music on/off", 7, 4, b2Vec2(0.5,0.5), CheckbuttonAction.MUSIC, Pgl.options.music))
         self.mMenuItems.append(CheckButton("sound on/off", 7, 4.5, b2Vec2(0.5,0.5), CheckbuttonAction.SOUND, Pgl.options.sound))
         
-        self.mResolutionList = ListCreator(2, 8, 3.5, b2Vec2(3,0.5), self.__getResolutionList())
+        self.mResolutionList = ListCreator(2, 8, 3.5, b2Vec2(3,0.5), self.__getResolutionList(), Pgl.options.resolution)
+        self.mMusicVolume = Volume("Music volume:", 5, 7, [["-", VolumeAction.MUSIC_VOLUME_DOWN], ["+", VolumeAction.MUSIC_VOLUME_UP]], Pgl.options.musicvolume)
+        self.mSoundVolume = Volume("Sound volume:", 8, 7, [["-", VolumeAction.SOUND_VOLUME_DOWN], ["+", VolumeAction.SOUND_VOLUME_UP]], Pgl.options.soundvolume)
+        self.mMenuItems.extend(self.mMusicVolume.mVolumeItems)
+        self.mMenuItems.extend(self.mSoundVolume.mVolumeItems)
         self.mMenuItems.extend(self.mResolutionList.mListItem)
         
         self.mGame.input = MenuInput(self)
@@ -77,6 +82,9 @@ class OptionScreen(object):
                     txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x + mi.size.x / 2 - (txtsize[0] / self.mCamera.scale.x) / 2.0, mi.y + mi.size.y / 2 - (txtsize[1] / self.mCamera.scale.y) / 2.0))
                 else:
                     continue
+            elif isinstance(mi, Label):
+                color = (255,255,255)
+                txtpos = self.mCamera.getViewCoords(b2Vec2(mi.x, mi.y - (txtsize[1] / self.mCamera.scale.y) / 2.0))
             
             if mi.mActive:
                 iDraw.freeze(1, 0)
@@ -94,7 +102,6 @@ class OptionScreen(object):
         
     def __applyOptions(self):
         Pgl.app.fullscreen(Pgl.options.fullscreen, Pgl.options.getResolutionAsList())
-        #turn on/off sound and music
         Pgl.options.writeOptions()
         self.__initializeOptions()
             
@@ -103,7 +110,6 @@ class OptionScreen(object):
             
             for mi in self.mMenuItems:
                 if mi.rect.collidepoint(mmp):
-                    
                     if mi.mAction == MenuAction.BACK:
                         self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))
                     elif mi.mAction == MenuAction.APPLY:
@@ -117,9 +123,26 @@ class OptionScreen(object):
                     elif mi.mAction == CheckbuttonAction.MUSIC:
                         mi.mActive = not mi.mActive
                         Pgl.options.music = mi.mActive
+                        SoundManager.getInstance().pauseMusic(not mi.mActive)
                     elif mi.mAction == CheckbuttonAction.SOUND:
                         mi.mActive = not mi.mActive
                         Pgl.options.sound = mi.mActive
+                    elif mi.mAction == VolumeAction.MUSIC_VOLUME_UP:
+                        self.mMusicVolume.higher()
+                        Pgl.options.musicvolume = self.mMusicVolume.amount
+                        SoundManager.getInstance().changeMusicVolume()
+                    elif mi.mAction == VolumeAction.MUSIC_VOLUME_DOWN:
+                        self.mMusicVolume.lower()
+                        Pgl.options.musicvolume = self.mMusicVolume.amount
+                        SoundManager.getInstance().changeMusicVolume()
+                    elif mi.mAction == VolumeAction.SOUND_VOLUME_UP:
+                        self.mSoundVolume.higher()
+                        Pgl.options.soundvolume = self.mSoundVolume.amount
+                        SoundManager.getInstance().playSound(SoundID.JUMP)
+                    elif mi.mAction == VolumeAction.SOUND_VOLUME_DOWN:
+                        self.mSoundVolume.lower()
+                        Pgl.options.soundvolume = self.mSoundVolume.amount
+                        SoundManager.getInstance().playSound(SoundID.JUMP)
                     elif mi.mAction == ListItemAction.ACTION:
                         for listItem in self.mMenuItems:
                             if isinstance(listItem, ListItem):

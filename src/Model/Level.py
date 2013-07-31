@@ -5,7 +5,7 @@ from Tile import Tile, TileType
 from Box2D import b2Vec2
 import ConfigParser, json, os, pygame, random, tempfile
 from model.entities.Box import Box
-from model.entities.Nugget import Nugget
+from model.entities.Crystal import Crystal
 from model.entities.SpikeBox import SpikeBox
 from model.entities.Spike import Spike
 from model.entities.Saw import Saw
@@ -140,7 +140,7 @@ class Level(object):
     def checkLevelCompletion(self, pos):
         done = True
         for o in self.mObjects:
-            if isinstance(o, Nugget):
+            if isinstance(o, Crystal):
                 if o.alive:
                     done = False
                     break
@@ -346,7 +346,7 @@ class Level(object):
                 objtype = objects[obj]["TYPE"]
                 
                 if objtype == ObjectType.NUGGET:
-                    self.mObjects.append(Nugget((x,y), self.mWorld))
+                    self.mObjects.append(Crystal((x,y), self.mWorld))
     
     def __createEnemies(self):
         enemies = json.loads(self.mEnemyData)

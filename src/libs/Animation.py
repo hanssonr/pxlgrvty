@@ -52,6 +52,7 @@ class Animation(Sprite):
                     if self.__mCurrentFrame >= self.__mFramesX:
                         self.__mIsDone = True
                         self.__mCurrentFrame = 0
+                        self.__mRunning = False
                 
                 self.__mElapsedTime = 0.0
         
@@ -80,5 +81,9 @@ class Animation(Sprite):
         self.__mIsDone = False
         self.__mCurrentFrame = 0
         self.__mCurrentRow = 0
+        self.__mRunning = True
+        
+    def isLooping(self):
+        return self.__mLooping
     
         

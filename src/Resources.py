@@ -16,7 +16,7 @@ class Resources(object):
     mSpikeBox = None
     mSpike = None
     mLoaded = False
-    mNugget = None
+    mCrystal = None
     mSwirlSheet = None
     mLevelButton = None
     mMenuButton = None
@@ -43,7 +43,7 @@ class Resources(object):
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mSpike = pygame.image.load("assets/gfx/spike.png").convert_alpha()
         self.mSaw = pygame.image.load("assets/gfx/saw.png").convert_alpha()
-        self.mNugget = pygame.image.load("assets/gfx/nugget.png").convert_alpha()
+        self.mCrystal = pygame.image.load("assets/gfx/crystal.png").convert_alpha()
         self.mSwirlSheet = pygame.image.load("assets/gfx/swirl.png").convert_alpha()
         self.mLevelButton = pygame.image.load("assets/gfx/levelbutton.png").convert_alpha()
         self.mMenuButton = pygame.image.load("assets/gfx/menubutton.png").convert_alpha()
@@ -53,6 +53,8 @@ class Resources(object):
         self.mMedallions = pygame.image.load("assets/gfx/medallions.png").convert_alpha()
         self.mUI = pygame.image.load("assets/gfx/ui.png").convert_alpha()
         self.mBlood = pygame.image.load("assets/gfx/blood.png").convert_alpha()
+        
+        #font
         self.mFont = pygame.font.SysFont('mono', 36)
         self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
         

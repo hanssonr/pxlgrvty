@@ -31,3 +31,5 @@ with open("assets/state/state.json", "wb+") as w:
 with open("assets/state/time.json", "wb+") as w:
     w.write(crypter("assets/state/orgtime.json"))"""
 
+  
+print "done"

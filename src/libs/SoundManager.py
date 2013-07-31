@@ -5,10 +5,10 @@ import random, pygame
 class SoundManager(object):
     
     INSTANCE = None
-    VOLUME = 0.3
     SOUNDS = None
     MUSIC = None
     MUSIC_PLAYING = None
+    CURRENTSONG = 0
     
     def __init__(self):
         if self.INSTANCE is not None:
@@ -20,36 +20,49 @@ class SoundManager(object):
         self.MUSIC_PLAYING = -1
     
     
-    def playMusic(self, musicId):
-        if self.MUSIC_PLAYING == musicId: return
+    def playMusic(self, seed = 0):
         if Pgl.options.music:
-            song = ""
-            if musicId == MusicID.BG:
-                #song = "bg%s" % str(random.randrange(1, 3))
-                song = "bg1"
-                self.MUSIC_PLAYING = MusicID.BG
-            elif musicId == MusicID.MENU:
-                song = "bg1"
-                self.MUSIC_PLAYING = MusicID.MENU
+            print seed, self.CURRENTSONG
+            seed = 1 if seed > 3 else seed
+            song = "bg%s" % str(seed)
+            self.MUSIC_PLAYING = MusicID.BG
+            self.CURRENTSONG = seed
             
-            pygame.mixer.music.set_volume(self.VOLUME)
+            pygame.mixer.music.set_volume(Pgl.options.musicvolume / 100.0)
             pygame.mixer.music.load("assets/audio/music/%s.ogg" % song)
-            pygame.mixer.music.play(-1)
-            print "PLAY MUSIC %s" % song
+            pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
+            pygame.event.set_allowed(pygame.constants.USEREVENT)
+            pygame.mixer.music.play()
+            
         else:
             self.stopMusic()
+            
+    def playMenuMusic(self):
+        if Pgl.options.music:
+            if self.MUSIC_PLAYING == MusicID.MENU: return
+            pygame.mixer.music.set_volume(int(Pgl.options.musicvolume) / 100.0)
+            pygame.mixer.music.load("assets/audio/music/menu.ogg")
+            pygame.mixer.music.play(-1)
+            self.MUSIC_PLAYING = MusicID.MENU
+            
+    def changeMusicVolume(self):
+        pygame.mixer.music.set_volume(Pgl.options.musicvolume / 100.0)
     
-    def pauseMusic(self):
-        pass
+    def pauseMusic(self, pause):
+        if pause:
+            pygame.mixer.music.pause()
+        else:
+            pygame.mixer.music.unpause()
     
     def stopMusic(self):
+        self.MUSIC_PLAYING = -1
         pygame.mixer.music.stop()
      
     def playSound(self, soundId):
         if Pgl.options.sound:
             sound = self.SOUNDS[soundId]
             
-            sound.set_volume(self.VOLUME)
+            sound.set_volume(Pgl.options.soundvolume / 100.0)
             sound.play()
     
     @classmethod

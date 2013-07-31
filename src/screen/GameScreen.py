@@ -5,7 +5,7 @@ from model.Camera import Camera
 from view.WorldRender import WorldRender
 from libs.Pgl import Pgl
 from observer.Observers import *
-import LevelScreen, LevelTimeScreen, model.Time as Time
+import LevelScreen, LevelTimeScreen, model.Time as Time, random
 from Resources import *
 from libs.SoundManager import SoundManager, MusicID
 
@@ -17,7 +17,7 @@ class GameScreen(object):
     
     def __init__(self, game, lvl):
         pygame.mouse.set_visible(False)
-        SoundManager.getInstance().playMusic(MusicID.BG)
+        SoundManager.getInstance().playMusic(random.randrange(1, 4))
         self.mGame = game
         self.mLuObs = LevelupdateObserver()
         self.mFxObs = FXObserver()
