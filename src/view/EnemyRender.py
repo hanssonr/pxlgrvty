@@ -31,19 +31,20 @@ class EnemyRender(object):
                 
                 if e.mFacing == Facing.UP:
                     toDraw.rotate(0)
-                    size.Set(size.x, size.y)
+                    size.Set(1, 0.5)
                     
                 if e.mFacing == Facing.DOWN:
                     toDraw.rotate(180)
-                    size.Set(size.x, size.y)
+                    size.Set(1, 0.5)
                     
                 if e.mFacing == Facing.LEFT:
                     toDraw.rotate(90)
-                    size.Set(size.y, size.x)
-                    
+                    size.Set(0.5, 1)
+                              
                 if e.mFacing == Facing.RIGHT:
                     toDraw.rotate(-90)
-                    size.Set(size.y, size.x)
+                    size.Set(0.5, 1)
+                    
                     
             elif isinstance(e, Saw):
                 toDraw = self.saw

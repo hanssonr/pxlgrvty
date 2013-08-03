@@ -11,6 +11,7 @@ from entities.Enemy import Enemy
 from entities.PickableObject import PickableObject
 from effects.Particle import Particle
 from effects.BloodSplatter import BloodSplatter
+from model.entities.Crystal import Crystal
 from Resources import *
 from libs.SoundManager import SoundManager, SoundID
 

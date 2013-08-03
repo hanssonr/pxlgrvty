@@ -1,5 +1,5 @@
 """http://stackoverflow.com/questions/6425131/encrpyt-decrypt-data-in-python-with-salt"""
-import Crypto.Random, hashlib, ConfigParser, tempfile, os
+import Crypto.Random, ConfigParser, tempfile, os, hashlib
 from Crypto.Cipher import AES
 
 class Crypt(object):

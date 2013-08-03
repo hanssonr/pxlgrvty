@@ -7,7 +7,7 @@ from Box2D import b2Vec2
 from libs.RectF import RectF
 from libs.Sprite import Sprite
 import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen, model.Time as Time
-from screen.MenuItems import Button, MenuAction
+from screen.MenuItems import Button, MenuAction, LevelButton, LevelTableCreator
 from libs.Crypt import Crypt
 
 class LevelScreen(object):
@@ -112,56 +112,10 @@ class LevelScreen(object):
                 lvls += 1
                 
         return lvls
-
-class LevelTableCreator(object):
-    mLevelButtons = None
-    mButtonSize = None
     
-    def __init__(self, modelsize, lvlPerColumn, nrOfLevels):
-        self.__mCrypt = Crypt()
-        self.mLevelButtons = []
-        self.mButtonSize = b2Vec2(1,1)
-        lock = self.__readLevelLockState()
-        self.mRows = max(1, nrOfLevels / lvlPerColumn)
-        self.mCols = min(nrOfLevels, lvlPerColumn)
-        width = self.mButtonSize.x * self.mCols
-        height = self.mButtonSize.y * self.mRows
-        count = 1
-        for y in range(self.mRows):
-            for x in range(self.mCols):
-                mx = x * self.mButtonSize.x + modelsize.x / 2.0 - width / 2.0
-                my = y * self.mButtonSize.y + modelsize.y / 2.0 - height / 2.0
-                self.mLevelButtons.append(LevelButton(count, mx, my, self.mButtonSize, False if count <= int(lock) else True))
-                count += 1
-    
-    """ 
-    tries to open state file, if not exists or tampered with, create a new one 
-    """
-    def __readLevelLockState(self):
-        lvldata = None
-    
-        try:
-            with open("assets/state/state.json", "rb") as state:
-                decryptedData = self.__mCrypt.decrypt(state.read())
-                lvldata = json.loads(decryptedData)
-                
-                try:
-                    return lvldata["LVL"]
-                except:
-                    raise IOError
-        except (IOError):
-            with open("assets/state/state.json", "wb+") as state:
-                data = self.__mCrypt.encrypt('{"LVL":"1"}')
-                state.write(data)
-                return 1       
-
-class LevelButton(object):
-    
-    def __init__(self, text, x, y, size, locked):
-        self.mLocked = locked
-        self.mActive = False
-        self.mText = text
-        self.x, self.y = x, y
-        self.size = size
-        self.rect = RectF(x, y, size.x, size.y)
+    def quickRetry(self):
+        pass
+            
+    def quickGame(self):
+        self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, 1))
         

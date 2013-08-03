@@ -60,7 +60,7 @@ class Resources(object):
         
         pygame.mixer.init()
         #sound
-        self.mFleshExplosion = pygame.mixer.Sound("assets/audio/sound/explo.ogg")
+        self.mFleshExplosion = pygame.mixer.Sound("assets/audio/sound/fleshexplosion.ogg")
         self.mJump = pygame.mixer.Sound("assets/audio/sound/jump.ogg")
         
         self.mLoaded = True

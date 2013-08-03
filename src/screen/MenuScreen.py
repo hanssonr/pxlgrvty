@@ -5,7 +5,7 @@ from controller.MenuInput import MenuInput
 from Box2D import b2Vec2
 from MenuItems import TableCreator, MenuAction
 from libs.Animation import Animation
-import LevelScreen, libs.Sprite as Sprite, OptionScreen
+import LevelScreen, libs.Sprite as Sprite, OptionScreen, InstructionScreen
 from libs.SoundManager import SoundManager, MusicID
 
 class MenuScreen(object):
@@ -71,6 +71,8 @@ class MenuScreen(object):
                 if btn.rect.collidepoint(mmp):
                     if btn.mAction == MenuAction.NEWGAME:
                         self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))
+                    elif btn.mAction == MenuAction.INSTRUCTIONS:
+                        self.mGame.setScreen(InstructionScreen.InstructionScreen(self.mGame))
                     elif btn.mAction == MenuAction.OPTIONS:
                         self.mGame.setScreen(OptionScreen.OptionScreen(self.mGame))
                     elif btn.mAction == MenuAction.EXIT:
@@ -84,3 +86,9 @@ class MenuScreen(object):
             btn.mActive = False
             if btn.rect.collidepoint(mmp):
                 btn.mActive = True
+                
+    def quickRetry(self):
+        pass
+            
+    def quickGame(self):
+        self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))

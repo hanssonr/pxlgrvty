@@ -23,7 +23,7 @@ class ObjectRender(object):
             
             viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2, obj.position.y - obj.size.y/2))
             if isinstance(obj, Box):
-                self.box.setSize(self.mCamera.getScaledSize(1.04, 1.04))
+                self.box.setSize(self.mCamera.getScaledSize(1, 1))
                 self.box.draw(viewpos)
             elif isinstance(obj, Crystal):
                 if obj.alive:
@@ -32,7 +32,7 @@ class ObjectRender(object):
                         self.__mCrystalTimers[obj.id] -= delta
                         if self.__mCrystalTimers[obj.id] < 0:
                             anim.reset()
-                            self.__mCrystalTimers[obj.id] = random.uniform(2,4) + obj.id
+                            self.__mCrystalTimers[obj.id] = random.uniform(2,4)
 
                     anim.draw(delta, viewpos)
                 

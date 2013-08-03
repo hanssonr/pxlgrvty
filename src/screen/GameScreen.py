@@ -16,8 +16,8 @@ class GameScreen(object):
     mWorldRender = None
     
     def __init__(self, game, lvl):
-        pygame.mouse.set_visible(False)
-        SoundManager.getInstance().playMusic(random.randrange(1, 4))
+        pygame.mouse.set_visible(True)
+        SoundManager.getInstance().playMusic(random.randrange(1, SoundManager.getInstance().NUMBER_OF_SONGS + 1))
         self.mGame = game
         self.mLuObs = LevelupdateObserver()
         self.mFxObs = FXObserver()

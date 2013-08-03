@@ -13,7 +13,6 @@ class Spike(Enemy):
 
         if facing == Facing.UP:
             self.__SIZE.Set(1, 0.5)
-            #position.Set(position.x + self.__SIZE.x / 2, position.y + 1.0 - self.__SIZE.y * 0.45)
             position.Set(position.x + self.__SIZE.x / 2, position.y - self.__SIZE.y / 2.5 + 1.0)
         elif facing == Facing.DOWN:
             self.__SIZE.Set(1, 0.5)

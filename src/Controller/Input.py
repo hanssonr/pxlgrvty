@@ -80,7 +80,10 @@ class Input(BaseInputHandler):
                     self.player.move(MoveDirection.DOWN)
                 if pressed[pygame.K_w]:
                     self.player.move(MoveDirection.UP)
-                
+            
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print self.camera.getModelCoords(b2Vec2(event.pos[0], event.pos[1]))
       
             #camerascale           
             if pressed[pygame.K_KP_PLUS]:

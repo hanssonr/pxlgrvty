@@ -12,17 +12,14 @@ class PygameApplication(object):
     
     game = None
     
-    timestep = 1.0 / 60.0
+    timestep = None
     
-    def __init__(self, game, width, height, fps):        
+    def __init__(self, game, fps):        
         self.game = game
-        self.width = width
-        self.height = height
         self.fps = fps
+        self.timestep = 1.0 / self.fps
         
         Pgl.app = self
-        #Pgl.width = self.width
-        #Pgl.height = self.height
         Pgl.options = Options()
         self.fullscreen(Pgl.options.fullscreen, Pgl.options.getResolutionAsList())
         

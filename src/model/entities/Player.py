@@ -43,7 +43,7 @@ class Player(MovableEntity):
         fd.isSensor = True
         
         #footsensor
-        shape.SetAsBox(self.PLAYER_WIDTH/5, 0.1, (0, 0.3), 0)
+        shape.SetAsBox(self.PLAYER_WIDTH/5, 0.1, (0, 0.35), 0)
         fd.userData = Sensor.PLAYER_FOOTSENSOR
         body.CreateFixture(fd)
         

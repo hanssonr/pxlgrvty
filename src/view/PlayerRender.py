@@ -11,12 +11,12 @@ class PlayerRender(object):
     def __init__(self, camera, player):
         self.mCamera = camera
         self.mPlayer = player
-        self.playerAnimation = Animation(Resources.getInstance().mPxl, 4, 2, 0.5, self.mCamera.getScaledSize(0.5,0.6))
+        self.playerAnimation = Animation(Resources.getInstance().mPxl, 4, 2, 0.5, self.mCamera.getScaledSize(1,1))
         
     
     def render(self, delta):
         if self.mPlayer.alive:
-            size = b2Vec2(self.mPlayer.size.x, self.mPlayer.size.y)
+            size = b2Vec2(0.7, 0.8)
             
             if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
                 size.Set(size.y, size.x)

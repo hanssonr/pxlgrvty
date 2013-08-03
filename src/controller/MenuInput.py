@@ -15,6 +15,12 @@ class MenuInput(BaseInputHandler):
         if e.type == MOUSEBUTTONDOWN:
             if e.button == 1:
                 self.mMenuScreen.mouseClick(e.pos)
+        
+        if e.type == KEYDOWN:
+            if e.key == K_r:
+                self.mMenuScreen.quickRetry()
+            elif e.key == K_SPACE:
+                self.mMenuScreen.quickGame()
                 
     def getMousePosition(self):
         return pygame.mouse.get_pos()

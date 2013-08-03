@@ -54,6 +54,7 @@ class Camera(object):
     
     def getModelCoords(self, viewCoords):
         modelCoords = b2Vec2(viewCoords.x / self.scale.x, viewCoords.y / self.scale.y)
+        modelCoords.y += self.displacement.y
         modelCoords.x += self.displacement.x
         return modelCoords
     

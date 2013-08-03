@@ -18,7 +18,7 @@ from libs.Crypt import Crypt
 
 class Level(object):
     
-    CHUNK_SIZE = 16
+    CHUNK_SIZE = 8
     mMaxLevels = None
     mCurrentLevel = None
     mTiles = None
@@ -57,12 +57,12 @@ class Level(object):
         self.mTimer = 0.0
         self.mWorld = world
         self.mGravity = gravity
-        self.mChunkHandler = ChunkHandler(world, self.CHUNK_SIZE)
         self.mCurrentLevel = lvl
         
         self.__loadLevel()
         
     def __loadLevel(self):
+        self.mChunkHandler = ChunkHandler(self.mWorld, self.CHUNK_SIZE)
         self.__readLevel()
         
         if self.mMapType == MapType.PICTURE:
@@ -81,10 +81,13 @@ class Level(object):
         http://qq.readthedocs.org/en/latest/tiles.html#map-definition
     """
     def __readLevel(self):
-        parser = self.__mCrypt.dectryptParser(self.mCurrentLevel)        
+        #parser = self.__mCrypt.dectryptParser(self.mCurrentLevel)
+        parser = ConfigParser.ConfigParser()
+        parser.read("assets/levels/decrypted/level%d.lvl" % self.mCurrentLevel)     
         self.mCurrentTileset = parser.get("level", "tileset")
         self.mBackground = parser.get("level", "bg")
-        self.mBackgroundcolor = tuple(int(x) for x in parser.get("level", "bgcolor").split(","))
+        bgcolor = pygame.image.load("assets/gfx/%s" % self.mBackground)
+        self.mBackgroundcolor = bgcolor.get_at((0, 0))
         self.mPickupData = parser.get("objects", "pickups")
         self.mEnemyData = parser.get("objects", "enemies")
         self.mBoxData = parser.get("objects", "boxes")
@@ -92,7 +95,7 @@ class Level(object):
         #Mapcollision
         #check for pictures first
         if os.path.exists("assets/Levels/level%d.png" % self.mCurrentLevel):
-            self.mMap = pygame.image.load("assets/Levels/level%d.png" % self.mCurrentLevel)
+            self.mMap = pygame.image.load("assets/levels/level%d.png" % self.mCurrentLevel)
             self.mWidth, self.mHeight = self.mMap.get_size()
             self.mMapType = MapType.PICTURE
         else: #check for lvl-file
@@ -359,8 +362,8 @@ class Level(object):
                 if etype == EnemyType.SPIKEBOX:
                     speed = float(enemies[e]["SPEED"])
                     delay = float(enemies[e]["DELAY"])
-                    dx, dy = [float(i) for i in enemies[e]["DIR"].split(",")]
-                    self.mEnemies.append(SpikeBox(self.mWorld, (x,y), b2Vec2(dx, dy), delay, speed))
+                    ex, ey = [float(i) for i in enemies[e]["ENDPOS"].split(",")]
+                    self.mEnemies.append(SpikeBox(self.mWorld, (x,y), (ex, ey), delay, speed))
                 elif etype == EnemyType.SPIKE:
                     facing = int(enemies[e]["FACING"])
                     self.mEnemies.append(Spike(self.mWorld, (x,y), facing))
@@ -385,11 +388,13 @@ class Level(object):
             self.__loadLevel()
 
     def retryLevel(self):
+        self.__unloadCurrentLevel()
         self.__unloadEntities()
-        self.__createPickups()
-        self.__createEnemies()
-        self.__createBoxes()
-        self.mSwirlActive = False
+        #self.__createPickups()
+        self.__loadLevel()
+        #self.__createEnemies()
+        #self.__createBoxes()
+        #self.mSwirlActive = False
                
     def isInActiveChunks(self, position):
         return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)

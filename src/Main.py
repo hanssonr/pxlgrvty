@@ -9,12 +9,10 @@ import crypter
 
 class Main(object):
     
-    width =  1280
-    height = 800
     fps = 60
     
     def __init__(self):
-        PygameApplication(Pxlgrvty(), self.width, self.height, self.fps)
+        PygameApplication(Pxlgrvty(), self.fps)
 
 
 if __name__ == "__main__":  

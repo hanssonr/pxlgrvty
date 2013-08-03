@@ -17,3 +17,7 @@ class Id(object):
     def getId(cls):
         cls.__ID += 1
         return cls.__ID
+    
+    @classmethod
+    def resetId(cls):
+        cls.__ID = 0

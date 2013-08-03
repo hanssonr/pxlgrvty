@@ -9,10 +9,12 @@ from libs.Animation import Animation
 from MenuItems import MenuAction, Button
 from model.Time import Time
 from libs.Crypt import Crypt
+from libs.Id import Id
 
 class LevelTimeScreen(object):
     
     def __init__(self, game, levelInt, currentTime = None):
+        Id.getInstance().resetId()
         self.__mCrypt = Crypt()
         self.mCurrentTime = currentTime
         pygame.mouse.set_visible(False)
@@ -22,7 +24,8 @@ class LevelTimeScreen(object):
         self.mLevelInt = levelInt
         self.mButtons = []
         
-        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 2)
+        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 3)
+        self.timeFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 2)
         self.titleFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x * 2.0)
         
         self.menubutton = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1), False)
@@ -95,7 +98,6 @@ class LevelTimeScreen(object):
         else:
             return b2Vec2(0,2)
     
-    #TODO: create a new json list if the one isnt found
     def __readPlayerTime(self):
         pTime = None
         found = False
@@ -185,7 +187,7 @@ class LevelTimeScreen(object):
         for x in range(len(self.mLevelTimes)):
             self.medallions.freeze(x, 1)
             
-            timetxt = self.screenFont.render(self.mLevelTimes[x].toString(), 0 , (255,255,255))
+            timetxt = self.timeFont.render(self.mLevelTimes[x].toString(), 0 , (255,255,255))
             pos = self.mCamera.getViewCoords(b2Vec2(9, 5+x))
             Pgl.app.surface.blit(timetxt, (pos.x, pos.y))
             
@@ -222,3 +224,16 @@ class LevelTimeScreen(object):
             btn.mActive = False
             if btn.rect.collidepoint(mmp):
                 btn.mActive = True
+                
+    def quickRetry(self):
+        if self.mCurrentTime != None:
+            self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
+            
+    def quickGame(self):
+        if self.mLevelInt < Level.Level.countLevels():
+            if self.mCurrentTime != None:
+                self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt+1))
+            else:
+                self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
+        else:
+            self.mGame.setScreen(EndScreen.EndScreen(self.mGame))

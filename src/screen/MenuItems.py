@@ -1,5 +1,7 @@
 from Box2D import b2Vec2
 from libs.RectF import RectF
+from libs.Crypt import Crypt
+import json
 
 class TableCreator(object):
     mButtons = None
@@ -137,6 +139,55 @@ class Volume(object):
     def higher(self):
         self.amount = 100 if self.amount + 5 > 100 else self.amount + 5
         self.mVolumeLabel.updateText(str(self.amount) + "%")
+
+class LevelTableCreator(object):
+    mLevelButtons = None
+    mButtonSize = None
+    
+    def __init__(self, modelsize, lvlPerColumn, nrOfLevels):
+        self.__mCrypt = Crypt()
+        self.mLevelButtons = []
+        self.mButtonSize = b2Vec2(1,1)
+        lock = self.__readLevelLockState()
+        self.mRows = max(1, nrOfLevels / lvlPerColumn)
+        self.mCols = min(nrOfLevels, lvlPerColumn)
+        width = self.mButtonSize.x * self.mCols
+        height = self.mButtonSize.y * self.mRows
+        count = 1
+        for y in range(self.mRows):
+            for x in range(self.mCols):
+                mx = x * self.mButtonSize.x + modelsize.x / 2.0 - width / 2.0
+                my = y * self.mButtonSize.y + modelsize.y / 2.0 - height / 2.0
+                self.mLevelButtons.append(LevelButton(count, mx, my, self.mButtonSize, False if count <= int(lock) else True))
+                count += 1
+        
+    def __readLevelLockState(self):
+            lvldata = None
+        
+            try:
+                with open("assets/state/state.json", "rb") as state:
+                    decryptedData = self.__mCrypt.decrypt(state.read())
+                    lvldata = json.loads(decryptedData)
+                    
+                    try:
+                        return lvldata["LVL"]
+                    except:
+                        raise IOError
+            except (IOError):
+                with open("assets/state/state.json", "wb+") as state:
+                    data = self.__mCrypt.encrypt('{"LVL":"1"}')
+                    state.write(data)
+                    return 1    
+
+class LevelButton(object):
+    
+    def __init__(self, text, x, y, size, locked):
+        self.mLocked = locked
+        self.mActive = False
+        self.mText = text
+        self.x, self.y = x, y
+        self.size = size
+        self.rect = RectF(x, y, size.x, size.y)
 
 class MenuAction(object):
     NEWGAME = "MenuAction::NEWGAME"

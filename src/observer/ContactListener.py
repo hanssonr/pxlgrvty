@@ -53,10 +53,12 @@ class ContactListener(b2ContactListener):
         if fixA.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyB.userData, Enemy):
                 if bodyA.userData.alive:
+                    pass
                     bodyA.userData.alive = False
         elif fixB.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyA.userData, Enemy):
                 if bodyB.userData.alive:
+                    pass
                     bodyB.userData.alive = False
         
         

@@ -1,6 +1,6 @@
 from Resources import Resources
 from Pgl import *
-import random, pygame
+import random, pygame, os
 
 class SoundManager(object):
     
@@ -9,10 +9,13 @@ class SoundManager(object):
     MUSIC = None
     MUSIC_PLAYING = None
     CURRENTSONG = 0
+    NUMBER_OF_SONGS = 0
     
     def __init__(self):
         if self.INSTANCE is not None:
             raise ValueError("already instantiated")
+        
+        self.NUMBER_OF_SONGS = len([file for file in os.listdir("assets/audio/music/bg") if file.endswith(".ogg")])
         
     def initialize(self):
         self.SOUNDS = [Resources.getInstance().mJump, 
@@ -22,14 +25,14 @@ class SoundManager(object):
     
     def playMusic(self, seed = 0):
         if Pgl.options.music:
-            print seed, self.CURRENTSONG
-            seed = 1 if seed > 3 else seed
+            if self.MUSIC_PLAYING == MusicID.BG: return
+            seed = 1 if seed > self.NUMBER_OF_SONGS else seed
             song = "bg%s" % str(seed)
             self.MUSIC_PLAYING = MusicID.BG
             self.CURRENTSONG = seed
             
             pygame.mixer.music.set_volume(Pgl.options.musicvolume / 100.0)
-            pygame.mixer.music.load("assets/audio/music/%s.ogg" % song)
+            pygame.mixer.music.load("assets/audio/music/bg/%s.ogg" % song)
             pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
             pygame.event.set_allowed(pygame.constants.USEREVENT)
             pygame.mixer.music.play()

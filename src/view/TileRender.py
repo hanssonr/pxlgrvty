@@ -15,7 +15,7 @@ class TileRender(object):
         
     
     def render(self, delta):
-        self.mTileSprite.setSize(self.mCamera.getScaledSize(1,1))
+        self.mTileSprite.setSize(self.mCamera.getScaledSize(Tile.TILE_SIZE, Tile.TILE_SIZE))
         for tile in self.mTiles:
             if self.mCamera.isInFrustum(tile.position.x, tile.position.y):
                 viewpos = self.mCamera.getViewCoords(b2Vec2(tile.position.x - 0.5, tile.position.y - 0.5))

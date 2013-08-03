@@ -26,28 +26,25 @@ class ChunkHandler(object):
     def manageChunks(self, pos):
         center = self.getChunkPosition(pos)
         top = b2Vec2(center.x, max(center.y-1, 0))
-        right = b2Vec2(min(center.x+1, len(self.chunkslist[0])), center.y)
-        bottom = b2Vec2(center.x, min(center.y+1, len(self.chunkslist)))
+        right = b2Vec2(min(center.x+1, len(self.chunkslist[0])-1), center.y)
+        bottom = b2Vec2(center.x, min(center.y+1, len(self.chunkslist)-1))
         left = b2Vec2(max(center.x-1, 0), center.y)
         topleft = b2Vec2(left.x, top.y)
         topright = b2Vec2(right.x, top.y)
         bottomleft = b2Vec2(left.x, bottom.y)
         bottomright = b2Vec2(right.x, bottom.y)
         
-        list = [center, top, right, bottom, left, topleft, topright, bottomleft, bottomright]
+        poslist = [center, top, right, bottom, left, topleft, topright, bottomleft, bottomright]
         
         #try add new active chunks
-        for pos in list:
-            chunk = self.getChunk(pos)
-                
-            if chunk != None:
-                self.activateChunk(chunk)
+        for pos in poslist:
+            self.activateChunk(self.getChunk(pos))
         
         toRemove = []  
         #remove chunks thats arent necessary
         for chunk in self.activechunks:
             remove = True
-            for pos in list:
+            for pos in poslist:
                 if chunk.position == pos:
                     remove = False
                     break
@@ -64,11 +61,7 @@ class ChunkHandler(object):
         
     def isPositionInActiveChunks(self, position):
         chunkpos = self.getChunkPosition(position)
-        
-        if any(x.position == chunkpos for x in self.activechunks):
-            return True
-        
-        return False
+        return True if any(chunk.position == chunkpos for chunk in self.activechunks) else False
     
     def addChunk(self, chunk):
         if not any(x.position == chunk.position for x in self.chunks):        
@@ -77,7 +70,6 @@ class ChunkHandler(object):
     def activateChunk(self, chunk):
         if len(self.activechunks) > 0:                   
             if not any(x.position == chunk.position for x in self.activechunks):
-                #print "activate chunk: %s" % chunk.position
                 self.__mActiveChunks.append(chunk)
                 self.__createChunkTiles(chunk)
         else:
@@ -89,18 +81,9 @@ class ChunkHandler(object):
             self.mActiveTiles.append(tile)
             tile.create()
     
-    def deactivateChunk(self, chunk):
-        if any(x.position == chunk.position for x in self.activechunks):
-            self.__mActiveChunks.remove(x)
-    
     """ Returns a chunkobject depending on chunkposition """        
     def getChunk(self, chunkpos):
-        try:
-            return self.__mChunks[int(chunkpos.y)][int(chunkpos.x)]
-            #if any(x.position == chunkpos for x in self.__mChunks):
-                #return x
-        except IndexError:
-            pass
+        return self.__mChunks[int(chunkpos.y)][int(chunkpos.x)]
     
     def __getChunks(self):
         return self.__mChunks
