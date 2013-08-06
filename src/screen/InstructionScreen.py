@@ -91,6 +91,9 @@ class InstructionScreen(object):
             btn.mActive = False
             if btn.rect.collidepoint(mmp):
                 btn.mActive = True
+                
+    def keyInput(self, key):
+        pass
     
     def update(self, delta):
         pos = pygame.mouse.get_pos()

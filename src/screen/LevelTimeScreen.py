@@ -225,11 +225,17 @@ class LevelTimeScreen(object):
             if btn.rect.collidepoint(mmp):
                 btn.mActive = True
                 
-    def quickRetry(self):
+    def keyInput(self, key):
+        if key == pygame.K_r:
+            self.__quickRetry()
+        elif key == pygame.K_SPACE:
+            self.__quickGame()
+                
+    def __quickRetry(self):
         if self.mCurrentTime != None:
             self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
             
-    def quickGame(self):
+    def __quickGame(self):
         if self.mLevelInt < Level.Level.countLevels():
             if self.mCurrentTime != None:
                 self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt+1))

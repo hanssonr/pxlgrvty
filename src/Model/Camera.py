@@ -68,7 +68,7 @@ class Camera(object):
         return True if (x >= self.displacement.x - self.mFrustumBias and 
                 x <= self.displacement.x + self.mFrustumBias + self.CAMERA_WIDTH and
                 y >= self.displacement.y - self.mFrustumBias and
-                y <= self.displacement.y + self.mFrustumBias + self.CAMERA_WIDTH) else False
+                y <= self.displacement.y + self.mFrustumBias + self.CAMERA_HEIGHT) else False
     
      
     #properties  

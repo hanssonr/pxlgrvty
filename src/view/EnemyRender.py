@@ -21,37 +21,38 @@ class EnemyRender(object):
     def render(self, delta):
         
         for e in self.mEnemies:
-            toDraw = None
-            size = b2Vec2(e.size.x, e.size.y)
-                   
-            if isinstance(e, SpikeBox):
-                toDraw = self.spikebox
-            elif isinstance(e, Spike):
-                toDraw = self.spike      
+            if self.mCamera.isInFrustum(e.position.x, e.position.y):
+                toDraw = None
+                size = b2Vec2(e.size.x, e.size.y)
+                       
+                if isinstance(e, SpikeBox):
+                    toDraw = self.spikebox
+                elif isinstance(e, Spike):
+                    toDraw = self.spike      
+                    
+                    if e.mFacing == Facing.UP:
+                        toDraw.rotate(0)
+                        size.Set(1, 0.5)
+                        
+                    if e.mFacing == Facing.DOWN:
+                        toDraw.rotate(180)
+                        size.Set(1, 0.5)
+                        
+                    if e.mFacing == Facing.LEFT:
+                        toDraw.rotate(90)
+                        size.Set(0.5, 1)
+                                  
+                    if e.mFacing == Facing.RIGHT:
+                        toDraw.rotate(-90)
+                        size.Set(0.5, 1)
+                        
+                        
+                elif isinstance(e, Saw):
+                    toDraw = self.saw
                 
-                if e.mFacing == Facing.UP:
-                    toDraw.rotate(0)
-                    size.Set(1, 0.5)
-                    
-                if e.mFacing == Facing.DOWN:
-                    toDraw.rotate(180)
-                    size.Set(1, 0.5)
-                    
-                if e.mFacing == Facing.LEFT:
-                    toDraw.rotate(90)
-                    size.Set(0.5, 1)
-                              
-                if e.mFacing == Facing.RIGHT:
-                    toDraw.rotate(-90)
-                    size.Set(0.5, 1)
-                    
-                    
-            elif isinstance(e, Saw):
-                toDraw = self.saw
-            
-            viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (size.x)/2, e.position.y - (size.y)/2))
-            toDraw.setSize(self.mCamera.getScaledSize(size.x, size.y))
-            toDraw.draw(delta, viewpos)
+                viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (size.x)/2, e.position.y - (size.y)/2))
+                toDraw.setSize(self.mCamera.getScaledSize(size.x, size.y))
+                toDraw.draw(delta, viewpos)
     
     def levelUpdate(self, enemies):
         self.mEnemies = enemies

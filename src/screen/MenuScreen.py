@@ -5,12 +5,15 @@ from controller.MenuInput import MenuInput
 from Box2D import b2Vec2
 from MenuItems import TableCreator, MenuAction
 from libs.Animation import Animation
-import LevelScreen, libs.Sprite as Sprite, OptionScreen, InstructionScreen
+import LevelScreen, OptionScreen, InstructionScreen
+from libs.Sprite import Sprite
 from libs.SoundManager import SoundManager, MusicID
 
 class MenuScreen(object):
     
     def __init__(self, game):
+        self.mBg = Sprite(Resources.getInstance().mMenuBg)
+        
         SoundManager.getInstance().playMenuMusic()
         pygame.mouse.set_visible(False)
         self.mGame = game
@@ -20,7 +23,7 @@ class MenuScreen(object):
         self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
         self.mButtonTable = TableCreator(self.modelsize, 1, 4, ["new game", "options", "instructions", "exit"], [MenuAction.NEWGAME, MenuAction.OPTIONS, MenuAction.INSTRUCTIONS, MenuAction.EXIT])
         
-        self.arrow = Sprite.Sprite(Resources.getInstance().mArrow) 
+        self.arrow = Sprite(Resources.getInstance().mArrow) 
         self.arrow.setSize(self.mCamera.getScaledSize((self.arrow.getWidth()/float(self.arrow.getHeight())) * 0.5, 0.5))
         
         self.button = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1))
@@ -34,6 +37,8 @@ class MenuScreen(object):
     
     def render(self, delta):
         Pgl.app.surface.fill((67,80,129))
+        #self.mBg.setSize(self.mCamera.getScaledSize(self.modelsize.x, self.modelsize.y))
+        #self.mBg.draw(b2Vec2(0,0))
         
         #title
         title = self.titleFont.render("pxlgrvty", 0, (255,255,255))
@@ -87,8 +92,5 @@ class MenuScreen(object):
             if btn.rect.collidepoint(mmp):
                 btn.mActive = True
                 
-    def quickRetry(self):
+    def keyInput(self, key):
         pass
-            
-    def quickGame(self):
-        self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))

@@ -38,9 +38,9 @@ class Animation(Sprite):
         
     
     def draw(self, delta, position):
-        self.__mElapsedTime += delta
-        
         if self.__mRunning:
+            self.__mElapsedTime += delta
+        
             if self.__mElapsedTime > self.__mMaxTime:
                 
                 self.__mCurrentFrame += 1

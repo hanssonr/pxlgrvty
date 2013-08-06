@@ -18,6 +18,7 @@ class PygameApplication(object):
         self.game = game
         self.fps = fps
         self.timestep = 1.0 / self.fps
+        self.lasttime = 0
         
         Pgl.app = self
         Pgl.options = Options()
@@ -30,13 +31,14 @@ class PygameApplication(object):
     def __mainloop(self):
         pygame.mixer.pre_init(44100, -16, 2, 1024)
         pygame.init()
+        
         pygame.display.set_caption("pxlgrvty")
         Pgl.clock = pygame.time.Clock()
         
         self.game.create()
 
         while self.running:        
-            Pgl.clock.tick(self.fps) / 1000.0
+            Pgl.clock.tick()
 
             delta = self.timestep
             
@@ -44,7 +46,6 @@ class PygameApplication(object):
                 self.game.input.update()
                             
             self.game.update(delta)
-            
             self.game.render(delta)
             pygame.display.flip()
                 
@@ -56,14 +57,14 @@ class PygameApplication(object):
     def fullscreen(self, boolean, resolution):
         try:
             if boolean:
-                self.surface = pygame.display.set_mode((resolution[0], resolution[1]), FULLSCREEN)
+                self.surface = pygame.display.set_mode((resolution[0], resolution[1]), FULLSCREEN | DOUBLEBUF)
             else: 
                 os.environ['SDL_VIDEO_WINDOW_POS'] = '10,30'
-                self.surface = pygame.display.set_mode((resolution[0], resolution[1]))
+                self.surface = pygame.display.set_mode((resolution[0], resolution[1]), DOUBLEBUF)
         except:
             Pgl.options.setDefaultOptions()
             res = Pgl.options.getResolutionAsList()
-            self.surface = pygame.display.set_mode((res[0], res[1]))
+            self.surface = pygame.display.set_mode((res[0], res[1]), DOUBLEBUF)
             Pgl.width, Pgl.height = res[0], res[1]
         else:
             Pgl.width, Pgl.height = resolution[0], resolution[1]

@@ -22,7 +22,8 @@ class WorldRender(object):
         self.ui = Sprite(Resources.getInstance().mUI)
         self.ui.setSize(self.mCamera.getScaledSize(4,1))
 
-        self.timesize = Resources.getInstance().getScaledFont(self.mCamera.scale.x).size("00:00:00")
+        self.timefont = Resources.getInstance().getScaledFont(self.mCamera.scale.x)
+        self.timesize = self.timefont.size("00:00:00")
         
         #debugrender only
         self.debug = DebugDraw(self.mCamera)
@@ -57,7 +58,7 @@ class WorldRender(object):
         self.label = Resources.getInstance().getScaledFont(20).render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))
         
-        self.time = Resources.getInstance().getScaledFont(self.mCamera.scale.x).render(Time.convertToTimeString(self.mWorld.mTimer), 0, (255, 255, 255))
+        self.time = self.timefont.render(Time.convertToTimeString(self.mWorld.mTimer), 0, (255, 255, 255))
         Pgl.app.surface.blit(self.time, (self.mCamera.getScaledSize(Camera.CAMERA_WIDTH / 2.0 - (self.timesize[0] / 2.0) / self.mCamera.scale.x, Camera.CAMERA_HEIGHT - ((10 +self.timesize[1]) / self.mCamera.scale.y))))
     
 

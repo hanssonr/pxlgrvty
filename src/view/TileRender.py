@@ -12,10 +12,10 @@ class TileRender(object):
         self.mCamera = camera
         self.mTiles = tiles
         self.mTileSprite = Animation(pygame.image.load("assets/gfx/tiles/%s" % tileset).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1))
-        
-    
-    def render(self, delta):
         self.mTileSprite.setSize(self.mCamera.getScaledSize(Tile.TILE_SIZE, Tile.TILE_SIZE))
+         
+    def render(self, delta):
+        
         for tile in self.mTiles:
             if self.mCamera.isInFrustum(tile.position.x, tile.position.y):
                 viewpos = self.mCamera.getViewCoords(b2Vec2(tile.position.x - 0.5, tile.position.y - 0.5))
@@ -98,8 +98,9 @@ class TileRender(object):
                     
                 elif tile.tiletype == TileType.GRAVITYZONE:
                     self.mTileSprite.freeze(2,7)
-                    
+                
                 self.mTileSprite.draw(delta, viewpos)
+                
                     
     def levelUpdate(self, tiles, tileset):
         self.mTiles = tiles

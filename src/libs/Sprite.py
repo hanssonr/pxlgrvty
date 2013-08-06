@@ -9,7 +9,6 @@ class Sprite(object):
     __mSize = None
     
     def __init__(self, image):
-        self.mOriginalImage = image
         self.image = image
         self.pos = image.get_rect()
         

@@ -105,6 +105,9 @@ class LevelScreen(object):
                         continue
                 btn.mActive = True
                 
+    def keyInput(self, key):
+        pass
+                
     def countLevels(self):
         lvls = 0
         for filename in os.listdir("assets/levels"):
@@ -112,10 +115,4 @@ class LevelScreen(object):
                 lvls += 1
                 
         return lvls
-    
-    def quickRetry(self):
-        pass
-            
-    def quickGame(self):
-        self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, 1))
         

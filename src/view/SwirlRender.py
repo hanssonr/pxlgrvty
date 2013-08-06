@@ -19,19 +19,20 @@ class SwirlRender(object):
         self.swirl.setLooping(False)       
     
     def render(self, delta):
-        viewpos = self.mCamera.getViewCoords(b2Vec2(self.mLevel.mEndPos.x, self.mLevel.mEndPos.y))
-
-        if not self.mLevel.mSwirlActive:
-            self.swirl.freeze(0, 0)
-        else:
-            if not self.__swirlActivation:
-                self.swirl.continueAnimation()
-                if self.swirl.isAnimationDone():
-                    self.__swirlActivation = True
-                    self.swirl.setLooping(True)
-                    self.swirl.gotoRow(1)
-                
-        self.swirl.draw(delta, viewpos)
+        if self.mCamera.isInFrustum(self.mLevel.mEndPos.x, self.mLevel.mEndPos.y):
+            viewpos = self.mCamera.getViewCoords(b2Vec2(self.mLevel.mEndPos.x, self.mLevel.mEndPos.y))
+    
+            if not self.mLevel.mSwirlActive:
+                self.swirl.freeze(0, 0)
+            else:
+                if not self.__swirlActivation:
+                    self.swirl.continueAnimation()
+                    if self.swirl.isAnimationDone():
+                        self.__swirlActivation = True
+                        self.swirl.setLooping(True)
+                        self.swirl.gotoRow(1)
+                    
+            self.swirl.draw(delta, viewpos)
         
     
     def levelUpdate(self):
