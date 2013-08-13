@@ -23,9 +23,6 @@ class Particle(object):
         shape.SetAsBox(self.mSize.x/2.0,self.mSize.y/2.0)
         fd = b2FixtureDef()
         fd.shape = shape
-        fd.friction = 1
-        fd.density = 10
-        fd.isSensor = False
         fd.categoryBits = Filter.CATEGORY_FX
         fd.maskBits = Filter.MASK_FX
         self.mBody.CreateFixture(fd)

@@ -20,7 +20,7 @@ class SwirlRender(object):
     
     def render(self, delta):
         if self.mCamera.isInFrustum(self.mLevel.mEndPos.x, self.mLevel.mEndPos.y):
-            viewpos = self.mCamera.getViewCoords(b2Vec2(self.mLevel.mEndPos.x, self.mLevel.mEndPos.y))
+            viewpos = self.mCamera.getViewCoords(self.mLevel.mEndPos)
     
             if not self.mLevel.mSwirlActive:
                 self.swirl.freeze(0, 0)

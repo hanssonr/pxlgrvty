@@ -4,7 +4,7 @@ from model.Filter import *
 class Tile(object):
     
     TILE_SIZE = 1.0
-    mCollideableWalls = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+    mCollideableWalls = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 24, 25, 26, 27, 28, 29, 30, 31, 32]
     mBody = None
     
     def __init__(self, world, position, tiletype):
@@ -23,7 +23,6 @@ class Tile(object):
             self.mWorld.DestroyBody(self.mBody)
         
     def __isWall(self, tiletype):
-        #return True if tiletype > 0 and tiletype < 15 else False
         return True if any(t == tiletype for t in self.mCollideableWalls) else False
                 
     def __createTile(self):
@@ -33,7 +32,7 @@ class Tile(object):
         bl = b2Vec2(-self.TILE_SIZE/2, self.TILE_SIZE/2)
         
         shape = b2ChainShape()
-        shape.vertices = (tl, bl, br, tr)
+        shape.vertices = (bl, br, tr, tl)
         fd = b2FixtureDef()
         fd.categoryBits = Filter.CATEGORY_WALLS
         fd.maskBits = Filter.MASK_WALLS
@@ -43,7 +42,6 @@ class Tile(object):
         
         self.mBody.CreateFixture(fd)
         self.mBody.userData = self
-        #self.mBody.CreateEdgeChain((tl, bl, br, tr, tl))
         
     
     def __createGravityZone(self):

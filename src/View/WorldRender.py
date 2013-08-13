@@ -1,35 +1,31 @@
 import pygame
-from libs.Pgl import *
-from DebugDraw import *
 from view.TileRender import TileRender
 from view.PlayerRender import PlayerRender
-from Resources import *
 from view.ObjectRender import ObjectRender
 from view.EnemyRender import EnemyRender
 from view.SwirlRender import SwirlRender
 from view.EffectRender import EffectRender
 from view.BackgroundRender import BackgroundRender
-from observer.Observers import *
+from view.UIRender import UIRender
 from model.Time import Time
-from libs.Sprite import Sprite
+from view.DebugDraw import DebugDraw
+from libs.Pgl import *
+from Resources import Resources
+
+
 
 class WorldRender(object):
     
     def __init__(self, world, camera):
         self.mWorld = world
         self.mCamera = camera
-        
-        self.ui = Sprite(Resources.getInstance().mUI)
-        self.ui.setSize(self.mCamera.getScaledSize(4,1))
-
-        self.timefont = Resources.getInstance().getScaledFont(self.mCamera.scale.x)
-        self.timesize = self.timefont.size("00:00:00")
-        
+                
         #debugrender only
         self.debug = DebugDraw(self.mCamera)
         self.mWorld.physWorld.renderer = self.debug
         self.debug.AppendFlags(self.debug.e_shapeBit)
         
+        #renders
         self.objectRender = ObjectRender(self.mCamera, self.mWorld.level.mObjects)
         self.playerRender = PlayerRender(self.mCamera, self.mWorld.player)
         self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles, self.mWorld.level.mCurrentTileset)
@@ -37,13 +33,14 @@ class WorldRender(object):
         self.swirlRender = SwirlRender(self.mCamera, self.mWorld.level)
         self.fxRender = EffectRender(self.mCamera)
         self.bgRender = BackgroundRender(self.mCamera, self.mWorld.level)
+        self.uiRender = UIRender(self.mCamera, self.mWorld)     
     
     def render(self, delta):
         self.bgRender.render(delta)
         
         if self.mWorld.DEBUG:
+            self.tileRender.render(delta)
             self.mWorld.physWorld.DrawDebugData()
-            self.enemyRender.render(delta)
         else:
             self.objectRender.render(delta)
             self.swirlRender.render(delta)
@@ -51,15 +48,10 @@ class WorldRender(object):
             self.playerRender.render(delta)
             self.tileRender.render(delta)
             self.fxRender.render(delta)
-        
-        uipos =  self.mCamera.getScaledSize(Camera.CAMERA_WIDTH / 2.0 - 2, Camera.CAMERA_HEIGHT - 1)
-        self.ui.draw(b2Vec2(uipos.x, uipos.y))
+            self.uiRender.render(delta)
             
         self.label = Resources.getInstance().getScaledFont(20).render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))
-        
-        self.time = self.timefont.render(Time.convertToTimeString(self.mWorld.mTimer), 0, (255, 255, 255))
-        Pgl.app.surface.blit(self.time, (self.mCamera.getScaledSize(Camera.CAMERA_WIDTH / 2.0 - (self.timesize[0] / 2.0) / self.mCamera.scale.x, Camera.CAMERA_HEIGHT - ((10 +self.timesize[1]) / self.mCamera.scale.y))))
     
 
     "implementing LevelupdateListener"

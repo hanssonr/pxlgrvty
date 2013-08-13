@@ -9,7 +9,7 @@ import crypter
 
 class Main(object):
     
-    fps = 60
+    fps = 45
     
     def __init__(self):
         PygameApplication(Pxlgrvty(), self.fps)

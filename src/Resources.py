@@ -27,7 +27,6 @@ class Resources(object):
     mBlood = None
     mSaw = None
     mUI = None
-    mMenuBg = None
     
     #sound
     mFleshExplosion = None
@@ -54,7 +53,6 @@ class Resources(object):
         self.mMedallions = pygame.image.load("assets/gfx/medallions.png").convert_alpha()
         self.mUI = pygame.image.load("assets/gfx/ui.png").convert_alpha()
         self.mBlood = pygame.image.load("assets/gfx/blood.png").convert_alpha()
-        self.mMenuBg = pygame.image.load("assets/gfx/test.png").convert()
         
         #font
         self.mFont = pygame.font.SysFont('mono', 36)

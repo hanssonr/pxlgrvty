@@ -31,7 +31,7 @@ class Time(object):
         return self.mMilliseconds
     
     @staticmethod
-    def convertToTimeFormat(floattime):     
+    def convertToTimeObject(floattime):     
         m, s = divmod(floattime, 60)
         s, mi = str(s).split(".")
         

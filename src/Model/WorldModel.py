@@ -20,7 +20,6 @@ class WorldModel(object):
     DEBUG = False
     
     physWorld = None
-    timeStep = 1.0 / 60.0
     vel_iters, pos_iters = 6, 2 
     debugRender = None;
     player = None
@@ -70,7 +69,7 @@ class WorldModel(object):
                 box.mOldPos = box.mBody.position.copy()
         
         #step the physicsworld
-        self.physWorld.Step(self.timeStep, self.vel_iters, self.pos_iters)
+        self.physWorld.Step(delta, self.vel_iters, self.pos_iters)
         self.physWorld.ClearForces()
         
         for body in self.physWorld.bodies:

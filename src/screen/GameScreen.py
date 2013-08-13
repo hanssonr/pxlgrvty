@@ -3,7 +3,7 @@ from controller.Input import Input
 from model.WorldModel import WorldModel
 from model.Camera import Camera
 from view.WorldRender import WorldRender
-from libs.Pgl import Pgl
+from libs.Pgl import *
 from observer.Observers import *
 import LevelScreen, LevelTimeScreen, model.Time as Time, random
 from Resources import *
@@ -16,6 +16,7 @@ class GameScreen(object):
     mWorldRender = None
     
     def __init__(self, game, lvl):
+        Pgl.app.setRenderStep(1/45.0)
         pygame.mouse.set_visible(True)
         SoundManager.getInstance().playMusic(random.randrange(1, SoundManager.getInstance().NUMBER_OF_SONGS + 1))
         self.mGame = game
@@ -35,7 +36,7 @@ class GameScreen(object):
         self.mWorld.update(delta)
         
         if self.mWorld.mLevelDone:
-            self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, self.mWorld.level.mCurrentLevel, Time.Time.convertToTimeFormat(self.mWorld.mTimer)))
+            self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, self.mWorld.level.mCurrentLevel, Time.Time.convertToTimeObject(self.mWorld.mTimer)))
     
     def render(self, delta):
         self.mWorldRender.render(delta)

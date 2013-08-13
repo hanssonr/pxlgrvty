@@ -13,7 +13,6 @@ class Pxlgrvty(Game):
         
   
     def create(self):
-        #self.setScreen(GameScreen(self))
         self.setScreen(LoadingScreen(self))
     
     def update(self, delta):

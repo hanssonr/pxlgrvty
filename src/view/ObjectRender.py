@@ -21,7 +21,7 @@ class ObjectRender(object):
     def render(self, delta):
         for obj in self.mObjects:
             
-            viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2, obj.position.y - obj.size.y/2))
+            viewpos = self.mCamera.getViewCoords(b2Vec2(obj.position.x - obj.size.x/2.0, obj.position.y - obj.size.y/2.0))
             if isinstance(obj, Box):
                 self.box.setSize(self.mCamera.getScaledSize(1, 1))
                 self.box.draw(viewpos)

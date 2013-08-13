@@ -21,7 +21,7 @@ class PlayerRender(object):
             if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
                 size.Set(size.y, size.x)
              
-            viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - size.x/2, self.mPlayer.position.y - size.y/2))
+            viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - self.mPlayer.size.x/2.0, self.mPlayer.position.y - self.mPlayer.size.y/2.0))
             self.playerAnimation.setSize(self.mCamera.getScaledSize(size.x, size.y))
             
             if self.mPlayer.mPlayerState == PlayerState.IDLE:
@@ -40,8 +40,7 @@ class PlayerRender(object):
     def __flipAndRotate(self):
         #Down
         if self.mPlayer.mBodyDirection == GravityDirection.DOWN:
-            if self.playerAnimation.getRotation() != 0:
-                self.playerAnimation.rotate(0)
+            self.playerAnimation.rotate(0)
             
             if self.mPlayer.mFacing == Facing.RIGHT:
                 if self.playerAnimation.flippedX() == True:
@@ -52,8 +51,7 @@ class PlayerRender(object):
         
         #Up
         if self.mPlayer.mBodyDirection == GravityDirection.UP:
-            if self.playerAnimation.getRotation() != 180:
-                self.playerAnimation.rotate(180)
+            self.playerAnimation.rotate(180)
             
             if self.mPlayer.mFacing == Facing.RIGHT:
                 if self.playerAnimation.flippedX() == False:
@@ -61,23 +59,21 @@ class PlayerRender(object):
             else:
                 if self.playerAnimation.flippedX() == True:
                     self.playerAnimation.flipX()
-        
-        #Left
-        if self.mPlayer.mBodyDirection == GravityDirection.LEFT:
-            if self.playerAnimation.getRotation() != -90:
-                self.playerAnimation.rotate(-90)
-            
-            if self.mPlayer.mFacing == Facing.RIGHT:
-                if self.playerAnimation.flippedX() == True:
-                    self.playerAnimation.flipX()
-            else:
-                if self.playerAnimation.flippedX() == False:
-                    self.playerAnimation.flipX()
-        
+                
         #Right
         if self.mPlayer.mBodyDirection == GravityDirection.RIGHT:
-            if self.playerAnimation.getRotation() != 90:
-                self.playerAnimation.rotate(90)
+            self.playerAnimation.rotate(90)
+            
+            if self.mPlayer.mFacing == Facing.RIGHT:
+                if self.playerAnimation.flippedX() == True:
+                    self.playerAnimation.flipX()
+            else:
+                if self.playerAnimation.flippedX() == False:
+                    self.playerAnimation.flipX()
+                    
+        #Left
+        if self.mPlayer.mBodyDirection == GravityDirection.LEFT:
+            self.playerAnimation.rotate(270)
             
             if self.mPlayer.mFacing == Facing.RIGHT:
                 if self.playerAnimation.flippedX() == True:

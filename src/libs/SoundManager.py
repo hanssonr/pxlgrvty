@@ -18,8 +18,7 @@ class SoundManager(object):
         self.NUMBER_OF_SONGS = len([file for file in os.listdir("assets/audio/music/bg") if file.endswith(".ogg")])
         
     def initialize(self):
-        self.SOUNDS = [Resources.getInstance().mJump, 
-                       Resources.getInstance().mFleshExplosion]
+        self.SOUNDS = [Resources.getInstance().mJump, Resources.getInstance().mFleshExplosion]
         self.MUSIC_PLAYING = -1
     
     
@@ -64,7 +63,6 @@ class SoundManager(object):
     def playSound(self, soundId):
         if Pgl.options.sound:
             sound = self.SOUNDS[soundId]
-            
             sound.set_volume(Pgl.options.soundvolume / 100.0)
             sound.play()
     

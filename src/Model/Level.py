@@ -18,7 +18,7 @@ from libs.Crypt import Crypt
 
 class Level(object):
     
-    CHUNK_SIZE = 8
+    CHUNK_SIZE = 16
     mMaxLevels = None
     mCurrentLevel = None
     mTiles = None
@@ -40,9 +40,6 @@ class Level(object):
     mEnemyData = None
     mBoxData = None
     
-    #timer
-    mTimer = None
-    
     #crypt/decrypt
     __mCrypt = None
     
@@ -54,7 +51,6 @@ class Level(object):
         self.mTiles = []
         self.mObjects = []
         self.mEnemies = []
-        self.mTimer = 0.0
         self.mWorld = world
         self.mGravity = gravity
         self.mCurrentLevel = lvl
@@ -107,7 +103,6 @@ class Level(object):
     def __unloadCurrentLevel(self):
         self.mEndPos = None
         self.mStartPos = None
-        self.mTimer = 0.0
         self.mSwirlActive = False
         self.__unloadEntities()
         for tile in self.mTiles:
@@ -128,7 +123,6 @@ class Level(object):
     
     
     def update(self, delta, playerpos):
-        self.mTimer += delta
         if self.mMapType == MapType.PICTURE:
             self.mChunkHandler.manageChunks(playerpos)
           
@@ -198,8 +192,8 @@ class Level(object):
                 chunkmap = self.mMap.subsurface(Rect(cx * self.CHUNK_SIZE, cy * self.CHUNK_SIZE, self.CHUNK_SIZE, self.CHUNK_SIZE))
                 chunktiles = []
                 
-                for y in range(chunkmap.get_width()):
-                    for x in range(chunkmap.get_height()):
+                for y in range(chunkmap.get_height()):
+                    for x in range(chunkmap.get_width()):
                         
                         r,g,b,a = chunkmap.get_at((x, y))
                         
@@ -217,8 +211,6 @@ class Level(object):
                                 self.mStartPos = pos
                             elif (r,g,b) == Color.ENDPOS:
                                 self.mEndPos = pos
-                            elif (r,g,b) == Color.BOX:
-                                self.mObjects.append(Box(pos, self.mWorld, self.mGravity))
                 
                 self.mChunkHandler.chunkslist[cy][cx] = Chunk(b2Vec2(cx, cy), chunktiles)                         
         self.mMap.unlock()

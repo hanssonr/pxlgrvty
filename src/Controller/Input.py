@@ -6,6 +6,7 @@ from pygame.locals import *
 from Box2D import b2Vec2
 from libs.BaseInputHandler import BaseInputHandler
 from model.Direction import GravityDirection, MoveDirection
+from libs.Pgl import *
 
 class Input(BaseInputHandler):
     
@@ -49,6 +50,13 @@ class Input(BaseInputHandler):
                 if event.key == K_KP5:
                     self.camera.displacement.Set(self.camera.displacement.x, self.camera.displacement.y - 1)
                     
+                if event.key == K_F5:
+                    Pgl.app.setRenderStep(1/60.0)
+                if event.key == K_F6:
+                    Pgl.app.setRenderStep(1/45.0)
+                if event.key == K_F7:
+                    Pgl.app.setRenderStep(1/30.0)
+                    
                 #debug
                 if event.key == K_F1:
                     self.world.DEBUG = not self.world.DEBUG
@@ -59,7 +67,7 @@ class Input(BaseInputHandler):
                     else:
                         self.world.mEntityToFollow = self.world.player
     
-           #button up
+           #levelbutton up
             elif event.type == KEYUP:
                 #zero out the velocity 
                 if event.key == K_a or event.key == K_d or event.key == K_w or event.key == K_s:
@@ -82,7 +90,7 @@ class Input(BaseInputHandler):
                     self.player.move(MoveDirection.UP)
             
             if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
+                if event.menubutton == 1:
                     print self.camera.getModelCoords(b2Vec2(event.pos[0], event.pos[1]))
       
             #camerascale           

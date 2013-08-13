@@ -15,7 +15,7 @@ class Animation(Sprite):
     
     __mCurrentFrame = None
     __mCurrentRow = None
-    __mDrawRect = None  
+    __mDrawRect = None
     
     def __init__(self, sprite, framesX, framesY, animationtime, size, looping = True, running = True):
         super(Animation, self).__init__(sprite)
@@ -35,7 +35,6 @@ class Animation(Sprite):
         self.__mFrameWidth = Sprite.getWidth(self) / framesX
         self.__mMaxTime = animationtime / self.__mFramesX
         self.__mDrawRect = Rect(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight, self.__mFrameWidth, self.__mFrameHeight)
-        
     
     def draw(self, delta, position):
         if self.__mRunning:
@@ -55,7 +54,6 @@ class Animation(Sprite):
                         self.__mRunning = False
                 
                 self.__mElapsedTime = 0.0
-        
         
         Sprite.draw(self, position, self.__mDrawRect.move(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight))
     

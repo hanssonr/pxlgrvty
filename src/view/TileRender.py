@@ -11,17 +11,15 @@ class TileRender(object):
     def __init__(self, camera, tiles, tileset):
         self.mCamera = camera
         self.mTiles = tiles
-        self.mTileSprite = Animation(pygame.image.load("assets/gfx/tiles/%s" % tileset).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1))
-        self.mTileSprite.setSize(self.mCamera.getScaledSize(Tile.TILE_SIZE, Tile.TILE_SIZE))
+        self.mTileSprite = Animation(pygame.image.load("assets/gfx/tiles/%s" % tileset).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1), False, False)
          
     def render(self, delta):
-        
         for tile in self.mTiles:
             if self.mCamera.isInFrustum(tile.position.x, tile.position.y):
                 viewpos = self.mCamera.getViewCoords(b2Vec2(tile.position.x - 0.5, tile.position.y - 0.5))
-                
+
                 #walls
-                if tile.tiletype == TileType. TL:
+                if tile.tiletype == TileType.TL:
                     self.mTileSprite.freeze(0,0)
                 elif tile.tiletype == TileType.T:
                     self.mTileSprite.freeze(1,0)
@@ -100,7 +98,6 @@ class TileRender(object):
                     self.mTileSprite.freeze(2,7)
                 
                 self.mTileSprite.draw(delta, viewpos)
-                
                     
     def levelUpdate(self, tiles, tileset):
         self.mTiles = tiles

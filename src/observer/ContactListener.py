@@ -41,24 +41,15 @@ class ContactListener(b2ContactListener):
                     bodyA.userData.mOnGround -= 1
                 else:
                     bodyA.userData.mOnGround += 1
-        """
-        #Player collides Enemy
-        if isinstance(bodyA.userData, Player):
-            if isinstance(bodyB.userData, Enemy):
-                bodyA.userData.alive = False
-        elif isinstance(bodyB.userData, Player):
-            if isinstance(bodyA.userData, Enemy):
-                bodyB.userData.alive = False
-        """
+
+        #Player collides enemy
         if fixA.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyB.userData, Enemy):
                 if bodyA.userData.alive:
-                    pass
                     bodyA.userData.alive = False
         elif fixB.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyA.userData, Enemy):
                 if bodyB.userData.alive:
-                    pass
                     bodyB.userData.alive = False
         
         
@@ -92,7 +83,7 @@ class ContactListener(b2ContactListener):
         bodyA = fixA.body
         bodyB = fixB.body
         
-        #Player leaving ground/box
+        #Player leaving ground
         if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyA.userData, Tile):
                 bodyB.userData.mOnGround -= 1

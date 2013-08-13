@@ -87,9 +87,7 @@ class Player(MovableEntity):
                 self.mVelocity.y = -self.mGravityToUse.y * (1 - self.mJumpTimer)
             
             #zero out gravity
-            #self.mGravityToUse = b2Vec2(0,0)
             self.mGravityToUse *= self.mJumpTimer
-            
             self.mJumpTimer += delta
 
             if self.mJumpTimer >= 0.3:

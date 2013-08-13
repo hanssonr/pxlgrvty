@@ -1,4 +1,5 @@
 import pygame
+from Box2D import b2Vec2, b2Vec2_zero
 from libs.Pgl import *
 
 class Sprite(object):
@@ -7,34 +8,37 @@ class Sprite(object):
     __mFlippedY = False
     __mRotation = 0
     __mSize = None
+
     
-    def __init__(self, image):
+    def __init__(self, image, size = b2Vec2_zero):
         self.image = image
         self.pos = image.get_rect()
+        self.__mSize = size
         
     def draw(self, pos = None, area = None):
-        toDraw = self.image        
+        toDraw = self.image
+        
         if area != None:
             toDraw = self.image.subsurface(area)
             toDraw = pygame.transform.flip(toDraw, self.__mFlippedX, self.__mFlippedY)
             toDraw = pygame.transform.rotate(toDraw, self.__mRotation)
 
-        if self.__mSize != None:
-            toDraw = pygame.transform.scale(toDraw, self.__mSize)
-            
+        if self.__mSize != b2Vec2_zero:
+            toDraw = pygame.transform.scale(toDraw, (int(self.__mSize.x), int(self.__mSize.y)))
+        
         if pos != None:
             Pgl.app.surface.blit(toDraw, pos)
         else:
             Pgl.app.surface.blit(toDraw, self.pos)
     
     def setSize(self, size):
-        self.__mSize = (int(size.x), int(size.y))
+        self.__mSize = size
     
     def getSize(self):
         return self.__mSize
     
     def setPosition(self, x, y):
-        self.pos = (x, y)
+        self.pos = (x,y)
         
     def flipX(self):
         self.__mFlippedX = not self.__mFlippedX

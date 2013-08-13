@@ -4,9 +4,6 @@ Handles all the chunks on the map!
 
 from Box2D import b2Vec2
 import math
-#from Level import TestTile
-from Tile import Tile
-
 class ChunkHandler(object):
     
     __mActiveChunks = None

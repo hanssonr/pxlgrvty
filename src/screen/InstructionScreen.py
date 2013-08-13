@@ -7,8 +7,9 @@ from Box2D import b2Vec2
 from controller.MenuInput import MenuInput
 from MenuItems import Button, MenuAction
 import pygame, MenuScreen
+from BaseMenuScreen import BaseMenuScreen
 
-class InstructionScreen(object):
+class InstructionScreen(BaseMenuScreen):
     
     #crystal
     __crystalPos = None
@@ -32,22 +33,9 @@ class InstructionScreen(object):
     __gravityDirection = None
     
     def __init__(self, game):
-        pygame.mouse.set_visible(False)
-        self.mGame = game
-        self.mCamera = Camera(Pgl.width, Pgl.height)
-        
-        self.menuButton = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, b2Vec2(0,0), False, False)
-        self.arrow = Sprite(Resources.getInstance().mArrow)
-        self.arrow.setSize(self.mCamera.getScaledSize((self.arrow.getWidth()/float(self.arrow.getHeight())) * 0.5, 0.5))
-        
+        super(InstructionScreen, self).__init__(game)   
         self.__mMenuItems = []
         self.__mMenuItems.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
-        
-        
-        self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
-        self.titleFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x * 2.0)
-        self.infoFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 2)
-        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 3)
             
         self.__crystalPos = b2Vec2(9.5,5.8)
         self.__crystalDirection = b2Vec2(0,1)
@@ -73,8 +61,6 @@ class InstructionScreen(object):
         self.__gravityTimer = 1.0
         self.__gravityDirection = b2Vec2(0,-1)
         self.playergravity = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(.9, 1), False, False)
-        
-        self.mGame.input = MenuInput(self)
     
     def mouseClick(self, pos):
         mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
@@ -96,9 +82,7 @@ class InstructionScreen(object):
         pass
     
     def update(self, delta):
-        pos = pygame.mouse.get_pos()
-        self.arrow.setPosition(pos[0], pos[1])
-        self.mouseOver(pos)
+        BaseMenuScreen.update(self, delta)
         
         #crystal
         self.__crystalTimer -= delta    
@@ -176,7 +160,7 @@ class InstructionScreen(object):
     def render(self, delta):
         Pgl.app.surface.fill((67,80,129))
         
-        btnToDraw = self.menuButton
+        btnToDraw = self.menubutton
         for btn in self.__mMenuItems:
             viewpos = self.mCamera.getViewCoords(b2Vec2(btn.x, btn.y))
             btnToDraw.setSize(self.mCamera.getScaledSize(btn.size.x, btn.size.y))

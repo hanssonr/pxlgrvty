@@ -9,51 +9,29 @@ from libs.Sprite import Sprite
 import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen, model.Time as Time
 from screen.MenuItems import Button, MenuAction, LevelButton, LevelTableCreator
 from libs.Crypt import Crypt
+from BaseMenuScreen import BaseMenuScreen
 
-class LevelScreen(object):
+class LevelScreen(BaseMenuScreen):
     
     def __init__(self, game):
-        pygame.mouse.set_visible(False)
-        self.mGame = game
-        self.mCamera = Camera(Pgl.width, Pgl.height)
+        super(LevelScreen, self).__init__(game)
         
-        self.lock = Sprite(Resources.getInstance().mLock)
-        self.lock.setSize(self.mCamera.getScaledSize((self.lock.getWidth()/float(self.lock.getHeight())) * 0.2, 0.2))
-        
-        self.arrow = Sprite(Resources.getInstance().mArrow) 
-        self.arrow.setSize(self.mCamera.getScaledSize((self.arrow.getWidth()/float(self.arrow.getHeight())) * 0.5, 0.5))
-        
-        self.button = Animation(Resources.getInstance().mLevelButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1), False)
-        self.menubutton = Animation(Resources.getInstance().mMenuButton, 2, 1, 0, self.mCamera.getScaledSize(1, 1), False)
-        
-        self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
-        
-        nrOfLvls = self.countLevels()
-        self.mLevelTable = LevelTableCreator(self.modelsize, 4, nrOfLvls)
+        self.mLevelTable = LevelTableCreator(self.modelsize, 4, self.countLevels())
         self.mLevelTable.mLevelButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
         
-        self.screenFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x / 3)
-        self.titleFont = Resources.getInstance().getScaledFont(self.mCamera.scale.x * 2.0)
-        
-        self.mGame.input = MenuInput(self)
+        #header
+        self.title = self.titleFont.render("choose level", 0, (255,255,255))
+        self.size = self.titleFont.size("choose level")
+        self.titlepos = self.mCamera.getViewCoords(b2Vec2(self.modelsize.x / 2.0, self.modelsize.y / 6))
         
     def update(self, delta):
-        pos = pygame.mouse.get_pos()
-        self.arrow.setPosition(pos[0], pos[1])
-        self.mouseOver(pos)
+        BaseMenuScreen.update(self, delta)
     
     def render(self, delta):
-        #Pgl.app.surface.fill((167,74,20))
-        Pgl.app.surface.fill((67,80,129))
-        
-        #header
-        title = self.titleFont.render("choose level", 0, (255,255,255))
-        size = self.titleFont.size("choose level")
-        titlepos = self.mCamera.getViewCoords(b2Vec2(self.modelsize.x / 2.0, self.modelsize.y / 6))
-        Pgl.app.surface.blit(title, (titlepos.x - size[0] / 2.0, titlepos.y - size[1] / 2.0))
-        
-        
-        btnToDraw = self.button
+        Pgl.app.surface.fill((67,80,129)) 
+        Pgl.app.surface.blit(self.title, (self.titlepos.x - self.size[0] / 2.0, self.titlepos.y - self.size[1] / 2.0))
+         
+        btnToDraw = self.levelbutton
         for btn in self.mLevelTable.mLevelButtons:
             if isinstance(btn, Button):
                 btnToDraw = self.menubutton

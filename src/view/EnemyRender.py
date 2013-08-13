@@ -15,7 +15,7 @@ class EnemyRender(object):
         
         self.spikebox = Animation(Resources.getInstance().mSpikeBox, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
         self.spike = Animation(Resources.getInstance().mSpike, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
-        self.saw = Animation(Resources.getInstance().mSaw, 2, 1, 0.1, self.mCamera.getScaledSize(1,1))
+        self.saw = Animation(Resources.getInstance().mSaw, 2, 1, 0.25, self.mCamera.getScaledSize(1,1))
         
         
     def render(self, delta):
@@ -50,7 +50,7 @@ class EnemyRender(object):
                 elif isinstance(e, Saw):
                     toDraw = self.saw
                 
-                viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - (size.x)/2, e.position.y - (size.y)/2))
+                viewpos = self.mCamera.getViewCoords(b2Vec2(e.position.x - size.x/2.0, e.position.y - size.y/2.0))
                 toDraw.setSize(self.mCamera.getScaledSize(size.x, size.y))
                 toDraw.draw(delta, viewpos)
     

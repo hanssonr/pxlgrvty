@@ -13,8 +13,8 @@ class BloodSplatter(object):
         
         for x in range(self.__mNrOfParticles):
             rs = random.uniform(0.03, 0.12)
-            particle = Particle(physworld, gravity/4.0, b2Vec2(rs, rs), min(rs * 10, 1), pos)
-            randDir = b2Vec2(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
+            particle = Particle(physworld, -gravity/4.0, b2Vec2(rs, rs), min(rs * 10, 1), pos)
+            randDir = b2Vec2(random.uniform(-0.5, 0.5), random.uniform(-0.8, 0.2))
             randDir.Normalize()
             particle.mVelocity = randDir * (particle.mSpeed * random.uniform(0.2, 1.5))         
             self.__mParticles.append(particle)
