@@ -36,6 +36,7 @@ class Tile(object):
         fd = b2FixtureDef()
         fd.categoryBits = Filter.CATEGORY_WALLS
         fd.maskBits = Filter.MASK_WALLS
+        fd.bullet = False
         fd.shape = shape
         
         self.mBody = self.mWorld.CreateStaticBody(position = self.mPosition)
@@ -51,7 +52,7 @@ class Tile(object):
         fd = b2FixtureDef()
         fd.shape = shape
         fd.isSensor = True
-        fd.bullet = True
+        fd.bullet = False
         fd.userData = TileType.GRAVITYZONE
         self.mBody.CreateFixture(fd)
     

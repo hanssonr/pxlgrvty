@@ -49,6 +49,9 @@ class Entity(object):
     def __getSize(self):
         return self.mSize
     
+    def __setSize(self, size):
+        self.mSize = size
+    
     def getBody(self):
         return self.mBody
     
@@ -60,8 +63,11 @@ class Entity(object):
         
     def __getId(self):
         return self.mId
+    
+    def isActive(self):
+        return self.mBody.active
 
     id = property(__getId, None)   
     alive = property(__isAlive, __setIsAlive)
     position = property(__getPosition, lambda self, value: self.__setPosition(*value))
-    size = property(__getSize, None)
+    size = property(__getSize, __setSize)

@@ -27,6 +27,7 @@ class Resources(object):
     mBlood = None
     mSaw = None
     mUI = None
+    mLasermount = None
     
     #sound
     mFleshExplosion = None
@@ -43,6 +44,7 @@ class Resources(object):
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mSpike = pygame.image.load("assets/gfx/spike.png").convert_alpha()
         self.mSaw = pygame.image.load("assets/gfx/saw.png").convert_alpha()
+        self.mLasermount = pygame.image.load("assets/gfx/lasermount.png").convert_alpha()
         self.mCrystal = pygame.image.load("assets/gfx/crystal.png").convert_alpha()
         self.mSwirlSheet = pygame.image.load("assets/gfx/swirl.png").convert_alpha()
         self.mLevelButton = pygame.image.load("assets/gfx/levelbutton.png").convert_alpha()

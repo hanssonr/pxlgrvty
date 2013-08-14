@@ -59,15 +59,15 @@ class DebugDraw(b2Draw):
         """
         Draw the line segment from p1-p2 with the specified color.
         """
-        if len(self.lines) > 7:
+        """if len(self.lines) > 7:
             self.DrawSolidPolygon(self.lines, color)
             self.lines = []
         
         self.lines.append(p1)
-        self.lines.append(p2)
-        #color = self.convertColor(color)
-        #if self.camera.isInFrustum(p1[0], p1[1]) or self.camera.isInFrustum(p2[0], p2[1]):
-            #pygame.draw.line(self.surface, color, self.toScreen(p1), self.toScreen(p2))
+        self.lines.append(p2)"""
+        color = self.convertColor(color)
+        if self.camera.isInFrustum(p1[0], p1[1]) or self.camera.isInFrustum(p2[0], p2[1]):
+            pygame.draw.line(self.surface, color, self.toScreen(p1), self.toScreen(p2))
 
     def DrawXForm(self, xf):
         """

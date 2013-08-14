@@ -39,7 +39,7 @@ class WorldRender(object):
         self.bgRender.render(delta)
         
         if self.mWorld.DEBUG:
-            self.tileRender.render(delta)
+            self.enemyRender.render(delta)
             self.mWorld.physWorld.DrawDebugData()
         else:
             self.objectRender.render(delta)

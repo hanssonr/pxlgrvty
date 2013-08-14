@@ -19,8 +19,8 @@ class LoadingScreen(object):
         self.loadingTime = self.loadingTime - delta
         #print self.loadingTime
         #if self.loadingTime < 0:
-        self.mGame.setScreen(MenuScreen(self.mGame))
-        #self.mGame.setScreen(GameScreen(self.mGame, 7))
+        #self.mGame.setScreen(MenuScreen(self.mGame))
+        self.mGame.setScreen(GameScreen(self.mGame, 1))
         
     def render(self, delta):
         pass

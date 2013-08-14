@@ -90,7 +90,7 @@ class Input(BaseInputHandler):
                     self.player.move(MoveDirection.UP)
             
             if event.type == MOUSEBUTTONDOWN:
-                if event.menubutton == 1:
+                if event.button == 1:
                     print self.camera.getModelCoords(b2Vec2(event.pos[0], event.pos[1]))
       
             #camerascale           

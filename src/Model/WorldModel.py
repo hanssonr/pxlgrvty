@@ -14,6 +14,7 @@ from effects.BloodSplatter import BloodSplatter
 from model.entities.Crystal import Crystal
 from Resources import *
 from libs.SoundManager import SoundManager, SoundID
+from entities.Laser import Laser
 
 class WorldModel(object):
     
@@ -46,6 +47,8 @@ class WorldModel(object):
         self.level = Level(self.physWorld, self.gravity, lvl)
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
         self.mEntityToFollow = self.player
+        
+
         
     def __resetWorld(self):
         self.mSwitch = True

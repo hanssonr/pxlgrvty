@@ -16,6 +16,17 @@ class Facing(object):
     DOWN = 3
     LEFT = 4
     
+    @staticmethod
+    def convertFromVector2(vec):
+        if vec.x > 0:
+            return Facing.RIGHT
+        if vec.x < 0:
+            return Facing.LEFT
+        if vec.y > 0:
+            return Facing.DOWN
+        if vec.y < 0:
+            return Facing.UP
+    
     
     
     

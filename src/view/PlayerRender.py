@@ -16,10 +16,7 @@ class PlayerRender(object):
     
     def render(self, delta):
         if self.mPlayer.alive:
-            size = b2Vec2(0.7, 0.8)
-            
-            if self.mPlayer.mBodyDirection == GravityDirection.RIGHT or self.mPlayer.mBodyDirection == GravityDirection.LEFT:
-                size.Set(size.y, size.x)
+            size = self.mPlayer.size
              
             viewpos = self.mCamera.getViewCoords(b2Vec2(self.mPlayer.position.x - self.mPlayer.size.x/2.0, self.mPlayer.position.y - self.mPlayer.size.y/2.0))
             self.playerAnimation.setSize(self.mCamera.getScaledSize(size.x, size.y))

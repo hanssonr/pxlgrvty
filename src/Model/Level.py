@@ -9,6 +9,7 @@ from model.entities.Crystal import Crystal
 from model.entities.SpikeBox import SpikeBox
 from model.entities.Spike import Spike
 from model.entities.Saw import Saw
+from model.entities.Laser import Laser
 from Color import Color
 from pygame import Rect
 from model.Chunk import Chunk
@@ -71,7 +72,6 @@ class Level(object):
         self.__createEnemies()
         self.__createBoxes()
         
-
     """ 
         Reads in enemies, pickups and if there's not a picture specified, worldcollision
         http://qq.readthedocs.org/en/latest/tiles.html#map-definition
@@ -363,7 +363,13 @@ class Level(object):
                     pattern = [(k, v) for k,v in (str(enemies[e]["PATTERN"][x]).split(",") for x in range(len(enemies[e]["PATTERN"])))]
                     speed = float(enemies[e]["SPEED"])
                     radius = float(enemies[e]["RADIUS"])
-                    self.mEnemies.append(Saw(self.mWorld, (x,y), pattern, radius, speed))                  
+                    self.mEnemies.append(Saw(self.mWorld, (x,y), pattern, radius, speed))
+                elif etype == EnemyType.LASER:
+                    ex, ey = [float(i) for i in enemies[e]["ENDPOS"].split(",")]
+                    delay = float(enemies[e]["DELAY"])
+                    triggertime = float(enemies[e]["T_TIMER"])
+                    firingtime = float(enemies[e]["F_TIMER"])
+                    self.mEnemies.append(Laser(self.mWorld, b2Vec2(x,y), b2Vec2(ex,ey), delay, triggertime, firingtime))
     
     def __createBoxes(self):
         boxes = json.loads(self.mBoxData)
@@ -406,6 +412,7 @@ class EnemyType(object):
     SPIKEBOX = "SPIKEBOX"
     SPIKE = "SPIKE"
     SAW = "SAW"
+    LASER = "LASER"
 
 class MapType(object):
     PICTURE = 0

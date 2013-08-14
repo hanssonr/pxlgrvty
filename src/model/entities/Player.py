@@ -13,8 +13,10 @@ from Resources import Resources
 
 class Player(MovableEntity):
     
-    PLAYER_WIDTH = 0.625
-    PLAYER_HEIGHT = 0.75
+    """PLAYER_WIDTH = 0.625
+    PLAYER_HEIGHT = 0.75"""
+    PLAYER_WIDTH = 0.7
+    PLAYER_HEIGHT = 0.7
     
     mWorld = None;
     mGravity = None

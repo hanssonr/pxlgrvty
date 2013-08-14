@@ -17,7 +17,7 @@ class ContactListener(b2ContactListener):
     
     def __init__(self):
         super(ContactListener, self).__init__()
-    
+      
     def BeginContact(self, contact):
         fixA = contact.fixtureA
         fixB = contact.fixtureB          

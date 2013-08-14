@@ -1,5 +1,5 @@
 import Entity
-from Box2D import b2PolygonShape, b2FixtureDef, b2CircleShape
+from Box2D import b2PolygonShape, b2FixtureDef, b2CircleShape, b2EdgeShape, b2Vec2
 
 class Enemy(Entity.Entity):
     
@@ -17,12 +17,15 @@ class Enemy(Entity.Entity):
         elif shape == EnemyShape.POLYGON:
             shape = b2PolygonShape()
             shape.SetAsBox(size.x/2, size.y/2)
+        elif shape == EnemyShape.LINE:
+            shape = b2EdgeShape()
+            shape.vertices = b2Vec2(-size.x / 2.0, -size.y / 2.0), b2Vec2(size.x / 2.0, size.y / 2.0)        
         
         fd = b2FixtureDef()
         fd.shape = shape
         fd.isSensor = True
         body.CreateFixture(fd)
-        body.isbullet = True
+        body.isbullet = False
         body.fixedRotation = True
         body.userData = self if ud == None else ud
         
@@ -32,3 +35,4 @@ class Enemy(Entity.Entity):
 class EnemyShape(object):
     POLYGON = 0
     CIRCLE = 1
+    LINE = 2
