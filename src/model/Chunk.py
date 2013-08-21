@@ -1,3 +1,8 @@
+"""
+A chunk that contains information about the tiles that are in a certain area of the map
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
 
 class Chunk(object):
     

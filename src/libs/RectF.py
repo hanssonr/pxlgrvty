@@ -1,3 +1,9 @@
+"""
+Floatrectangle class, creates rectangles out of float instead of intergers for more precision
+Mainly used for buttons in menus
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
 
 class RectF(object):
     

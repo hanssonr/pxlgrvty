@@ -1,3 +1,9 @@
+"""
+Enumclass for different type of directiondata
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 class GravityDirection(object):
     UP, RIGHT, DOWN, LEFT = range(4)  
  

@@ -1,3 +1,9 @@
+"""
+Class that draws ui and timeinformation 
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Sprite import Sprite
 from Resources import Resources
 from model.Camera import Camera

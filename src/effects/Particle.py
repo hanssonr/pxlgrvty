@@ -1,4 +1,10 @@
-from Box2D import b2PolygonShape, b2FixtureDef, b2Vec2, b2CircleShape
+"""
+A particle of an effect
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
+from Box2D import b2PolygonShape, b2FixtureDef
 from model.Filter import *
 
 class Particle(object):

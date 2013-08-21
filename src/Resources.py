@@ -1,6 +1,10 @@
 """
-Singleton
+Resourcemanagement through singleton-pattern
+Loads the resources before the game is operatable
+
 http://blog.amir.rachum.com/post/21850841339/implementing-the-singleton-pattern-in-python
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
 
 import pygame
@@ -11,11 +15,8 @@ class Resources(object):
     
     #gfx
     mPlayer = None
-    mFont = None
-    mBox = None
     mSpikeBox = None
     mSpike = None
-    mLoaded = False
     mCrystal = None
     mSwirlSheet = None
     mLevelButton = None
@@ -39,7 +40,6 @@ class Resources(object):
     
     def loadGameResources(self):
         #gfx
-        self.mBox = pygame.image.load("assets/gfx/box.png").convert_alpha()
         self.mPxl = pygame.image.load("assets/gfx/player.png").convert_alpha()
         self.mSpikeBox = pygame.image.load("assets/gfx/spikebox.png").convert_alpha()
         self.mSpike = pygame.image.load("assets/gfx/spike.png").convert_alpha()
@@ -56,16 +56,11 @@ class Resources(object):
         self.mUI = pygame.image.load("assets/gfx/ui.png").convert_alpha()
         self.mBlood = pygame.image.load("assets/gfx/blood.png").convert_alpha()
         
-        #font
-        self.mFont = pygame.font.SysFont('mono', 36)
-        self.mFpsFont = pygame.font.Font("assets/fonts/visitor.ttf", 30)
-        
-        pygame.mixer.init()
         #sound
+        pygame.mixer.init()
         self.mFleshExplosion = pygame.mixer.Sound("assets/audio/sound/fleshexplosion.ogg")
         self.mJump = pygame.mixer.Sound("assets/audio/sound/jump.ogg")
-        
-        self.mLoaded = True
+        self.mPickup = pygame.mixer.Sound("assets/audio/sound/pickup.ogg")
     
     def getScaledFont(self, size):
         return pygame.font.Font("assets/fonts/visitor.ttf", int(size))
@@ -75,3 +70,4 @@ class Resources(object):
         if cls.INSTANCE is None:
             cls.INSTANCE = Resources()
         return cls.INSTANCE
+    

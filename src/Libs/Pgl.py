@@ -1,5 +1,8 @@
 """
-Static class, short for Pygame library
+Static class, that gives access to core features
+'Pgl - PygameLibrary'
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
 class Pgl(object): 
     app = None

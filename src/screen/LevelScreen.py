@@ -1,14 +1,14 @@
-from controller.MenuInput import MenuInput
-from model.Camera import Camera
+"""
+A screen that shows all the levels available in the game and renders button for em
+If the level is locked render a lock and make it unclickable
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Pgl import *
-from libs.Animation import Animation
-from Resources import Resources
 from Box2D import b2Vec2
-from libs.RectF import RectF
-from libs.Sprite import Sprite
-import os, pygame, GameScreen, json, MenuScreen, LevelTimeScreen, model.Time as Time
-from screen.MenuItems import Button, MenuAction, LevelButton, LevelTableCreator
-from libs.Crypt import Crypt
+import os, MenuScreen, LevelTimeScreen
+from screen.MenuItems import Button, LevelButton, LevelTableCreator
 from BaseMenuScreen import BaseMenuScreen
 
 class LevelScreen(BaseMenuScreen):
@@ -16,8 +16,9 @@ class LevelScreen(BaseMenuScreen):
     def __init__(self, game):
         super(LevelScreen, self).__init__(game)
         
-        self.mLevelTable = LevelTableCreator(self.modelsize, 4, self.countLevels())
-        self.mLevelTable.mLevelButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
+        #levels
+        self.mLevelTable = LevelTableCreator(self.modelsize, 4, self.countLevels(), lambda x: self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, x)))
+        self.mLevelTable.mLevelButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))))
         
         #header
         self.title = self.titleFont.render("choose level", 0, (255,255,255))
@@ -48,6 +49,7 @@ class LevelScreen(BaseMenuScreen):
                 
             btnToDraw.draw(delta, viewpos)
             
+            #check if level is locked
             if isinstance(btn, LevelButton):
                 if btn.mLocked:
                     lockpos = self.mCamera.getViewCoords(b2Vec2(btn.x + self.mLevelTable.mButtonSize.x / 1.5, btn.y + self.mLevelTable.mButtonSize.y / 1.5))
@@ -64,13 +66,7 @@ class LevelScreen(BaseMenuScreen):
         
         for btn in self.mLevelTable.mLevelButtons:
             if btn.rect.collidepoint(mmp):
-                if isinstance(btn, LevelButton):
-                    if not btn.mLocked:
-                        self.mGame.setScreen(LevelTimeScreen.LevelTimeScreen(self.mGame, btn.mText))
-                elif isinstance(btn, Button):
-                    if btn.mAction == MenuAction.BACK:
-                        self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))
-                break
+                btn.mAction()
         
     def mouseOver(self, pos):
         mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))

@@ -1,17 +1,19 @@
-import pygame, random
-from libs.Pgl import *
-from libs.Sprite import *
-from model.Camera import *
-from Resources import *
-from model.Tile import Tile, TileType
+"""
+Class that draws different tiles depending on their tiletype
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
+import random, pygame
+from model.Tile import TileType
 from libs.Animation import Animation
+from Box2D import b2Vec2
 
 class TileRender(object):
     
     def __init__(self, camera, tiles, tileset):
         self.mCamera = camera
-        self.mTiles = tiles
-        self.mTileSprite = Animation(pygame.image.load("assets/gfx/tiles/%s" % tileset).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1), False, False)
+        self.levelUpdate(tiles, tileset)
          
     def render(self, delta):
         for tile in self.mTiles:

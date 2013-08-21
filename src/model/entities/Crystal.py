@@ -1,3 +1,9 @@
+"""
+A pickupable item in form of a crystal, opens portals
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from PickableObject import PickableObject
 from Box2D import b2Vec2
 import random

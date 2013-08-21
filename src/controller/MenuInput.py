@@ -1,3 +1,9 @@
+"""
+Inputhandler for menus
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import pygame
 from pygame.locals import *
 from libs.BaseInputHandler import BaseInputHandler

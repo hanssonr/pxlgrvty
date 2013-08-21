@@ -1,10 +1,10 @@
+"""
+Class that draws the endwarp
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Resources import Resources
-from libs.Sprite import Sprite
-from Box2D import b2Vec2
-from pygame import Rect
-import pygame
-from libs.Pgl import *
-from model.Tile import Tile
 from libs.Animation import Animation
 
 class SwirlRender(object):

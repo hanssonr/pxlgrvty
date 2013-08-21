@@ -1,6 +1,8 @@
 """
 Callback class for Box2D collision detection
 Makes me able to alter things pre, post, and under collision
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
 
 from Box2D import b2ContactListener
@@ -9,7 +11,6 @@ from model.entities.Box import Box
 from model.Sensor import Sensor
 from model.entities.Enemy import Enemy
 from model.entities.SpikeBox import SpikeBox
-from model.entities.Entity import Entity
 from model.entities.Player import Player
 from model.entities.PickableObject import PickableObject
 

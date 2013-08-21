@@ -1,7 +1,13 @@
+"""
+Baseclass for inputhandling. Also takes care of switching music when a song has ended
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import pygame, random
 from pygame.locals import *
 from libs.Pgl import *
-from SoundManager import SoundManager, MusicID
+from SoundManager import SoundManager
 
 class BaseInputHandler(object):
     

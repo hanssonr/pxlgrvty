@@ -1,3 +1,11 @@
+"""
+Game is a superclass that is required from PygameApplication.
+PygameApplication sends update and renderactions and Game updates the
+gameclass screens.
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 class Game(object):
     
     mScreen = None

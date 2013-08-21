@@ -1,3 +1,9 @@
+"""
+Laser Enemy, takes two positions, triggertime and a firingtime
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Enemy import *
 from Box2D import b2Vec2
 from model.Direction import Facing
@@ -17,22 +23,30 @@ class Laser(Enemy):
         self.mTriggerTime = triggertime
         self.mFireTime = firetime
         
-        dir = epos.copy() - spos.copy()
-        size = dir.copy()
-        dir.Normalize()
+        vdir = epos.copy() - spos.copy()
+        size = vdir.copy()
+        vdir.Normalize()
 
-        self.mStartRot = math.degrees(math.atan2(dir.y, dir.x))
+        self.mStartRot = math.degrees(math.atan2(vdir.y, vdir.x))
 
-        self.mStartFacing = Facing.convertFromVector2(dir)
-        self.mEndFacing = Facing.convertFromVector2(-dir)
+        self.mStartFacing = Facing.convertFromVector2(vdir)
+        self.mEndFacing = Facing.convertFromVector2(-vdir)
         pos = (spos + epos) / 2.0 
         super(Laser, self).__init__(physworld, pos, size, EnemyShape.LINE, self)
-        self.mBody.active = False
+        
+        if self.mFireTime < 0:
+            self.mBody.active = True
+            self.mFiring = True
+        else:
+            self.mBody.active = False
     
     def update(self, delta):
         if self.mDelay > 0:
             self.mDelay -= delta
         else:
+            if self.mFireTime < 0:
+                return
+            
             self.mLaserTime += delta
             
             if self.mFiring:

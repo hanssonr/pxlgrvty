@@ -1,9 +1,11 @@
 """
-Handles all the chunks on the map!
+Manages all the chunks in a level. Activates/deactivates them depending on their position 
+relative to the player for optimization
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
 
 from Box2D import b2Vec2
-import math
 class ChunkHandler(object):
     
     __mActiveChunks = None
@@ -19,7 +21,7 @@ class ChunkHandler(object):
         self.mWorld = physworld
         self.CHUNK_SIZE = chunksize
     
-    """ Puts active chunks in activelist and removes the ones thats not active """
+    #Puts active chunks in activelist and removes the ones thats not active
     def manageChunks(self, pos):
         center = self.getChunkPosition(pos)
         top = b2Vec2(center.x, max(center.y-1, 0))
@@ -77,8 +79,7 @@ class ChunkHandler(object):
         for tile in chunk.tiles:
             self.mActiveTiles.append(tile)
             tile.create()
-    
-    """ Returns a chunkobject depending on chunkposition """        
+         
     def getChunk(self, chunkpos):
         return self.__mChunks[int(chunkpos.y)][int(chunkpos.x)]
     

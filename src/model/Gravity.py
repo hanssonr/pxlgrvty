@@ -1,4 +1,8 @@
-import Box2D
+"""
+Class that handles the maingravity in the game
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
 from Box2D import b2Vec2
 from Direction import GravityDirection
 

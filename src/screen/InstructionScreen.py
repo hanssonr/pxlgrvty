@@ -1,12 +1,15 @@
+"""
+A Instructionscreen, shows the basic features of the game with animations and texts
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Animation import Animation
-from libs.Sprite import Sprite
 from Resources import Resources
 from libs.Pgl import *
-from model.Camera import Camera
 from Box2D import b2Vec2
-from controller.MenuInput import MenuInput
-from MenuItems import Button, MenuAction
-import pygame, MenuScreen
+from MenuItems import Button
+import MenuScreen
 from BaseMenuScreen import BaseMenuScreen
 
 class InstructionScreen(BaseMenuScreen):
@@ -35,7 +38,7 @@ class InstructionScreen(BaseMenuScreen):
     def __init__(self, game):
         super(InstructionScreen, self).__init__(game)   
         self.__mMenuItems = []
-        self.__mMenuItems.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
+        self.__mMenuItems.append(Button("back", 0.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))))
             
         self.__crystalPos = b2Vec2(9.5,5.8)
         self.__crystalDirection = b2Vec2(0,1)
@@ -48,27 +51,26 @@ class InstructionScreen(BaseMenuScreen):
         self.__walkPos = b2Vec2(1,3)
         self.__walkTimer = 2.0
         self.__walkDirection = b2Vec2(1,0)
-        self.playerWalk = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(0.9, 1), True, True)
+        self.playerWalk = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(1, 1), True, True)
         
         self.__jumpPos = b2Vec2(9.5,3)
         self.__jumpStartPos = self.__jumpPos.copy()
         self.__jumpTimer = 0.5
         self.__jumpWaitTimer = 0.2
         self.__jumpDirection = b2Vec2(0,-1)
-        self.playerjump = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(0.9, 1), False, False)
+        self.playerjump = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(1, 1), False, False)
         
         self.__gravityPos = b2Vec2(3, 6)
         self.__gravityTimer = 1.0
         self.__gravityDirection = b2Vec2(0,-1)
-        self.playergravity = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(.9, 1), False, False)
+        self.playergravity = Animation(Resources.getInstance().mPxl, 4, 2, 0.4, self.mCamera.getScaledSize(1, 1), False, False)
     
     def mouseClick(self, pos):
         mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
         
         for btn in self.__mMenuItems:
             if btn.rect.collidepoint(mmp):
-                if btn.mAction == MenuAction.BACK:
-                    self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))
+                btn.mAction()
     
     def mouseOver(self, pos):
         mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
@@ -155,8 +157,7 @@ class InstructionScreen(BaseMenuScreen):
                 self.__gravityDirection.Set(0,-1)
                 self.__gravityTimer = 1.0
                 
-    
-        
+                     
     def render(self, delta):
         Pgl.app.surface.fill((67,80,129))
         
@@ -180,7 +181,7 @@ class InstructionScreen(BaseMenuScreen):
             txtpos = self.mCamera.getViewCoords(b2Vec2(btn.x + btn.size.x / 2 - (size[0] / self.mCamera.scale.x) / 2.0, btn.y + btn.size.y / 2 - (size[1] / self.mCamera.scale.y) / 2.0))
             Pgl.app.surface.blit(btntxt, (txtpos.x, txtpos.y))
             
-
+        #texts and animations
         title = self.titleFont.render("instructions", 0, (255,255,255))
         size = self.titleFont.size("instructions")
         titlepos = self.mCamera.getViewCoords(b2Vec2(self.modelsize.x / 2.0, self.modelsize.y / 6))

@@ -1,3 +1,9 @@
+"""
+Class that draws all effects
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Resources import Resources
 from libs.Animation import Animation
 import random

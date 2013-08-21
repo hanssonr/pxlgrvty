@@ -1,3 +1,9 @@
+"""
+Baseclass of a Enemy, inherits Entity
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import Entity
 from Box2D import b2PolygonShape, b2FixtureDef, b2CircleShape, b2EdgeShape, b2Vec2
 

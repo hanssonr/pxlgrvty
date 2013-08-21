@@ -1,12 +1,21 @@
-from controller.MenuInput import MenuInput
-from model.Camera import Camera
+"""
+A screen that shows of a levels timecriteria, gets instantiated from either menus or the game
+
+#from Game
+shows the current time achieved and updates the time.json if a new record was beaten
+
+#from Menu
+shows of timecriterias and medals if achieved before
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Pgl import *
 import pygame, LevelScreen, json, GameScreen, model.Level as Level, EndScreen
 from Box2D import b2Vec2
 from Resources import Resources
-from libs.Sprite import Sprite
 from libs.Animation import Animation
-from MenuItems import MenuAction, Button
+from MenuItems import Button
 from model.Time import Time
 from libs.Crypt import Crypt
 from libs.Id import Id
@@ -31,22 +40,22 @@ class LevelTimeScreen(BaseMenuScreen):
             self.__initializeFromGame()
         else:
             self.__initializeFromMenu()
-              
+   
         self.mLevelTimes = [Time(x) for x in self.__readLevelTimes()]
-        self.mButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), MenuAction.BACK))
+        self.mButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))))
         
         self.achivedMedallion = self.__calculateMedallion()
     
     def __initializeFromMenu(self):
-        self.mButtons.append(Button("play", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
+        self.mButtons.append(Button("play", 13.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))))
     
     def __initializeFromGame(self):
         if self.mLevelInt < Level.Level.countLevels():
-            self.mButtons.append(Button("next", 13.5, 8.5, b2Vec2(2,1), MenuAction.NEWGAME))
+            self.mButtons.append(Button("next", 13.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt+1))))
         else:
-            self.mButtons.append(Button("end", 13.5, 8.5, b2Vec2(2,1), MenuAction.EXIT))
+            self.mButtons.append(Button("end", 13.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(EndScreen.EndScreen(self.mGame))))
             
-        self.mButtons.append(Button("retry", 11, 8.5, b2Vec2(2,1), MenuAction.RETRY))
+        self.mButtons.append(Button("retry", 11, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))))
         
         if self.mCurrentTime.isFaster(self.mTime):
             self.mTime = self.mCurrentTime
@@ -147,6 +156,7 @@ class LevelTimeScreen(BaseMenuScreen):
         Pgl.app.surface.blit(best, bestpos)
         Pgl.app.surface.blit(time, (timepos.x + bestsize[0], timepos.y))
         
+        #buttons
         btnToDraw = self.menubutton
         for btn in self.mButtons:
             viewpos = self.mCamera.getViewCoords(b2Vec2(btn.x, btn.y))
@@ -167,7 +177,7 @@ class LevelTimeScreen(BaseMenuScreen):
             txtpos = self.mCamera.getViewCoords(b2Vec2(btn.x + btn.size.x / 2 - (size[0] / self.mCamera.scale.x) / 2.0, btn.y + btn.size.y / 2 - (size[1] / self.mCamera.scale.y) / 2.0))
             Pgl.app.surface.blit(btntxt, (txtpos.x, txtpos.y))
         
-        
+        #small medallions
         for x in range(len(self.mLevelTimes)):
             self.medallions.freeze(x, 1)
             
@@ -184,29 +194,18 @@ class LevelTimeScreen(BaseMenuScreen):
         self.arrow.draw()
 
     def mouseClick(self, pos):
-        mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
+        xy = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
         
         for btn in self.mButtons:
-            if btn.rect.collidepoint(mmp):
-                if btn.mAction == MenuAction.BACK:
-                    self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))
-                elif btn.mAction == MenuAction.NEWGAME:
-                    if self.mCurrentTime != None:
-                        self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt+1))
-                    else:
-                        self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
-                elif btn.mAction == MenuAction.RETRY:
-                    self.mGame.setScreen(GameScreen.GameScreen(self.mGame, self.mLevelInt))
-                elif btn.mAction == MenuAction.EXIT:
-                    self.mGame.setScreen(EndScreen.EndScreen(self.mGame))
-                break
+            if btn.rect.collidepoint(xy):
+                btn.mAction()
         
     def mouseOver(self, pos):
-        mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
+        xy = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))
         
         for btn in self.mButtons:
             btn.mActive = False
-            if btn.rect.collidepoint(mmp):
+            if btn.rect.collidepoint(xy):
                 btn.mActive = True
                 
     def keyInput(self, key):

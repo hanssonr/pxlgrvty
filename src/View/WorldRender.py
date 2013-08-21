@@ -1,4 +1,9 @@
-import pygame
+"""
+Class that instantiates the different renderers needed and updates them
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from view.TileRender import TileRender
 from view.PlayerRender import PlayerRender
 from view.ObjectRender import ObjectRender
@@ -7,7 +12,6 @@ from view.SwirlRender import SwirlRender
 from view.EffectRender import EffectRender
 from view.BackgroundRender import BackgroundRender
 from view.UIRender import UIRender
-from model.Time import Time
 from view.DebugDraw import DebugDraw
 from libs.Pgl import *
 from Resources import Resources
@@ -24,6 +28,9 @@ class WorldRender(object):
         self.debug = DebugDraw(self.mCamera)
         self.mWorld.physWorld.renderer = self.debug
         self.debug.AppendFlags(self.debug.e_shapeBit)
+        
+        #font
+        self.fpsfont = Resources.getInstance().getScaledFont(20)
         
         #renders
         self.objectRender = ObjectRender(self.mCamera, self.mWorld.level.mObjects)
@@ -50,11 +57,11 @@ class WorldRender(object):
             self.fxRender.render(delta)
             self.uiRender.render(delta)
             
-        self.label = Resources.getInstance().getScaledFont(20).render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
+        self.label = self.fpsfont.render("FPS: %d" % (Pgl.clock.get_fps()), 1, (255,255,255))
         Pgl.app.surface.blit(self.label, (10,10))
     
 
-    "implementing LevelupdateListener"
+    #LevelupdateListener
     def levelChanged(self, level):
         self.tileRender.levelUpdate(level.mTiles, level.mCurrentTileset)
         self.objectRender.levelUpdate(level.mObjects)
@@ -62,6 +69,6 @@ class WorldRender(object):
         self.swirlRender.levelUpdate()
         self.bgRender.levelUpdate(level)
     
-    "implementing FXListener"    
+    #FXListener    
     def addFx(self, fx):
         self.fxRender.addFx(fx)

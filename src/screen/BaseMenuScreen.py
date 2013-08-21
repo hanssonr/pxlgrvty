@@ -1,3 +1,9 @@
+"""
+Baseclass for menus
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Pgl import *
 import pygame
 from Resources import Resources
@@ -7,15 +13,17 @@ from libs.Sprite import Sprite
 from model.Camera import Camera
 from controller.MenuInput import MenuInput
 from libs.Animation import Animation
+from libs.Options import Updaterate
 
 class BaseMenuScreen(object):
     
     def __init__(self, game):
         self.mGame = game
-        Pgl.app.setRenderStep(1/60.0)
+        Pgl.app.setUpdaterate(int(Updaterate.FAST))
         SoundManager.getInstance().playMenuMusic()
         pygame.mouse.set_visible(False)
         
+        #set input & camera
         self.mGame.input = MenuInput(self)
         self.mCamera = Camera(Pgl.width, Pgl.height)
         self.modelsize = self.mCamera.getModelCoords(b2Vec2(Pgl.width, Pgl.height))
@@ -36,6 +44,7 @@ class BaseMenuScreen(object):
         
         
     def update(self, delta):
-        pos = self.mGame.input.getMousePosition()
-        self.arrow.setPosition(pos[0], pos[1])
-        self.mouseOver(pos)
+        if isinstance(self.mGame.input, MenuInput):
+            pos = self.mGame.input.getMousePosition()
+            self.arrow.setPosition(pos[0], pos[1])
+            self.mouseOver(pos)

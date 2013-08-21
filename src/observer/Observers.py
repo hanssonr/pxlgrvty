@@ -1,3 +1,9 @@
+"""
+Observers and listeners
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from abc import ABCMeta, abstractmethod
 
 class LevelupdateListener(object):
@@ -5,7 +11,7 @@ class LevelupdateListener(object):
     
     @abstractmethod
     def levelChanged(self, level):
-        pass
+        raise Exception("Override this")
         
 
 class LevelupdateObserver(object):
@@ -27,7 +33,7 @@ class FXListener(object):
     
     @abstractmethod
     def addFx(self, fx):
-        pass
+        raise Exception("Override this")
     
 
 class FXObserver(object):

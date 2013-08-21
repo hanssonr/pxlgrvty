@@ -1,20 +1,19 @@
-from controller.Input import Input
+"""
+The games worldmodel, initialize all the enitites of the game and its levels
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
 from Level import Level
 from entities.Player import Player
-from libs.Pgl import Pgl
 from model.Gravity import Gravity
 from observer.ContactListener import ContactListener
 from model.entities.Box import Box
 from Box2D import b2World, b2_dynamicBody, b2Vec2
-from Direction import GravityDirection
 from entities.Enemy import Enemy
 from entities.PickableObject import PickableObject
 from effects.Particle import Particle
 from effects.BloodSplatter import BloodSplatter
-from model.entities.Crystal import Crystal
-from Resources import *
 from libs.SoundManager import SoundManager, SoundID
-from entities.Laser import Laser
 
 class WorldModel(object):
     
@@ -47,9 +46,7 @@ class WorldModel(object):
         self.level = Level(self.physWorld, self.gravity, lvl)
         self.player = Player(self.level.mStartPos, self.physWorld, self.gravity)
         self.mEntityToFollow = self.player
-        
-
-        
+           
     def __resetWorld(self):
         self.mSwitch = True
         self.mDeathTimer = 1.0
@@ -66,11 +63,7 @@ class WorldModel(object):
      
     def update(self, delta):
         self.mTimer += delta
-        #set oldposition for boxes
-        for box in self.level.mObjects:
-            if isinstance(box, Box):
-                box.mOldPos = box.mBody.position.copy()
-        
+           
         #step the physicsworld
         self.physWorld.Step(delta, self.vel_iters, self.pos_iters)
         self.physWorld.ClearForces()
@@ -79,18 +72,11 @@ class WorldModel(object):
             #dynamic body
             if body.type == b2_dynamicBody:
                 if self.mFirstUpdate:
-                    if isinstance(body.userData, Player) or isinstance(body.userData, Box):
+                    if isinstance(body.userData, Player):
                         self.dynamic_enities.append(body)
                 
-                #playerobject
                 if isinstance(body.userData, Player):
                     body.userData.update(delta)
-                #box
-                elif isinstance(body.userData, Box):
-                    #if self.level.isInActiveChunks(body.userData.position):
-                    body.userData.update(delta)
-                    #else:
-                        #body.userData.stopMovement()
                 elif isinstance(body.userData, Enemy):
                     body.userData.update(delta)
                 elif isinstance(body.userData, PickableObject):
@@ -102,10 +88,9 @@ class WorldModel(object):
         if self.mFirstUpdate == True:          
             self.mFirstUpdate = False
             
-        #is level done, reset and start next level
+        #update level, if level is done, returns true
         if self.level.update(delta, self.player.position):
             self.mLevelDone = True
-            #self.__resetWorld()
             
         #is player dead?
         if not self.player.alive:
@@ -130,9 +115,6 @@ class WorldModel(object):
             for body in self.dynamic_enities:
                 if not body.userData.isInGravityZone():
                     body.userData.flip(gravitydirection)
-        
-            #if not self.player.isInGravityZone():
-                #self.player.flip(gravitydirection)
 
         
 

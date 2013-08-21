@@ -1,3 +1,9 @@
+"""
+class that draws debuginfo for Box2D
+
+https://github.com/jameydeorio/GGJ/blob/master/debugdraw.py (modified)
+"""
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 

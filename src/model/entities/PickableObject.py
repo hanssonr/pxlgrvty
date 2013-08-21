@@ -1,5 +1,12 @@
+"""
+Baseclass for pickupable objects
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Entity import Entity
 from Box2D import *
+from libs.SoundManager import SoundManager, SoundID
 
 class PickableObject(Entity):
     
@@ -22,6 +29,7 @@ class PickableObject(Entity):
     
     def update(self, delta):
         if not self.alive:
+            SoundManager.getInstance().playSound(SoundID.PICKUP)
             self.mWorld.DestroyBody(self.mBody)
     
 

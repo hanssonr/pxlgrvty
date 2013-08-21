@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Camera class, scales the view and follows a specified entity
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Box2D import b2Vec2
 import math
 
@@ -14,6 +20,7 @@ class Camera(object):
     mFrustumBias = 0.5
     
     def __init__(self, width, height):
+        print width, height
         self.mScale = b2Vec2(int(width / self.CAMERA_WIDTH), math.ceil(height / self.CAMERA_HEIGHT))
         self.mDisplacement = b2Vec2(0, 0)
     
@@ -64,6 +71,7 @@ class Camera(object):
     def getScaledSize(self, x, y):
         return b2Vec2(x * self.scale.x, y * self.scale.y)
     
+    #checks if a position is in the cameras viewfrustum
     def isInFrustum(self, x, y):
         return True if (x >= self.displacement.x - self.mFrustumBias and 
                 x <= self.displacement.x + self.mFrustumBias + self.CAMERA_WIDTH and
@@ -72,5 +80,5 @@ class Camera(object):
     
      
     #properties  
-    displacement = property(__getDisplacement, __setDisplacement, doc='Sets the displacement of the camera')
+    displacement = property(__getDisplacement, __setDisplacement)
     scale = property(__getScale, __setScale)

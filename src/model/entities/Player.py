@@ -1,20 +1,21 @@
+"""
+Player class, handles playerstate, facing, jumping and gravityrotation
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Box2D, math
-from Box2D import *
-from model.Direction import *
-from model.entities.MovableEntity import *
-from model.Gravity import *
+import math
+from Box2D import b2Vec2_zero, b2Vec2, b2PolygonShape, b2FixtureDef, b2CircleShape
+from model.Direction import Facing, GravityDirection
 from model.Sensor import *
-from effects.BloodSplatter import *
 from libs.SoundManager import SoundManager, SoundID
-from Resources import Resources
+from MovableEntity import MovableEntity
 
 class Player(MovableEntity):
     
-    """PLAYER_WIDTH = 0.625
-    PLAYER_HEIGHT = 0.75"""
     PLAYER_WIDTH = 0.7
     PLAYER_HEIGHT = 0.7
     
@@ -37,7 +38,7 @@ class Player(MovableEntity):
         self.mPlayerState = PlayerState.IDLE
         
         #create player physicsbody
-        pos = b2Vec2(position[0] + self.PLAYER_WIDTH/3, position[1] + self.PLAYER_HEIGHT/2)
+        pos = b2Vec2(position[0] + self.PLAYER_WIDTH/5, position[1] + self.PLAYER_HEIGHT/2.5)
         body = self.mWorld.CreateDynamicBody(position = pos)
         shape = b2PolygonShape()
         fd = b2FixtureDef()
@@ -50,12 +51,20 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #gravitysensor/deathsensor
-        shape.SetAsBox(0.15,0.3)
+        shape.SetAsBox(0.2,0.3)
         fd.userData = Sensor.PLAYER_DEATHSENSOR
         body.CreateFixture(fd)
         
+        #footcollision
+        shape = b2CircleShape(radius=0.2, pos=(0,0.15))
+        fd.friction = 0
+        fd.shape = shape
+        fd.userData = self
+        fd.isSensor = False
+        body.CreateFixture(fd)
+        
         #collisionbody
-        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/3.5, self.PLAYER_HEIGHT/2), density=0, friction=0)
+        body.CreatePolygonFixture(box=(self.PLAYER_WIDTH/5, self.PLAYER_HEIGHT/2.5), density=0, friction=0)
         body.bullet = True
         body.fixedRotation = True
         body.userData = self
@@ -88,7 +97,6 @@ class Player(MovableEntity):
             else:
                 self.mVelocity.y = -self.mGravityToUse.y * (1 - self.mJumpTimer)
             
-            #zero out gravity
             self.mGravityToUse *= self.mJumpTimer
             self.mJumpTimer += delta
 
@@ -122,7 +130,7 @@ class Player(MovableEntity):
             elif self.mBodyDirection == GravityDirection.RIGHT:
                 self.mFacing = Facing.LEFT
                    
-                
+        #Playerstate       
         if self.mVelocity.x > 0 or self.mVelocity.x < 0 or self.mVelocity.y > 0 or self.mVelocity.y < 0:
             self.mPlayerState = PlayerState.MOVING
         else:

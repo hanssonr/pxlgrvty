@@ -1,3 +1,9 @@
+"""
+Singleton class thats gives back a unique ID
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 class Id(object):
 
     __ID = 0

@@ -1,3 +1,9 @@
+"""
+Enemyclass for spikes
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Box2D import b2Vec2
 from Enemy import Enemy, EnemyShape
 from model.Direction import Facing

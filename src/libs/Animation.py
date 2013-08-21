@@ -1,10 +1,12 @@
 """
-Class that makes an Sprite able to animate
+Animation makes a spritesheet animated and sends the current portion of
+the picture to the super Sprite-class that handles the rotation/scaling and drawing
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
 
 from pygame import Rect
 from libs.Sprite import Sprite
-from Box2D import b2Vec2
 
 class Animation(Sprite):
     
@@ -44,15 +46,13 @@ class Animation(Sprite):
                 
                 self.__mCurrentFrame += 1
                 
-                if self.__mLooping:
-                    if self.__mCurrentFrame >= self.__mFramesX:
-                        self.__mCurrentFrame = 0
-                else:
-                    if self.__mCurrentFrame >= self.__mFramesX:
+                if self.__mCurrentFrame >= self.__mFramesX:
+                    self.__mCurrentFrame = 0
+                    
+                    if not self.__mLooping:
                         self.__mIsDone = True
-                        self.__mCurrentFrame = 0
                         self.__mRunning = False
-                
+            
                 self.__mElapsedTime = 0.0
         
         Sprite.draw(self, position, self.__mDrawRect.move(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight))

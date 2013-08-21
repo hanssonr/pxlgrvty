@@ -1,5 +1,12 @@
+"""
+Sprite class for handling all the 2D graphic on the screen
+Flip, rotate and scale the graphic before drawing
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import pygame
-from Box2D import b2Vec2, b2Vec2_zero
+from Box2D import b2Vec2_zero
 from libs.Pgl import *
 
 class Sprite(object):

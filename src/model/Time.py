@@ -1,3 +1,9 @@
+"""
+The time object that calculates all the time in the game! Converts floattime and strings into Timeobjects
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 class Time(object):
     
     mMinutes = 0
@@ -6,10 +12,9 @@ class Time(object):
     
     def __init__(self, timestring):
         self.mMinutes, self.mSeconds, self.mMilliseconds = timestring.split(":")
-        
-    """
-    Return true if this is better(lower) than other
-    """
+    
+    
+    #Return true if this is better(lower) than other
     def isFaster(self, othertime):
         this = int(int(self.minutes) * 60000 + int(self.seconds) * 1000 + float(self.milliseconds))
         other= int(int(othertime.minutes) * 60000 + int(othertime.seconds) * 1000 + float(othertime.milliseconds))

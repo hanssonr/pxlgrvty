@@ -1,4 +1,11 @@
-from Box2D.Box2D import *
+"""
+Tile class, creates a tile with a specific type
+also handles the destruction of the same
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
+from Box2D.Box2D import b2Vec2, b2ChainShape, b2FixtureDef, b2PolygonShape
 from model.Filter import *
 
 class Tile(object):

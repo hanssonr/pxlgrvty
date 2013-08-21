@@ -1,3 +1,9 @@
+"""
+Enemyclass for moving spikeboxes
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Enemy import Enemy, EnemyShape
 from Box2D import b2Vec2, b2Vec2_zero
 
@@ -24,7 +30,9 @@ class SpikeBox(Enemy):
         super(SpikeBox, self).__init__(physworld, self.__mStartPos, self.__SIZE, EnemyShape.POLYGON, self)
         self.__mLength = (self.__mTarget.copy() - self.mBody.position.copy()).length
     
-    def update(self, delta):     
+    def update(self, delta):
+        
+        #touching something, change direction     
         if self.isTouching > 0:
             if self.__dirChange == False:
                 self.__changeDirection()
@@ -40,13 +48,17 @@ class SpikeBox(Enemy):
         if self.__mDelay > 0:
             self.__mDelay -= delta
         else:
+            
+            #length to target
             if self.__mLength == 0:
                 self.__changeDirection()
             else:
+                #calculate direction
                 direction = self.__mTarget.copy() - self.mBody.position.copy()
                 direction.Normalize()
                 velocity = direction * self.mSpeed
                 
+                #length smaller than velocity * delta, calculate required velocity
                 if self.__mLength - velocity.copy().length * delta > 0:
                     self.__mLength -= velocity.copy().length * delta
                 else:

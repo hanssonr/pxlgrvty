@@ -1,3 +1,9 @@
+"""
+Class that draws different types of enemies
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Resources import *
 from libs.Sprite import *
 from model.Direction import Facing
@@ -13,18 +19,16 @@ class EnemyRender(object):
     
     def __init__(self, camera, enemies):
         self.mCamera = camera
-        self.mEnemies = enemies
-        
+        self.levelUpdate(enemies)
         self.spikebox = Animation(Resources.getInstance().mSpikeBox, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
         self.spike = Animation(Resources.getInstance().mSpike, 1, 1, 0, self.mCamera.getScaledSize(1,1), False)
-        self.saw = Animation(Resources.getInstance().mSaw, 2, 1, 0.25, self.mCamera.getScaledSize(1,1))
         self.laser = Animation(Resources.getInstance().mLasermount, 1, 1, 0, self.mCamera.getScaledSize(1,1), False, False)
         
         
     def render(self, delta):
         
         for e in self.mEnemies:
-            if self.mCamera.isInFrustum(e.position.x, e.position.y):
+            if self.mCamera.isInFrustum(e.position.x, e.position.y) or isinstance(e, Laser):
                 toDraw = None
                 size = b2Vec2(e.size.x, e.size.y)
                        
@@ -51,7 +55,7 @@ class EnemyRender(object):
                         
                         
                 elif isinstance(e, Saw):
-                    toDraw = self.saw
+                    toDraw = self.mSawAnimations[e.mId]
                 
                 elif isinstance(e, Laser):
                     toDraw = None
@@ -87,6 +91,12 @@ class EnemyRender(object):
                     toDraw.draw(delta, viewpos)
     
     def levelUpdate(self, enemies):
+        self.mSawAnimations = {}
+        
+        for e in enemies:
+            if isinstance(e, Saw):
+                self.mSawAnimations[e.mId] = Animation(Resources.getInstance().mSaw, 2, 1, min(0.3/e.speed, 0.2), self.mCamera.getScaledSize(1,1))
+        
         self.mEnemies = enemies
                 
         

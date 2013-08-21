@@ -1,9 +1,16 @@
+"""
+Levelclass, reads the levelfiles and creates collision from either txt-files or pictures
+Handles the update of the chunks that gets created if picturecollision is done
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from Tile import Tile, TileType
 from Box2D import b2Vec2
-import ConfigParser, json, os, pygame, random, tempfile
+import ConfigParser, json, os, pygame
 from model.entities.Box import Box
 from model.entities.Crystal import Crystal
 from model.entities.SpikeBox import SpikeBox
@@ -19,7 +26,7 @@ from libs.Crypt import Crypt
 
 class Level(object):
     
-    CHUNK_SIZE = 16
+    CHUNK_SIZE = 8
     mMaxLevels = None
     mCurrentLevel = None
     mTiles = None
@@ -129,7 +136,6 @@ class Level(object):
         if not self.mLevelDone:
             self.checkLevelCompletion(playerpos)    
         else:
-            #self.nextLevel()
             self.mLevelDone = False
             return True
         
@@ -149,7 +155,8 @@ class Level(object):
                 pos.y > self.mEndPos.y and pos.y < self.mEndPos.y + Tile.TILE_SIZE):    
                     self.__updateLevelLockState()            
                     self.mLevelDone = True
-                       
+    
+    #updates the statefile if a level is cleared                  
     def __updateLevelLockState(self):
         with open("assets/state/state.json", "rb") as state:
             decryptedData = self.__mCrypt.decrypt(state.read())
@@ -159,7 +166,8 @@ class Level(object):
             with open("assets/state/state.json", "wb") as data:
                 lvl = min(self.mCurrentLevel+1, self.mMaxLevels)
                 data.write(self.__mCrypt.encrypt('{"LVL":"%s"}' % (str(lvl))))
-               
+    
+    #create collisiontiles from txt-file       
     def __createTextWorldCollision(self):
         for y in range(self.mHeight):
             for x in range(self.mWidth):
@@ -177,7 +185,8 @@ class Level(object):
         
         for tile in self.mTiles:
             tile.create()
-       
+    
+    #create collisiontiles from picture and divid em into chunks  
     def __createPictureWorldCollision(self):
         self.mMap.lock()
         
@@ -230,6 +239,7 @@ class Level(object):
     def __calculateTileType(self, mx, my):
         tiletype = TileType.M
         
+        #left edge
         if mx == 0:
             if my == 0:
                 tiletype = TileType.ETL
@@ -239,7 +249,8 @@ class Level(object):
                 tiletype = TileType.EL
             else:
                 tiletype = TileType.R
-                
+        
+        #right edge    
         elif mx == self.mWidth-1:
             if my == 0:
                 tiletype = TileType.ETR
@@ -250,11 +261,14 @@ class Level(object):
             else:
                 tiletype = TileType.L
         
+        #top
         elif my == 0:
             if not self.__isWallType(self.__accessMap(mx, my+1)):
                 tiletype = TileType.B
             else:
                 tiletype = TileType.ET
+                
+        #bottom
         elif my == self.mHeight-1:
             if not self.__isWallType(self.__accessMap(mx, my-1)):
                 tiletype = TileType.GM
@@ -386,13 +400,11 @@ class Level(object):
             self.__loadLevel()
 
     def retryLevel(self):
-        self.__unloadCurrentLevel()
         self.__unloadEntities()
-        #self.__createPickups()
-        self.__loadLevel()
-        #self.__createEnemies()
-        #self.__createBoxes()
-        #self.mSwirlActive = False
+        self.__createPickups()
+        self.__createEnemies()
+        self.__createBoxes()
+        self.mSwirlActive = False
                
     def isInActiveChunks(self, position):
         return True if self.mMapType == MapType.TEXT else self.mChunkHandler.isPositionInActiveChunks(position)

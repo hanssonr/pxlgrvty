@@ -1,3 +1,9 @@
+"""
+Singleton soundmanager, manages all music/sound playback
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Resources import Resources
 from Pgl import *
 import random, pygame, os
@@ -18,7 +24,9 @@ class SoundManager(object):
         self.NUMBER_OF_SONGS = len([file for file in os.listdir("assets/audio/music/bg") if file.endswith(".ogg")])
         
     def initialize(self):
-        self.SOUNDS = [Resources.getInstance().mJump, Resources.getInstance().mFleshExplosion]
+        self.SOUNDS = [Resources.getInstance().mJump, 
+                       Resources.getInstance().mFleshExplosion,
+                       Resources.getInstance().mPickup]
         self.MUSIC_PLAYING = -1
     
     
@@ -46,6 +54,17 @@ class SoundManager(object):
             pygame.mixer.music.load("assets/audio/music/menu.ogg")
             pygame.mixer.music.play(-1)
             self.MUSIC_PLAYING = MusicID.MENU
+        else:
+            self.stopMusic()
+            
+    def playEndMusic(self):
+        pygame.mixer.music.set_volume(int(Pgl.options.musicvolume) / 100.0)
+        pygame.mixer.music.load("assets/audio/music/end.ogg")
+        pygame.mixer.music.play()
+        self.MUSIC_PLAYING = MusicID.END
+        
+    def fadeout(self, fadetime):
+        pygame.mixer.music.fadeout(fadetime)
             
     def changeMusicVolume(self):
         pygame.mixer.music.set_volume(Pgl.options.musicvolume / 100.0)
@@ -76,9 +95,11 @@ class SoundManager(object):
 class SoundID:
     JUMP = 0
     FLESHEXPLOSION = 1
+    PICKUP = 2
     
 class MusicID:
     MENU = 0
     BG = 1
+    END = 2
     
     

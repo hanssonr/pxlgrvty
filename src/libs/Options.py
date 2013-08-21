@@ -1,3 +1,9 @@
+"""
+Optionclass handles the optionfile and read/writes new parameters to it
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import json
 
 class Options(object):
@@ -8,6 +14,7 @@ class Options(object):
     __mFullscreen = None
     __mSoundVolume = None
     __mMusicVolume = None
+    __mUpdaterate = None
     
     __optionPath = "assets/state/options.json"
     
@@ -22,7 +29,7 @@ class Options(object):
                 optionData = json.load(readstate)
         except (IOError, ValueError):
             with open(self.__optionPath, "w+") as writestate:
-                json.dump({"FULLSCREEN": False, "MUSIC": True, "SOUND": True, "RESOLUTION":"640x480", "MUSICVOLUME":"30", "SOUNDVOLUME":"30"}, writestate)
+                json.dump({"FULLSCREEN": False, "MUSIC": True, "SOUND": True, "RESOLUTION":"640x480", "MUSICVOLUME":"30", "SOUNDVOLUME":"30", "UPDATERATE":"60"}, writestate)
             
         finally:
             with open("assets/state/options.json", "r") as readstate:
@@ -34,6 +41,7 @@ class Options(object):
         self.__mResolution = optionData[OptionValue.RESOLUTION]
         self.__mMusicVolume = optionData[OptionValue.MUSICVOLUME]
         self.__mSoundVolume = optionData[OptionValue.SOUNDVOLUME]
+        self.__mUpdaterate = int(optionData[OptionValue.UPDATERATE])
         
     def writeOptions(self):
         try:
@@ -43,7 +51,8 @@ class Options(object):
                            "SOUND": self.sound,
                            "RESOLUTION": self.resolution,
                            "SOUNDVOLUME": self.soundvolume,
-                           "MUSICVOLUME": self.musicvolume}, writestate)      
+                           "MUSICVOLUME": self.musicvolume,
+                           "UPDATERATE": self.updaterate}, writestate)      
         except:
             print "WriteError"
     
@@ -52,52 +61,60 @@ class Options(object):
         self.__mMusic = True
         self.__mSound = True
         self.__mResolution = "640x480"
+        self.__mUpdaterate = 60
     
     def getResolutionAsList(self):
         return [int(x) for x in self.__mResolution.replace("x", " ").split(" ")]
 
-    def __getFullscreen(self):
+    def getFullscreen(self):
         return self.__mFullscreen
     
-    def __setFullscreen(self, boolean):
+    def setFullscreen(self, boolean):
         self.__mFullscreen = boolean
     
-    def __getMusic(self):
+    def getMusic(self):
         return self.__mMusic
     
-    def __setMusic(self, boolean):
+    def setMusic(self, boolean):
         self.__mMusic = boolean
         
-    def __getSound(self):
+    def getSound(self):
         return self.__mSound
     
-    def __setSound(self, boolean):
+    def setSound(self, boolean):
         self.__mSound = boolean
         
-    def __getResolution(self):
+    def getResolution(self):
         return self.__mResolution
     
-    def __setResolution(self, res):
+    def setResolution(self, res):
         self.__mResolution = res
         
-    def __getMusicVolume(self):
+    def getMusicVolume(self):
         return int(self.__mMusicVolume)
     
-    def __setMusicVolume(self, volume):
+    def setMusicVolume(self, volume):
         self.__mMusicVolume = int(volume)
     
-    def __getSoundVolume(self):
+    def getSoundVolume(self):
         return int(self.__mSoundVolume)
     
-    def __setSoundVolume(self, volume):
+    def setSoundVolume(self, volume):
         self.__mSoundVolume = int(volume)
-    
-    fullscreen = property(__getFullscreen, __setFullscreen)
-    music = property(__getMusic, __setMusic)
-    sound = property(__getSound, __setSound)
-    resolution = property(__getResolution, __setResolution)
-    soundvolume = property(__getSoundVolume, __setSoundVolume)
-    musicvolume = property(__getMusicVolume, __setMusicVolume)
+
+    def getUpdaterate(self):
+        return int(self.__mUpdaterate)
+        
+    def setUpdaterate(self, updaterate):
+        self.__mUpdaterate = updaterate
+
+    fullscreen = property(getFullscreen, setFullscreen)
+    music = property(getMusic, setMusic)
+    sound = property(getSound, setSound)
+    resolution = property(getResolution, setResolution)
+    soundvolume = property(getSoundVolume, setSoundVolume)
+    musicvolume = property(getMusicVolume, setMusicVolume)
+    updaterate = property(getUpdaterate, setUpdaterate)
 
 class OptionValue(object):
     FULLSCREEN = "FULLSCREEN"
@@ -106,4 +123,33 @@ class OptionValue(object):
     RESOLUTION = "RESOLUTION"
     MUSICVOLUME = "MUSICVOLUME"
     SOUNDVOLUME = "SOUNDVOLUME"
+    UPDATERATE = "UPDATERATE"
+    
+class Updaterate(object):
+    SLOW = "30"
+    MEDIUM = "45"
+    FAST = "60"
+    
+    @staticmethod
+    def convertIntToSpeed(x):
+        if x == 0:
+            return Updaterate.SLOW
+        elif x == 1:
+            return Updaterate.MEDIUM
+        elif x == 2:
+            return Updaterate.FAST
+        else:
+            raise Exception("No such Updaterate")
+        
+    @staticmethod
+    def convertSpeedToInt(speed):
+        speed = int(speed)
+        if speed == int(Updaterate.SLOW):
+            return 0
+        elif speed == int(Updaterate.MEDIUM):
+            return 1
+        elif speed == int(Updaterate.FAST):
+            return 2
+        else:
+            raise Exception("No such Updaterate")
         

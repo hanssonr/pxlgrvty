@@ -1,3 +1,7 @@
+"""
+Boxclass, moveable enitity, *NOT USED*
+"""
+
 from model.Sensor import *
 from Box2D import b2Vec2, b2Vec2_zero, b2PolygonShape, b2FixtureDef
 from MovableEntity import MovableEntity

@@ -1,7 +1,11 @@
+"""
+Class that renders the background depending on variable of the level
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Sprite import Sprite
-from Resources import Resources
 from libs.Pgl import *
-from Box2D import b2Vec2
 import pygame
 
 class BackgroundRender(object):

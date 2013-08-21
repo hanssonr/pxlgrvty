@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Baseclass for moveable entities
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
+
 from model.entities.Entity import *
 from model.Direction import MoveDirection, Direction
     

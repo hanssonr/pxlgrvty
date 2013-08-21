@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Basklass för alla rörliga objekt
+Baseclass for all objects
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
 """
-import Box2D
+
 from Box2D import b2Vec2
 from libs.Id import Id
 

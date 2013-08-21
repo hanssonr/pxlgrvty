@@ -1,3 +1,9 @@
+"""
+Class that draws different type of Objects
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Resources import *
 from libs.Sprite import *
 from model.entities.Box import *
@@ -14,7 +20,6 @@ class ObjectRender(object):
         self.__mCrystalTimers = {}
         self.__mCrystalAnimations = {}
         self.mCamera = camera
-        self.box = Sprite(Resources.getInstance().mBox)
         self.levelUpdate(objects)
         
         

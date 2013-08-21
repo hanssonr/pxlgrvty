@@ -1,14 +1,14 @@
-from Resources import *
-from libs.Pgl import *
-from model.Camera import Camera
-from controller.MenuInput import MenuInput
+"""
+MenuScreen shows the first menu in the game with buttons such as instructions, new game, options and exit
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
 from Box2D import b2Vec2
-from MenuItems import TableCreator, MenuAction
-from libs.Animation import Animation
+from libs.Pgl import *
+from screen.BaseMenuScreen import BaseMenuScreen
+from MenuItems import TableCreator
 import LevelScreen, OptionScreen, InstructionScreen
-from libs.Sprite import Sprite
-from libs.SoundManager import SoundManager, MusicID
-from BaseMenuScreen import *
+
 
 class MenuScreen(BaseMenuScreen):
     
@@ -16,7 +16,10 @@ class MenuScreen(BaseMenuScreen):
         super(MenuScreen, self).__init__(game)
         self.mButtonTable = TableCreator(self.modelsize, 1, 4, 
                                          ["new game", "options", "instructions", "exit"], 
-                                         [MenuAction.NEWGAME, MenuAction.OPTIONS, MenuAction.INSTRUCTIONS, MenuAction.EXIT])
+                                         [lambda: self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame)),
+                                           lambda: self.mGame.setScreen(OptionScreen.OptionScreen(self.mGame)),
+                                           lambda: self.mGame.setScreen(InstructionScreen.InstructionScreen(self.mGame)), 
+                                           lambda: Pgl.app.stop()])
         
         #title
         self.title = self.titleFont.render("pxlgrvty", 0, (255,255,255))
@@ -57,15 +60,7 @@ class MenuScreen(BaseMenuScreen):
             
             for btn in self.mButtonTable.mButtons:
                 if btn.rect.collidepoint(mmp):
-                    if btn.mAction == MenuAction.NEWGAME:
-                        self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))
-                    elif btn.mAction == MenuAction.INSTRUCTIONS:
-                        self.mGame.setScreen(InstructionScreen.InstructionScreen(self.mGame))
-                    elif btn.mAction == MenuAction.OPTIONS:
-                        self.mGame.setScreen(OptionScreen.OptionScreen(self.mGame))
-                    elif btn.mAction == MenuAction.EXIT:
-                        Pgl.app.stop()
-                    break
+                    btn.mAction()
         
     def mouseOver(self, pos):
         mmp = self.mCamera.getModelCoords(b2Vec2(pos[0], pos[1]))

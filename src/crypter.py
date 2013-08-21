@@ -1,3 +1,9 @@
+"""
+Helpclass for encrypthing levels
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from libs.Crypt import Crypt
 import os
 
@@ -20,16 +26,3 @@ for root, _, files in os.walk("assets/levels/decrypted"):
         with open(encryptpath, "wb+") as w:
             w.write(crypter(decryptpath))
 
-#state
-"""
-#data = crypter("assets/state/state.json")
-with open("assets/state/state.json", "wb+") as w:
-    w.write(crypt.encrypt('{"LVL":"1"}'))"""
-
-#time
-"""
-with open("assets/state/time.json", "wb+") as w:
-    w.write(crypter("assets/state/orgtime.json"))"""
-
-  
-print "done"

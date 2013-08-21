@@ -1,3 +1,9 @@
+"""
+Bloodsplatter effect
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 from Particle import Particle
 from Box2D import b2Vec2
 import random

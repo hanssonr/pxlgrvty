@@ -1,3 +1,9 @@
+"""
+Class that draws the player, flip and rotates him aswell
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 import pygame
 from libs.Pgl import *
 from libs.Sprite import *

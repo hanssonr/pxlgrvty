@@ -1,3 +1,9 @@
+"""
+Color enumclass for reading out things from pixelcolordata
+
+Author: Rickard Hansson, rkh.hansson@gmail.com
+"""
+
 class Color(object):
     BLACK = (0,0,0)
     WHITE = (255,255,255)
