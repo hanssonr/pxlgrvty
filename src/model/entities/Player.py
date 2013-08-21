@@ -51,7 +51,7 @@ class Player(MovableEntity):
         body.CreateFixture(fd)
         
         #gravitysensor/deathsensor
-        shape.SetAsBox(0.2,0.3)
+        shape.SetAsBox(0.15,0.3)
         fd.userData = Sensor.PLAYER_DEATHSENSOR
         body.CreateFixture(fd)
         

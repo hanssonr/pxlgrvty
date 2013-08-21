@@ -20,7 +20,6 @@ class Camera(object):
     mFrustumBias = 0.5
     
     def __init__(self, width, height):
-        print width, height
         self.mScale = b2Vec2(int(width / self.CAMERA_WIDTH), math.ceil(height / self.CAMERA_HEIGHT))
         self.mDisplacement = b2Vec2(0, 0)
     

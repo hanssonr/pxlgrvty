@@ -84,9 +84,7 @@ class Level(object):
         http://qq.readthedocs.org/en/latest/tiles.html#map-definition
     """
     def __readLevel(self):
-        #parser = self.__mCrypt.dectryptParser(self.mCurrentLevel)
-        parser = ConfigParser.ConfigParser()
-        parser.read("assets/levels/decrypted/level%d.lvl" % self.mCurrentLevel)     
+        parser = self.__mCrypt.dectryptParser(self.mCurrentLevel)  
         self.mCurrentTileset = parser.get("level", "tileset")
         self.mBackground = parser.get("level", "bg")
         bgcolor = pygame.image.load("assets/gfx/%s" % self.mBackground)

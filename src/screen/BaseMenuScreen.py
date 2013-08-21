@@ -17,12 +17,13 @@ from libs.Options import Updaterate
 
 class BaseMenuScreen(object):
     
-    def __init__(self, game):
+    def __init__(self, game, playMusic=True):
         self.mGame = game
         Pgl.app.setUpdaterate(int(Updaterate.FAST))
-        SoundManager.getInstance().playMenuMusic()
         pygame.mouse.set_visible(False)
-        
+                
+        if playMusic: SoundManager.getInstance().playMenuMusic()
+    
         #set input & camera
         self.mGame.input = MenuInput(self)
         self.mCamera = Camera(Pgl.width, Pgl.height)

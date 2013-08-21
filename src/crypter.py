@@ -26,3 +26,4 @@ for root, _, files in os.walk("assets/levels/decrypted"):
         with open(encryptpath, "wb+") as w:
             w.write(crypter(decryptpath))
 
+print "done"

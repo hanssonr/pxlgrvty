@@ -24,7 +24,6 @@ from BaseMenuScreen import BaseMenuScreen
 class LevelTimeScreen(BaseMenuScreen):
     
     def __init__(self, game, levelInt, currentTime = None):
-        super(LevelTimeScreen, self).__init__(game)
         Id.getInstance().resetId()
         
         self.__mCrypt = Crypt()
@@ -32,15 +31,16 @@ class LevelTimeScreen(BaseMenuScreen):
         
         self.mLevelInt = levelInt
         self.mButtons = []
-     
-        self.medallions = Animation(Resources.getInstance().mMedallions, 3, 3, 0, self.mCamera.getScaledSize(3, 3), False, False)
         self.mTime = Time(self.__readPlayerTime())
         
         if currentTime != None:
+            super(LevelTimeScreen, self).__init__(game, False)
             self.__initializeFromGame()
         else:
+            super(LevelTimeScreen, self).__init__(game)
             self.__initializeFromMenu()
    
+        self.medallions = Animation(Resources.getInstance().mMedallions, 3, 3, 0, self.mCamera.getScaledSize(3, 3), False, False)
         self.mLevelTimes = [Time(x) for x in self.__readLevelTimes()]
         self.mButtons.append(Button("back", 0.5, 8.5, b2Vec2(2,1), lambda: self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame))))
         

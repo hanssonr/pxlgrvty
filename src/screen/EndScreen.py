@@ -6,17 +6,16 @@ Author: Rickard Hansson, rkh.hansson@gmail.com
 
 from libs.Pgl import *
 from Resources import Resources
-from model.Camera import Camera
 from Box2D import b2Vec2
 from libs.Text import Text
 from libs.SoundManager import SoundManager
-from screen.MenuScreen import MenuScreen
+from BaseMenuScreen import BaseMenuScreen
+import MenuScreen, pygame
 
-class EndScreen(object):
+class EndScreen(BaseMenuScreen):
     
-    def __init__(self, game):
-        self.mGame = game
-        self.mCamera = Camera(Pgl.width, Pgl.height)
+    def __init__(self, game): 
+        super(EndScreen, self).__init__(game, False)
         SoundManager.getInstance().playEndMusic()
                 
         #fonts
@@ -54,7 +53,7 @@ class EndScreen(object):
     def update(self, delta):
         if not self.mDone:
             if self.text.mPos.y + self.text.height > 0:
-                self.text.mPos.y -= 0.5
+                self.text.mPos.y -= self.mCamera.scale.y * delta / 2.0
             else: self.mDone = True
         else:
             if self.mTimer == 0:
@@ -63,7 +62,7 @@ class EndScreen(object):
             self.mTimer += delta
             
             if self.mTimer >= 5:
-                self.mGame.setScreen(MenuScreen(self.mGame))
+                self.mGame.setScreen(MenuScreen.MenuScreen(self.mGame))
                 
     
     def render(self, delta):
@@ -73,6 +72,16 @@ class EndScreen(object):
             Pgl.app.surface.blit(self.endtext, (self.endpos.x - self.endsize[0]/2.0, self.endpos.y - self.endsize[1]/2.0))
         else:
             self.text.renderleft(delta)
+            
+    def mouseClick(self, pos):
+        pass
+    
+    def mouseOver(self, pos):
+        pass
+    
+    def keyInput(self, key):
+        if key == pygame.K_ESCAPE:
+            self.mDone = True
         
         
         

@@ -54,7 +54,7 @@ class Options(object):
                            "MUSICVOLUME": self.musicvolume,
                            "UPDATERATE": self.updaterate}, writestate)      
         except:
-            print "WriteError"
+            pass
     
     def setDefaultOptions(self):
         self.__mFullscreen = False

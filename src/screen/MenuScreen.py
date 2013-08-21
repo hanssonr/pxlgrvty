@@ -7,18 +7,19 @@ from Box2D import b2Vec2
 from libs.Pgl import *
 from screen.BaseMenuScreen import BaseMenuScreen
 from MenuItems import TableCreator
-import LevelScreen, OptionScreen, InstructionScreen
+import LevelScreen, OptionScreen, InstructionScreen, EndScreen
 
 
 class MenuScreen(BaseMenuScreen):
     
     def __init__(self, game):  
         super(MenuScreen, self).__init__(game)
-        self.mButtonTable = TableCreator(self.modelsize, 1, 4, 
-                                         ["new game", "options", "instructions", "exit"], 
+        self.mButtonTable = TableCreator(b2Vec2(self.modelsize.x, self.modelsize.y + 2), 1, 5, 
+                                         ["new game", "options", "instructions", "credits", "exit"], 
                                          [lambda: self.mGame.setScreen(LevelScreen.LevelScreen(self.mGame)),
                                            lambda: self.mGame.setScreen(OptionScreen.OptionScreen(self.mGame)),
-                                           lambda: self.mGame.setScreen(InstructionScreen.InstructionScreen(self.mGame)), 
+                                           lambda: self.mGame.setScreen(InstructionScreen.InstructionScreen(self.mGame)),
+                                           lambda: self.mGame.setScreen(EndScreen.EndScreen(self.mGame)),
                                            lambda: Pgl.app.stop()])
         
         #title
