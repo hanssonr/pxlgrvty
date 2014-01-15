@@ -42,7 +42,7 @@ class PygameApplication(object):
         
         while self.__mRunning:
             #Pgl.options.updaterate
-            delta = Pgl.clock.tick() / 1000.0
+            delta = Pgl.clock.tick(60) / 1000.0
 
             if self.__mGame.input != None:
                 self.__mGame.input.update()   
