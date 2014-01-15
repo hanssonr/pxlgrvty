@@ -71,6 +71,15 @@ class Animation(Sprite):
     def gotoRow(self, row):
         if row <= self.__mFramesY:
             self.__mCurrentRow = row
+            
+    def getRect(self):
+        return Rect(self.__mCurrentFrame * self.__mFrameWidth, self.__mCurrentRow * self.__mFrameHeight, self.__mFrameWidth, self.__mFrameHeight)
+            
+    def getFrame(self):
+        return self.__mCurrentFrame
+    
+    def getRow(self):
+        return self.__mCurrentRow
     
     def isAnimationDone(self):
         return self.__mIsDone

@@ -45,6 +45,7 @@ class Input(BaseInputHandler):
                     self.mCurrentScreen.goBack()
                 if event.key == K_r:
                     self.world.restart()
+
                     
                 #debug
                 if event.key == K_F1:
@@ -71,4 +72,5 @@ class Input(BaseInputHandler):
                     self.player.move(MoveDirection.DOWN)
                 if pressed[pygame.K_w]:
                     self.player.move(MoveDirection.UP)
+
         

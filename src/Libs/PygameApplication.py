@@ -39,12 +39,14 @@ class PygameApplication(object):
         Pgl.clock = pygame.time.Clock()
         self.__mGame.create()
         
+        
         while self.__mRunning:
-            delta = Pgl.clock.tick(self.__mUpdaterate) / 1000.0
+            #Pgl.options.updaterate
+            delta = Pgl.clock.tick() / 1000.0
 
             if self.__mGame.input != None:
                 self.__mGame.input.update()   
-                                
+                            
             self.__mGame.update(delta)
             self.__mGame.render(delta)
 

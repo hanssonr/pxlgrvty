@@ -42,6 +42,7 @@ class Level(object):
     mMapType = None
     mCurrentTileset = None
     mSwirlActive = None
+    mAllTiles = None
     
     #dataholders
     mPickupData = None
@@ -62,6 +63,7 @@ class Level(object):
         self.mWorld = world
         self.mGravity = gravity
         self.mCurrentLevel = lvl
+        self.mAllTiles = []
         
         self.__loadLevel()
         
@@ -71,6 +73,7 @@ class Level(object):
         
         if self.mMapType == MapType.PICTURE:
             self.__createPictureWorldCollision()
+            print "startpos: ", self.mStartPos
             self.mChunkHandler.activateChunk(self.mChunkHandler.getChunk(self.mChunkHandler.getChunkPosition(self.mStartPos)))
             self.mTiles = self.mChunkHandler.mActiveTiles
         else:
@@ -213,6 +216,7 @@ class Level(object):
                             pos = b2Vec2(mx, my)
                             
                             if (r,g,b) == Color.WALL:
+                                self.mAllTiles.append(Tile(self.mWorld, pos, self.__calculateTileType(mx, my)))
                                 chunktiles.append(Tile(self.mWorld, pos, self.__calculateTileType(mx, my)))
                             elif (r,g,b) == Color.STARTPOS:
                                 self.mStartPos = pos
@@ -401,7 +405,7 @@ class Level(object):
         self.__unloadEntities()
         self.__createPickups()
         self.__createEnemies()
-        self.__createBoxes()
+        #self.__createBoxes()
         self.mSwirlActive = False
                
     def isInActiveChunks(self, position):

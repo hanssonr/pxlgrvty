@@ -35,7 +35,7 @@ class WorldRender(object):
         #renders
         self.objectRender = ObjectRender(self.mCamera, self.mWorld.level.mObjects)
         self.playerRender = PlayerRender(self.mCamera, self.mWorld.player)
-        self.tileRender = TileRender(self.mCamera, self.mWorld.level.mTiles, self.mWorld.level.mCurrentTileset)
+        self.tileRender = TileRender(self.mCamera, self.mWorld.level)
         self.enemyRender = EnemyRender(self.mCamera, self.mWorld.level.mEnemies)
         self.swirlRender = SwirlRender(self.mCamera, self.mWorld.level)
         self.fxRender = EffectRender(self.mCamera)
@@ -63,7 +63,7 @@ class WorldRender(object):
 
     #LevelupdateListener
     def levelChanged(self, level):
-        self.tileRender.levelUpdate(level.mTiles, level.mCurrentTileset)
+        self.tileRender.levelUpdate(level)
         self.objectRender.levelUpdate(level.mObjects)
         self.enemyRender.levelUpdate(level.mEnemies)
         self.swirlRender.levelUpdate()
