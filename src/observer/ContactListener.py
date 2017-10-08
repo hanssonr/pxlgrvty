@@ -15,16 +15,16 @@ from model.entities.Player import Player
 from model.entities.PickableObject import PickableObject
 
 class ContactListener(b2ContactListener):
-    
+
     def __init__(self):
         super(ContactListener, self).__init__()
-      
+
     def BeginContact(self, contact):
         fixA = contact.fixtureA
-        fixB = contact.fixtureB          
+        fixB = contact.fixtureB
         bodyA = fixA.body
         bodyB = fixB.body
-        
+
         #Player onground/box
         if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyA.userData, Tile):
@@ -33,7 +33,7 @@ class ContactListener(b2ContactListener):
                 if bodyA.userData.isMoving():
                     bodyB.userData.mOnGround -= 1
                 else:
-                    bodyB.userData.mOnGround += 1         
+                    bodyB.userData.mOnGround += 1
         elif fixA.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyB.userData, Tile):
                 bodyA.userData.mOnGround += 1
@@ -51,17 +51,20 @@ class ContactListener(b2ContactListener):
         elif fixB.userData == Sensor.PLAYER_DEATHSENSOR:
             if isinstance(bodyA.userData, Enemy):
                 if bodyB.userData.alive:
+
                     bodyB.userData.alive = False
-        
-        
+
+
         #Player collides pickupable
         if isinstance(bodyA.userData, Player):
             if isinstance(bodyB.userData, PickableObject):
-                bodyB.userData.alive = False
+                if bodyB.userData.alive:
+                    bodyB.userData.alive = False
         if isinstance(bodyB.userData, Player):
             if isinstance(bodyA.userData, PickableObject):
-                bodyA.userData.alive = False
-        
+                if bodyA.userData.alive:
+                    bodyA.userData.alive = False
+
         #Entity enters gravityzone
         if fixA.userData == Sensor.GRAVITYZONESENSOR:
             if fixB.userData == TileType.GRAVITYZONE:
@@ -69,7 +72,7 @@ class ContactListener(b2ContactListener):
         elif fixB.userData == Sensor.GRAVITYZONESENSOR:
             if fixA.userData == TileType.GRAVITYZONE:
                 bodyB.userData.enterGravityZone()
-                
+
         #Spikebox collides with Tile/other entity
         if isinstance(bodyA.userData, SpikeBox):
             if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box) or isinstance(bodyB.userData, SpikeBox):
@@ -77,26 +80,26 @@ class ContactListener(b2ContactListener):
         if isinstance(bodyB.userData, SpikeBox):
             if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box) or isinstance(bodyA.userData, SpikeBox):
                 bodyB.userData.touch()
-    
+
     def EndContact(self, contact):
         fixA = contact.fixtureA
-        fixB = contact.fixtureB          
+        fixB = contact.fixtureB
         bodyA = fixA.body
         bodyB = fixB.body
-        
+
         #Player leaving ground
         if fixB.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyA.userData, Tile):
                 bodyB.userData.mOnGround -= 1
             elif isinstance(bodyA.userData, Box):
                 bodyB.userData.mOnGround -= 1
-                    
+
         elif fixA.userData == Sensor.PLAYER_FOOTSENSOR:
             if isinstance(bodyB.userData, Tile):
                 bodyA.userData.mOnGround -= 1
             elif isinstance(bodyB.userData, Box):
                 bodyA.userData.mOnGround -= 1
-        
+
         #Entity leaving gravityzone
         if fixA.userData == Sensor.GRAVITYZONESENSOR:
             if fixB.userData == TileType.GRAVITYZONE:
@@ -104,7 +107,7 @@ class ContactListener(b2ContactListener):
         elif fixB.userData == Sensor.GRAVITYZONESENSOR:
             if fixA.userData == TileType.GRAVITYZONE:
                 bodyB.userData.exitGravityZone()
-                
+
         #Spikebox leaving Tile/other entity
         if isinstance(bodyA.userData, SpikeBox):
             if isinstance(bodyB.userData, Tile) or isinstance(bodyB.userData, Box) or isinstance(bodyB.userData, SpikeBox):
@@ -112,11 +115,10 @@ class ContactListener(b2ContactListener):
         if isinstance(bodyB.userData, SpikeBox):
             if isinstance(bodyA.userData, Tile) or isinstance(bodyA.userData, Box) or isinstance(bodyA.userData, SpikeBox):
                 bodyB.userData.endtouch()
-    
-    
+
+
     def PreSolve(self, contact, oldManifold):
         pass
-    
+
     def PostSolve(self, contact, impulse):
         pass
-    

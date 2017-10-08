@@ -11,6 +11,7 @@ from libs.Animation import Animation
 from libs.Sprite import Sprite
 from Box2D import b2Vec2
 from libs.Pgl import *
+from Resources import Resources
 
 class TileRender(object):
 
@@ -31,17 +32,17 @@ class TileRender(object):
 
     def levelUpdate(self, level):
         self.mTiles = level.mAllTiles
-        self.mTileSprite = Animation(pygame.image.load("assets/gfx/tiles/%s" % level.mCurrentTileset).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1))
-    
+        self.mTileSprite = Animation(pygame.image.load(Resources.getInstance().resource_path("assets/gfx/tiles/%s" % level.mCurrentTileset)).convert_alpha(), 3, 11, 0, self.mCamera.getScaledSize(1,1))
+
         width = int(level.mWidth * self.mCamera.scale.x)
         height = int(level.mHeight * self.mCamera.scale.y)
 
         scale = self.mCamera.getScaledSize(1,1)
         self.sf = pygame.Surface((width, height), flags=pygame.SRCALPHA);
         self.mCamera.displacement = b2Vec2(0,0);
-        
+
         for tile in self.mTiles:
-            
+
             viewpos = self.mCamera.getViewCoords(b2Vec2(tile.position.x - 0.5, tile.position.y - 0.5))
 
             #walls
@@ -66,17 +67,17 @@ class TileRender(object):
             elif tile.tiletype == TileType.B:
                 self.mTileSprite.freeze(1,2)
             elif tile.tiletype == TileType.BR:
-                self.mTileSprite.freeze(2,2)    
-                
-            #grass    
+                self.mTileSprite.freeze(2,2)
+
+            #grass
             elif tile.tiletype == TileType.GL:
                 self.mTileSprite.freeze(0,3)
             elif tile.tiletype == TileType.GM:
                 self.mTileSprite.freeze(1,3)
             elif tile.tiletype == TileType.GR:
                 self.mTileSprite.freeze(2,3)
-            
-            #edge    
+
+            #edge
             elif tile.tiletype == TileType.ETL:
                 self.mTileSprite.freeze(0,4)
             elif tile.tiletype == TileType.ET:
@@ -95,7 +96,7 @@ class TileRender(object):
                 self.mTileSprite.freeze(1,6)
             elif tile.tiletype == TileType.EBR:
                 self.mTileSprite.freeze(2,6)
-            
+
             #single
             elif tile.tiletype == TileType.S:
                 self.mTileSprite.freeze(1,5)
@@ -119,14 +120,12 @@ class TileRender(object):
                 self.mTileSprite.freeze(1,10)
             elif tile.tiletype == TileType.SVT:
                 self.mTileSprite.freeze(2,10)
-                
+
             elif tile.tiletype == TileType.GRAVITYZONE:
                 self.mTileSprite.freeze(2,7)
 
-            
+
             area = self.mTileSprite.getRect()
             toDraw = self.mTileSprite.image.subsurface(area)
             toDraw = pygame.transform.scale(toDraw, (int(scale.x), int(scale.y)))
             self.sf.blit(toDraw, (viewpos.x, viewpos.y))
-            
-            

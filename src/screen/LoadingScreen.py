@@ -9,17 +9,17 @@ from screen.MenuScreen import MenuScreen
 from Resources import Resources
 
 class LoadingScreen(object):
-    
+
     loadingTime = 1
-    
+
     def __init__(self, game):
         self.mGame = game
         Resources.getInstance().loadGameResources()
         SoundManager.getInstance().initialize()
-    
-    def update(self, delta):            
+
+    def update(self, delta):
         self.loadingTime = self.loadingTime - delta
         self.mGame.setScreen(MenuScreen(self.mGame))
-        
+
     def render(self, delta):
         pass
